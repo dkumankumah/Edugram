@@ -2,7 +2,6 @@
  * @author Daniel Kumankumah, 500811456
  * This page provides a list of tutors in a grid of cards
  * Every tutor has an image, name, rating and short bio
- *
  */
 import {
     Box,
