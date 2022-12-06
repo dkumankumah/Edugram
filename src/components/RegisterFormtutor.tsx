@@ -11,7 +11,7 @@ import { GoogleBtn } from "../components/shared/GoogleBtn";
 import { PasswordInput } from "../components/shared/PasswordInput";
 import React, { useState } from "react";
 
-export default function RegisterFormTutor() {
+export function RegisterFormTutor() {
 
   const [tutor, setTutor] = useState({
     firstName: "",
