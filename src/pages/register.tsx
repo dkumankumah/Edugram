@@ -6,7 +6,6 @@ import registerPageTutor from "../../public/data/registerPageTutor.json";
 
 // component imports
 import { RegisterFormTutor } from "../components/RegisterFormtutor";
-import { Navbar } from '../components/shared/Navbar'
 
 interface PageProps {
   title?: String;
@@ -15,8 +14,6 @@ interface PageProps {
 
 export default function Register({ title, description }: PageProps) {
   return (
-    <>
-    <Navbar/>
     <Flex
       minH="100vh"
       backgroundImage="url('/images/bg-edugram.png')"
@@ -53,8 +50,6 @@ export default function Register({ title, description }: PageProps) {
         </Flex>
       </Flex>
     </Flex>
-    </>
-    
   );
 }
 
