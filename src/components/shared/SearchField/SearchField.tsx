@@ -1,14 +1,12 @@
 /**
- * @author Bugra Karaaslan, 500830631, This is an inputfield component.
+ * @author Bugra Karaaslan, 500830631, This is an search field component.
  */
-
 import {
   InputGroup,
   Input,
   InputProps,
   InputRightElement,
   IconButton,
-  Flex,
 } from "@chakra-ui/react";
 import * as Icon from "react-icons/ai";
 import { IconContext } from "react-icons";
@@ -43,6 +41,7 @@ export function SearchField({ placeholder, label, id, ...props }: ComponentProps
           mt={1}
           size='sm'
           borderRadius={30}
+          _hover={{ bg: 'lightBlue',}}
           icon={<IconContext.Provider value={{ style: { color: '#FFF' }, className: "global-class-name", }} >
             <Icon.AiOutlineSearch/>
           </IconContext.Provider>}
