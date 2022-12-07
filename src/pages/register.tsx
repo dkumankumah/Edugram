@@ -5,7 +5,7 @@ import { Flex, Text, Image, Box } from "@chakra-ui/react";
 import registerPageTutor from "../../public/data/registerPageTutor.json";
 
 // component imports
-import RegisterFormTutor from "../components/RegisterFormtutor";
+import { RegisterFormTutor } from "../components/RegisterFormtutor";
 
 interface PageProps {
   title?: String;

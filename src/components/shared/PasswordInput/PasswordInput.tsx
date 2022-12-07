@@ -14,15 +14,17 @@ import * as icon from "react-icons/bi";
 interface ComponentProps extends InputProps {
   id?: string;
   mt?: string | number;
+  label: string
 }
 
-export function PasswordInput({placeholder, id, mt, ...props}: ComponentProps) {
+export function PasswordInput({placeholder, label, id, mt, ...props}: ComponentProps) {
   const [show, setShow] = useState(false);
   const handleClick = () => setShow(!show);
 
   return (
     <InputGroup maxW="265px" minH="50px" mt={mt}>
       <Input
+        aria-label={label}
         bg="EduWhite"
         id={id}
         pr="3rem"
