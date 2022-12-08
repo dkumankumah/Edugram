@@ -20,10 +20,10 @@ import {
     useRadio,
     useRadioGroup, GridItem
 } from "@chakra-ui/react";
-import { UserModel } from "../../models/UserModel";
+import { TutorModel } from "../../models/TutorModel";
 
 interface PageProps {
-    tutors: UserModel[]
+    tutors: TutorModel[]
     subject: string
 }
 
@@ -40,7 +40,8 @@ export default function Overview ({ tutors, subject }: PageProps) {
                 tutors.reverse()
                 console.log(value);
                 break;
-            default:
+            case options[2]:
+                sortName()
                 console.log(value);
                 break;
         }
@@ -156,7 +157,7 @@ export default function Overview ({ tutors, subject }: PageProps) {
                                                 borderRadius='20'
                                                 py = "5px"
                                                 px = "18px">
-                                                <Text color="#F5F5F5">${tutor.course[0]?.salary}/u</Text>
+                                                <Text color="#F5F5F5">${getFee(tutor)}/u</Text>
                                             </Box>
                                             <Box
                                                 bg= "#107385"
@@ -178,16 +179,31 @@ export default function Overview ({ tutors, subject }: PageProps) {
 
     function sortFee() {
         tutors = tutors.sort((n1, n2) => {
-            if (n1.course[0]?.salary > n2.course[0]?.salary) {
+            if (getFee(n1) > getFee(n2)) {
                 return 1;
             }
 
-            if (n1.course[0]?.salary < n2.course[0]?.salary) {
+            if (getFee(n1) < getFee(n2)) {
                 return -1;
             }
 
             return 0;
         });
+    }
+
+    function sortName() {
+        tutors = tutors.sort((n1, n2) =>
+            n1.firstName.localeCompare(n2.firstName));
+    }
+
+    function getFee(tutor: TutorModel) : number {
+        let fee = 0;
+        tutor.course.forEach((value) => {
+            if(subject == value.subject){
+                fee = value.fee
+            }
+        })
+        return fee;
     }
 }
 

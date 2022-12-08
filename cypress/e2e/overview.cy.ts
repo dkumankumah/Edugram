@@ -2,7 +2,7 @@
 
 describe("Testing overview page", () => {
     beforeEach(() => {
-        cy.visit("http://localhost:3000/overview")
+        cy.visit("http://localhost:3000/search/Programmeren")
     })
     it('should find overview page with a x amount of tutors', () => {
         cy.get("h1").contains("Tutors found for");
@@ -20,7 +20,7 @@ describe("Testing overview page", () => {
 
     it('Mocked API response', () => {
         cy.intercept("GET", '/', {fixtures:'../example.json'}).as('tutor')
-        cy.visit("http://localhost:3000/overview")
+        cy.visit("http://localhost:3000/search/Programmeren")
         cy.log('test')
         console.log(cy);
     })
