@@ -15,6 +15,7 @@ export interface UserModel {
     averageResponseTime?: number;
     role: string;
     notification?: Notification[];
+    course: Course[];
 }
 
 export interface Address {
@@ -49,3 +50,7 @@ export interface Notification {
     description: string;
 }
 
+export interface Course {
+    subject?: string;
+    salary: number;
+}

@@ -13,6 +13,18 @@ const Profile = new Schema({
   }
 })
 
+// let Course;
+const Course = new Schema({
+  subject: {
+    type: String,
+    required: false,
+  },
+  salary: {
+    type: Number,
+    required: false,
+  }
+})
+
 const TutorSchema = new Schema({
   firstName: {
     type: String,
@@ -34,6 +46,10 @@ const TutorSchema = new Schema({
     type: String,
     required: false
   },
+  profile: Profile,
+  course: [
+    {subject: String, salary: Number}
+  ],
 });
 
 module.exports = mongoose.model('tutor', TutorSchema);

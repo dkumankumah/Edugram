@@ -22,80 +22,15 @@ import {
     useRadioGroup, GridItem
 } from "@chakra-ui/react";
 import { useState } from "react";
-import { UserModel } from "../models/UserModel";
+import { UserModel } from "../../models/UserModel";
+import {useRouter} from "next/router";
 
 interface PageProps {
     tutors: UserModel[]
+    subject: string
 }
 
-export async function getStaticProps ({}) {
-    const res = await fetch('http://localhost:8000/tutor')
-    const tutors= await res.json()
-
-    return {
-        props: {
-            tutors
-        },
-    };
-};
-
-// export async function ret (subject: string) {
-//     const res = await fetch('http://localhost:8000/tutor/search/' + subject)
-//     const tutors= await res.json()
-//
-//     console.log(tutors);
-//
-//     // return {
-//     //     props: {
-//     //         tutors
-//     //     },
-//     // };
-// };
-async function fetchData (subject: string) {
-    const res = await fetch('http://localhost:8000/tutor/search/' + subject)
-    const tutors= await res.json()
-
-    console.log(tutors);
-    // return {
-    //     props: {
-    //         tutors
-    //     },
-    // };
-
-}
-
-function RadioCard(props: any) {
-    const { getInputProps, getCheckboxProps } = useRadio(props)
-
-    const input = getInputProps()
-    const checkbox = getCheckboxProps()
-
-    return (
-        <Box as='label'>
-            <input {...input} />
-            <Box
-                {...checkbox}
-                cursor='pointer'
-                borderRadius='20'
-                py = "5px"
-                px = "18px"
-                boxShadow='md'
-                _checked={{
-                    bg: '#107385',
-                    color: 'white',
-                    borderColor: '#107385',
-                }}
-                _focus={{
-                    boxShadow: 'outline',
-                }}
-            >
-                {props.children}
-            </Box>
-        </Box>
-    )
-}
-
-export default function Overview ({ tutors }: PageProps) {
+export default function Overview ({ tutors, subject }: PageProps) {
 
     const options = ['Price', 'Response time', 'Name']
 
@@ -125,16 +60,15 @@ export default function Overview ({ tutors }: PageProps) {
     const handleChangeEvent = (event:any) => {
         setValue(event.target.value);
     };
+    const router = useRouter();
+
     const handleClick = () => {
-        fetchData(value)
+        console.log(value)
+        router.push({
+            pathname: `/search/${value}`
+        })
     }
 
-    // const fetchData = async () => {
-    //     const res = await fetch('http://localhost:8000/tutor/search/' + value)
-    //     tutors= await res.json()
-    //
-    //     console.log(tutors);
-    // };
 
     const group = getRootProps()
     return (
@@ -149,7 +83,7 @@ export default function Overview ({ tutors }: PageProps) {
 
                 <Grid  templateColumns={'15% 70% 15%'}>
                     <GridItem
-                    mx="6%">
+                        mx="6%">
                         <Input
                             value={value}
                             placeholder='Vakken'
@@ -177,7 +111,7 @@ export default function Overview ({ tutors }: PageProps) {
                             })}
 
                         </HStack>
-                        <Text as = "h1"> {tutors.length} Tutors found for x</Text>
+                        <Text as = "h1"> {tutors.length} Tutors found for {subject}</Text>
                     </GridItem>
                     <GridItem  order={-3} >
                     </GridItem>
@@ -206,7 +140,7 @@ export default function Overview ({ tutors }: PageProps) {
                                     data-cy="card"
                                     onClick={() => alert("Tutor " + tutor.firstName + " met id " + tutor._id) + " is geselecteerd"}>
                                     <Box
-                                    height= "40%">
+                                        height= "40%">
                                         <Image
                                             objectFit='cover'
                                             borderRadius={20}
@@ -216,14 +150,14 @@ export default function Overview ({ tutors }: PageProps) {
                                             alt={`student foto of ${tutor.firstName} + ${tutor.lastName} `}
                                         />
                                         <Box justifyContent="end"
-                                            bg="#4EA4B1" position="absolute"
-                                            borderTopLeftRadius="0"
-                                            borderBottomRightRadius="0"
-                                            borderTopRightRadius ="20"
-                                            borderBottomLeftRadius ="20"
-                                            marginTop = "-44px"
-                                            py = "10px"
-                                            px = "15px"
+                                             bg="#4EA4B1" position="absolute"
+                                             borderTopLeftRadius="0"
+                                             borderBottomRightRadius="0"
+                                             borderTopRightRadius ="20"
+                                             borderBottomLeftRadius ="20"
+                                             marginTop = "-44px"
+                                             py = "10px"
+                                             px = "15px"
                                         >
                                             <Text color="#F5F5F5">{tutor.firstName}</Text>
                                         </Box>
@@ -284,3 +218,47 @@ export default function Overview ({ tutors }: PageProps) {
         tutors = sortedArray
     }
 }
+
+function RadioCard(props: any) {
+    const { getInputProps, getCheckboxProps } = useRadio(props)
+
+    const input = getInputProps()
+    const checkbox = getCheckboxProps()
+
+    return (
+        <Box as='label'>
+            <input {...input} />
+            <Box
+                {...checkbox}
+                cursor='pointer'
+                borderRadius='20'
+                py = "5px"
+                px = "18px"
+                boxShadow='md'
+                _checked={{
+                    bg: '#107385',
+                    color: 'white',
+                    borderColor: '#107385',
+                }}
+                _focus={{
+                    boxShadow: 'outline',
+                }}
+            >
+                {props.children}
+            </Box>
+        </Box>
+    )
+}
+
+export async function getServerSideProps ({ params }: any) {
+    const subject = params.subject
+    const res = await fetch('http://localhost:8000/tutor/search/' + subject)
+    const tutors = await res.json()
+
+    return {
+        props: {
+            tutors,
+            subject
+        },
+    };
+};
