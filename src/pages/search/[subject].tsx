@@ -35,16 +35,14 @@ export default function Overview ({ tutors, subject }: PageProps) {
     const options = ['Price', 'Response time', 'Name']
 
     const handleChange = (value: String) => {
-        console.log(value)
         switch (value) {
             case options[0]:
-                sortSalary();
+                sortFee();
                 break;
             case options[1]:
                 tutors.reverse()
                 console.log(value);
                 break;
-            // case options[2]: console.log(value);
             default:
                 console.log(value);
                 break;
@@ -202,7 +200,7 @@ export default function Overview ({ tutors, subject }: PageProps) {
         </Box>
     )
 
-    function sortSalary() {
+    function sortFee() {
         var sortedArray: UserModel[] = tutors.sort((n1,n2) => {
             if (n1.course[0]?.salary > n2.course[0]?.salary) {
                 return 1;
