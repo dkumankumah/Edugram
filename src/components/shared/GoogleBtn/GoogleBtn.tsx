@@ -5,11 +5,14 @@ import { Button, ButtonProps } from "@chakra-ui/react";
 import * as fc from "react-icons/fc";
 import { IconContext } from "react-icons";
 
-interface ComponentProps extends ButtonProps {}
+interface ComponentProps extends ButtonProps {
+  label: string
+}
 
-export function GoogleBtn({ children, color, ...props }: ComponentProps) {
+export function GoogleBtn({ children, label, color, ...props }: ComponentProps) {
   return (
     <Button
+      aria-label={label}
       sx={{
         cursor: "pointer",
         userSelect: "none",

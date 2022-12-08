@@ -29,8 +29,6 @@ import {GoogleBtn} from "../components/shared/GoogleBtn";
 import Footer from "../components/Footer";
 import CustomFooter from "../components/Footer";
 
-
-
 const Home = () => {
     const {isOpen, onOpen, onClose} = useDisclosure();
     const [email, setEmail] = useState('')
@@ -112,6 +110,7 @@ const Home = () => {
                             </Alert> : ''}
                         <InputField placeholder="johndoe@gmail.com"
                                     type="email"
+                                    label='email'
                                     textColor={'black'}
                                     variant="outline"
                                     bg={'white'}
@@ -131,6 +130,7 @@ const Home = () => {
                                 </Button>
                             </InputRightElement>
                             <InputField type={show ? 'text' : 'password'}
+                                        label='password'
                                         placeholder="Password"
                                         textColor={'black'}
                                         variant="outline"
@@ -161,7 +161,7 @@ const Home = () => {
                                 <Text padding="2" color={'white'} ml={'20px'} mr={'20px'}>Of</Text>
                                 <Divider/>
                             </Flex>
-                            <GoogleBtn bg={'white'} borderRadius={30} w='250px' h={'50'}>Login met Google</GoogleBtn>
+                            <GoogleBtn label='sign in with Google' bg={'white'} borderRadius={30} w='250px' h={'50'}>Login met Google</GoogleBtn>
                         </Stack>
                     </ModalFooter>
                 </ModalContent>

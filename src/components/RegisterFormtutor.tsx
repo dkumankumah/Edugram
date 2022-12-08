@@ -11,7 +11,7 @@ import { GoogleBtn } from "../components/shared/GoogleBtn";
 import { PasswordInput } from "../components/shared/PasswordInput";
 import React, { useState } from "react";
 
-export default function RegisterFormTutor() {
+export function RegisterFormTutor() {
 
   const [tutor, setTutor] = useState({
     firstName: "",
@@ -53,6 +53,7 @@ export default function RegisterFormTutor() {
         Create your account
       </Text>
       <InputField
+        label="first name"
         mt={10}
         name="firstName"
         onChange={handleChange}
@@ -61,6 +62,7 @@ export default function RegisterFormTutor() {
         id="firstName"
       />
       <InputField
+        label="last name"
         mt={9}
         name="lastName"
         onChange={handleChange}
@@ -69,6 +71,7 @@ export default function RegisterFormTutor() {
         id="lastName"
       />
       <InputField
+        label="email"
         mt={8}
         name="email"
         onChange={handleChange}
@@ -78,6 +81,7 @@ export default function RegisterFormTutor() {
         id="email"
       />
       <PasswordInput
+        label="password"
         mt={8}
         name="password"
         onChange={handleChange}
@@ -85,13 +89,13 @@ export default function RegisterFormTutor() {
         placeholder="Password"
         id="password"
       />
-      <SubmitButton mt={12} id='submitButton' mb={4} onClick={createTutor}>
+      <SubmitButton label="create account" mt={12} id='submitButton' mb={4} onClick={createTutor}>
         Create
       </SubmitButton>
       <Text fontWeight="bold" color="eduWhite">
         OR
       </Text>
-      <GoogleBtn data-cy='googleBtn' mt={8}>Sign up with Google</GoogleBtn>
+      <GoogleBtn label="Sign up with your Google account" data-cy='googleBtn' mt={8}>Sign up with Google</GoogleBtn>
     </Flex>
   );
 }
