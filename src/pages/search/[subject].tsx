@@ -1,6 +1,7 @@
 /**
  * @author Daniel Kumankumah, 500811456
  * This page provides a list of tutors in a grid of cards
+ * List of tutors are filter based on subject and can be sorted
  * Every tutor has an image, name, rating and short bio
  */
 import {
@@ -16,14 +17,10 @@ import {
     Image,
     Text,
     Grid,
-    Input,
-    Button,
     useRadio,
     useRadioGroup, GridItem
 } from "@chakra-ui/react";
-import { useState } from "react";
 import { UserModel } from "../../models/UserModel";
-import {useRouter} from "next/router";
 
 interface PageProps {
     tutors: UserModel[]
@@ -54,20 +51,6 @@ export default function Overview ({ tutors, subject }: PageProps) {
         onChange: handleChange,
     })
 
-    const [value, setValue] = useState('');
-    const handleChangeEvent = (event:any) => {
-        setValue(event.target.value);
-    };
-    const router = useRouter();
-
-    const handleClick = () => {
-        console.log(value)
-        router.push({
-            pathname: `/search/${value}`
-        })
-    }
-
-
     const group = getRootProps()
     return (
         <Box>
@@ -82,14 +65,6 @@ export default function Overview ({ tutors, subject }: PageProps) {
                 <Grid  templateColumns={'15% 70% 15%'}>
                     <GridItem
                         mx="6%">
-                        <Input
-                            value={value}
-                            placeholder='Vakken'
-                            onChange={handleChangeEvent}
-                        />
-                        <Button
-                            onClick={handleClick}
-                        >Search</Button>
                         <HStack {...group}
                                 py = "15px">
                             <Box
@@ -163,7 +138,8 @@ export default function Overview ({ tutors, subject }: PageProps) {
 
                                     <CardHeader>
                                         <HStack justifyContent="center">
-                                            <img src="/Vector.png"/>
+                                            <Image src="/Vector.png"
+                                                 alt={`star rating`}/>
                                             <Text>Reviews</Text>
                                         </HStack>
                                     </CardHeader>
@@ -201,7 +177,7 @@ export default function Overview ({ tutors, subject }: PageProps) {
     )
 
     function sortFee() {
-        var sortedArray: UserModel[] = tutors.sort((n1,n2) => {
+        tutors = tutors.sort((n1, n2) => {
             if (n1.course[0]?.salary > n2.course[0]?.salary) {
                 return 1;
             }
@@ -212,8 +188,6 @@ export default function Overview ({ tutors, subject }: PageProps) {
 
             return 0;
         });
-
-        tutors = sortedArray
     }
 }
 
@@ -259,4 +233,4 @@ export async function getServerSideProps ({ params }: any) {
             subject
         },
     };
-};
+}
