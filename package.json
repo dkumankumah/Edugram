@@ -250,6 +250,7 @@
     "react-router": "^6.4.3",
     "react-router-dom": "^6.4.3",
     "react-style-singleton": "^2.2.1",
+    "realm": "^11.3.1",
     "regenerator-runtime": "^0.13.10",
     "regexp.prototype.flags": "^1.4.3",
     "regexpp": "^3.2.0",
