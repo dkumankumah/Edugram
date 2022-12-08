@@ -15,6 +15,8 @@ const bodyParser = require('body-parser')
 const Student = require("./models/Student");
 const Tutor = require("./models/Tutor");
 const Admin = require("./models/Admin");
+const bcrypt = require('bcrypt')
+
 /**
  * URI of the database, The username and password are in the .env file.
  */
@@ -76,23 +78,16 @@ const createToken = (firstName, lastName, role) => {
 }
 
 const checkPassword = (data, password, res) => {
-  console.log (data[0].role)
-  data[0].password === password ? res.status(200).send({
-    token: createToken(data[0].firstName, data[0].lastName, data[0].role),
-    message: 'succesfully logged in'
-  }) : res.status(400).send({
-    error: 'Invalid credentials'
+  bcrypt.compare(password, data[0].password).then(result => {
+    result ? res.status(200).send({
+      token: createToken(data[0].firstName, data[0].lastName, data[0].role),
+      message: 'succesfully logged in'
+    }) : res.status(400).send({
+      error: 'Invalid credentials'
+    })
   })
 }
 
-const checkIfEmailExists = (data, email) => {
-  console.log(data[0].role)
-  data[0].email === email ? res.status(200).send({
-    message: 'Email exists, continue resetting'
-  }) : res.status(400).send({
-    error: 'Could not find email!'
-  })
-}
 app.listen(8000, () => {
   console.log("Server started on port 8000");
 });
