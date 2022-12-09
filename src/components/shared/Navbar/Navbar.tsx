@@ -47,9 +47,11 @@ export function Navbar({ ...props }: ComponentProps) {
           <Flex justify={{ sm: "center", md: "flex-end" }} mt={2}>
             <SearchField
                 value={value}
+                data={value}
                 onChange={handleChangeEvent}
                 onKeyDown={handleKeyDown}
                 label="SearchField, What do you want to learn?"
+                id="searchfield"
               placeholder="What do you want to learn?"
             />
           </Flex>
