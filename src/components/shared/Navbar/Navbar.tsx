@@ -22,7 +22,7 @@ export function Navbar({ ...props }: ComponentProps) {
   const handleKeyDown = (event:any) => {
     if (event.key === 'Enter') {
       router.push({
-        pathname: `/search/${value}`
+        pathname: `/search/${value.toLowerCase()}`
       })
     }
 
@@ -47,7 +47,7 @@ export function Navbar({ ...props }: ComponentProps) {
           <Flex justify={{ sm: "center", md: "flex-end" }} mt={2}>
             <SearchField
                 value={value}
-                data={value}
+                data={value.toLowerCase()}
                 onChange={handleChangeEvent}
                 onKeyDown={handleKeyDown}
                 label="SearchField, What do you want to learn?"

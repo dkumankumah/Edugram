@@ -1,7 +1,7 @@
 import {UserModel} from "./UserModel";
 
 export interface TutorModel extends UserModel {
-    course: Course[];
+    course?: Course[];
     review?: Review[];
     responses?: Response[];
 

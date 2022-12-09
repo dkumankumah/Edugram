@@ -198,7 +198,7 @@ export default function Overview ({ tutors, subject }: PageProps) {
 
     function getFee(tutor: TutorModel) : number {
         let fee = 0;
-        tutor.course.forEach((value) => {
+        tutor.course?.forEach((value) => {
             if(subject == value.subject){
                 fee = value.fee
             }
