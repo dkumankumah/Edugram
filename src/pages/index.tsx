@@ -3,7 +3,6 @@
  @author @Danny Nansink, 500821004
  **/
 import {
-<<<<<<< HEAD
     Alert,
     AlertDescription,
     AlertIcon,
@@ -25,42 +24,17 @@ import {
     Text,
     useDisclosure,
 } from '@chakra-ui/react'
-import React, {useState} from "react";
-import {useRouter} from "next/router";
-=======
-    Box,
-    chakra,
-    Container,
-    SimpleGrid,
-    VisuallyHidden,
-    IconButton,
-    useColorModeValue,
-    Button, Divider,
-    Flex,
-    Heading,
-    Link,
-    Modal, ModalBody,
-    ModalCloseButton, ModalContent, ModalFooter,
-    ModalHeader,
-    ModalOverlay, Stack, Text, Image, FormHelperText, FormControl, FormErrorMessage,
-    useDisclosure, VStack, InputRightElement, InputGroup, Alert, AlertDescription, AlertTitle, AlertIcon,
-} from '@chakra-ui/react'
+
 import React, {useState} from "react";
 import {Router, useRouter} from "next/router";
->>>>>>> 9dafa381de851d791bc44627e7f428528f0d7674
 
 // component imports
 import {InputField} from "../components/shared/InputField/InputField";
 import {GoogleBtn} from "../components/shared/GoogleBtn";
-<<<<<<< HEAD
-import CustomFooter from "../components/Footer";
 import HeroSection from "../components/heroSection";
 
-=======
-import Footer from "../components/Footer";
 import CustomFooter from "../components/Footer";
 import {LoginModal} from "../components/shared/LoginModal/LoginModal"
->>>>>>> 9dafa381de851d791bc44627e7f428528f0d7674
 
 const Home = () => {
     const {isOpen, onOpen, onClose} = useDisclosure();
@@ -72,7 +46,6 @@ const Home = () => {
     const handleShowPassword = () => setShow(!show)
     const router = useRouter();
 
-<<<<<<< HEAD
     function saveToken(token: string) {
         localStorage.setItem('token', token)
     }
@@ -111,9 +84,6 @@ const Home = () => {
                 console.log(err)
             });
     }
-=======
-
->>>>>>> 9dafa381de851d791bc44627e7f428528f0d7674
 
     function clearCredentials() {
         setEmail('')
@@ -123,96 +93,15 @@ const Home = () => {
 
     return (
         <>
-        <Flex flexDir={'column'}>
-            <Heading textAlign={'center'}>The platform</Heading>
-            <Link bg={"lightblue"} p={2} maxW='300' borderRadius={20} textAlign='center' href='/example'>Go to the
-                example page</Link>
-            <Button bg={"#FFCA48"} maxW={'150'} borderRadius={20} alignSelf='end' onClick={onOpen}> Login </Button>
-<<<<<<< HEAD
-            <Modal isOpen={isOpen} onClose={onClose} closeOnEsc={true} closeOnOverlayClick={true}
-                   onCloseComplete={clearCredentials}>
-                <ModalOverlay backdropFilter='blur(5px)' bg='blackAlpha.300'
-                />
-                <ModalContent backgroundColor={'#4EA4B1'} alignItems={'center'} textAlign={'center'} borderRadius={20}
-                              maxW={'400px'} height={'450px'}>
-                    <ModalCloseButton/>
-                    <ModalHeader>
-                        <Heading textAlign={'center'} textColor={'white'}>Login</Heading>
-                    </ModalHeader>
-                    <ModalBody>
-                        {error ?
-                            <Alert status='error' marginBottom={'10px'}>
-                                <AlertIcon/>
-                                <AlertDescription data-cy="alert-description">{error}</AlertDescription>
-                            </Alert> : success ? <Alert status='success' marginBottom={'10px'}>
-                                <AlertIcon/>
-                                <AlertDescription data-cy="success-description">{success}</AlertDescription>
-                            </Alert> : ''}
-                        <InputField placeholder="johndoe@gmail.com"
-                                    type="email"
-                                    textColor={'black'}
-                                    variant="outline"
-                                    bg={'white'}
-                                    mb={2}
-                                    maxW={250}
-                                    focusBorderColor={'black'}
-                                    value={email}
-                                    onChange={(e) => {
-                                        setEmail(e.target.value)
-                                    }} id={'Email'}>
+            <Flex flexDir={'column'}>
+                <Heading textAlign={'center'}>The platform</Heading>
+                <Link bg={"lightblue"} p={2} maxW='300' borderRadius={20} textAlign='center' href='/example'>Go to the
+                    example page</Link>
+                <Button bg={"#FFCA48"} maxW={'150'} borderRadius={20} alignSelf='end' onClick={onOpen}> Login </Button>
+                <LoginModal isOpen={isOpen} onClose={onClose} closeOnEsc={true} closeOnOverlayClick={true} onclosecomplete={clearCredentials}/>
+            </Flex>
 
-                        </InputField>
-                        <InputGroup size='md'>
-                            <InputRightElement width='4.5rem'>
-                                <Button h='1.75rem' size='sm' onClick={handleShowPassword}>
-                                    {show ? 'Hide' : 'Show'}
-                                </Button>
-                            </InputRightElement>
-                            <InputField type={show ? 'text' : 'password'}
-                                        placeholder="Password"
-                                        textColor={'black'}
-                                        variant="outline"
-                                        bg={'white'}
-                                        focusBorderColor={'black'}
-                                        mb={1}
-                                        maxW={250}
-                                        minLength={6}
-                                        value={password}
-                                        onChange={(e) => {
-                                            setPassword(e.target.value)
-                                        }} id={'password'}>
-
-                            </InputField>
-                        </InputGroup>
-                        <Link as={'u'} textAlign={'right'} ml={'60px'} fontWeight={'bold'} href={'reset-password'}>Wachtwoord
-                            vergeten?</Link>
-                    </ModalBody>
-                    <ModalFooter height={'200px'} mb={'30px'}>
-                        <Stack>
-                            <Button bg={"#FFCA48"} borderRadius={30} w='250px' h={'50'}
-                                    type={'submit'}
-                                    onClick={() => login(email, password)}>
-                                Login
-                            </Button>
-                            <Flex align="center">
-                                <Divider/>
-                                <Text padding="2" color={'white'} ml={'20px'} mr={'20px'}>Of</Text>
-                                <Divider/>
-                            </Flex>
-                            <GoogleBtn bg={'white'} borderRadius={30} w='250px' h={'50'}>Login met Google</GoogleBtn>
-                        </Stack>
-                    </ModalFooter>
-                </ModalContent>
-            </Modal>
-        </Flex>
-
-            <HeroSection/>
-=======
-           <LoginModal isOpen={isOpen} onClose={onClose} closeOnEsc={true} closeOnOverlayClick={true} onclosecomplete={clearCredentials}/>
-        </Flex>
-
->>>>>>> 9dafa381de851d791bc44627e7f428528f0d7674
-        <CustomFooter/>
+            <CustomFooter/>
     </>
     )
 }

@@ -5,11 +5,7 @@ import { Flex, Text, Image, Box } from "@chakra-ui/react";
 import registerPageTutor from "../../public/data/registerPageTutor.json";
 
 // component imports
-<<<<<<< HEAD
-import RegisterFormTutor from "../components/RegisterFormtutor";
-=======
 import { RegisterFormTutor } from "../components/RegisterFormtutor";
->>>>>>> 9dafa381de851d791bc44627e7f428528f0d7674
 
 interface PageProps {
   title?: String;
@@ -18,42 +14,42 @@ interface PageProps {
 
 export default function Register({ title, description }: PageProps) {
   return (
-    <Flex
-      minH="100vh"
-      backgroundImage="url('/images/bg-edugram.png')"
-      backgroundRepeat="no-repeat"
-      backgroundSize="center"
-    >
-      <Flex flexDir="column">
-        <Box maxW="200px" ml={8} mt="5.5rem">
-          <Image src="/images/edugram-logo.png" alt="logo of Edugram" />
-        </Box>
-        <Flex
-          justifyContent="flex-start"
-          alignItems={{ sm: "center", lg: "flex-start" }}
-          ml={{ md: 0, lg: 8 }}
-          mt="150px"
-          flexDir={{ sm: "column", md: "column", lg: "row" }}
-        >
+      <Flex
+          minH="100vh"
+          backgroundImage="url('/images/bg-edugram.png')"
+          backgroundRepeat="no-repeat"
+          backgroundSize="center"
+      >
+        <Flex flexDir="column">
+          <Box maxW="200px" ml={8} mt="5.5rem">
+            <Image src="/images/edugram-logo.png" alt="logo of Edugram" />
+          </Box>
           <Flex
-            flexDir="column"
-            maxW={{ sm: "90%", md: "50%" }}
-            m={{ sm: "30px", lg: "0px" }}
-            mr={{ lg: "10px", xl: "100px" }}
+              justifyContent="flex-start"
+              alignItems={{ sm: "center", lg: "flex-start" }}
+              ml={{ md: 0, lg: 8 }}
+              mt="150px"
+              flexDir={{ sm: "column", md: "column", lg: "row" }}
           >
-            <Flex>{!!title && <Text as="h1">{title}</Text>}</Flex>
-            <Flex mt="3rem">
-              {!!description && (
-                <Text mt={2} maxW="50%">
-                  {description}
-                </Text>
-              )}
+            <Flex
+                flexDir="column"
+                maxW={{ sm: "90%", md: "50%" }}
+                m={{ sm: "30px", lg: "0px" }}
+                mr={{ lg: "10px", xl: "100px" }}
+            >
+              <Flex>{!!title && <Text as="h1">{title}</Text>}</Flex>
+              <Flex mt="3rem">
+                {!!description && (
+                    <Text mt={2} maxW="50%">
+                      {description}
+                    </Text>
+                )}
+              </Flex>
             </Flex>
+            <RegisterFormTutor />
           </Flex>
-          <RegisterFormTutor />
         </Flex>
       </Flex>
-    </Flex>
   );
 }
 

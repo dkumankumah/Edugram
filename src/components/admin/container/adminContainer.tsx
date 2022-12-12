@@ -1,12 +1,7 @@
 import {Box, Drawer, DrawerContent, useColorModeValue, useDisclosure} from "@chakra-ui/react";
 import React, {ReactNode} from "react";
-<<<<<<< HEAD
-import Navbar from "../navigation/navbar";
-import SideBar from "../navigation/sidebar";
-=======
 import Navbar from "../navbar/navbar";
 import SideBar from "../navbar/sidebar";
->>>>>>> 9dafa381de851d791bc44627e7f428528f0d7674
 
 
 const AdminContainer = ({children}: { children: ReactNode }) => {

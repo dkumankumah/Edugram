@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 import React, {useEffect, useState} from "react";
 import AdminContainer from "../components/admin/container/adminContainer";
 import {Card, CardBody, Text} from "@chakra-ui/react";
@@ -50,7 +49,7 @@ const Dashboard = () => {
     // }
 
     useEffect(() => {
-        let ticketAmountOnADay : string[]
+        let ticketAmountOnADay: string[]
         let dateOfCreatedTickets: any[] = [];
         let amountOfTickets;
         const getTickets = async () => {
@@ -171,46 +170,12 @@ const Dashboard = () => {
         ],
     };
 
-    // const options2 = {
-    //     indexAxis: 'y' as const,
-    //     elements: {
-    //         bar: {
-    //             borderWidth: 2,
-    //         },
-    //     },
-    //     responsive: true,
-    //     plugins: {
-    //         legend: {
-    //             position: 'right' as const,
-    //         },
-    //         title: {
-    //             display: true,
-    //             text: 'Open vs. Pending vs. Closed Tickets',
-    //         },
-    //     },
-    // };
-
-    // const data2 = {
-    //     labels,
-    //     datasets: [
-    //         {
-    //             label: 'Dataset 1',
-    //             data: [0, 10, 5, 2, 20, 30, 45],
-    //             borderColor: 'rgb(255, 99, 132)',
-    //
-    //             backgroundColor: 'rgba(255, 99, 132, 0.5)',
-    //         },
-    //     ],
-    // };
-
     return (
         <AdminContainer>
             <h1>Dashboard is here Page</h1>
-            {/*<h1 style={{ fontSize: "5rem" }}>Daily Tickets</h1>*/}
             <Card
                 maxW='md'
                 maxH="md"
-                // key={tutor._id}
                 cursor='pointer'
                 bg="#FFFFFF"
                 borderRadius='10'>
@@ -219,35 +184,14 @@ const Dashboard = () => {
                     <Bar
                         options={options1}
                         data={data}
-                        // data={this.state.data}
                     />
                 </CardBody>
             </Card>
 
-            {/*/!*<Card maxW='sm'*!/*/}
-            {/*/!*      maxH="md"*!/*/}
-            {/*/!*    // key={tutor._id}*!/*/}
-            {/*/!*      cursor='pointer'*!/*/}
-            {/*/!*      bg="#FFFFFF"*!/*/}
-            {/*/!*      borderRadius='20'>*!/*/}
-            {/*/!*    <CardBody>*!/*/}
-            {/*/!*        <Text as='b'>Tickets by Status</Text>*!/*/}
 
-            {/*/!*        <Bar options={options2} data={data2}/>*!/*/}
-            {/*/!*    </CardBody>*!/*/}
-            {/*/!*</Card>*!/*/}
-
-=======
-import React from "react";
-import AdminContainer from "../components/admin/container/adminContainer";
-
-
-const Dashboard = () => {
-    return (
-        <AdminContainer>
-            <h1>Dashboard is here Page</h1>
->>>>>>> 9dafa381de851d791bc44627e7f428528f0d7674
         </AdminContainer>
     )
+
+
 }
 export default Dashboard
