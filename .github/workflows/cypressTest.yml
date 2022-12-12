@@ -16,4 +16,4 @@ jobs:
         with:
           server: yarn node-server
           build: yarn build
-          start: yarn start
+          start: yarn cypress run
