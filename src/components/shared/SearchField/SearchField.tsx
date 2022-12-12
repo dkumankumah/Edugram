@@ -25,7 +25,7 @@ export function SearchField({ data, placeholder, label, id, ...props }: Componen
         router.push({
             pathname: `/search/${data}`
         })
-    };
+    }
 
     return (
     <InputGroup maxW={{sm: "260px", md:"290px"}}>
