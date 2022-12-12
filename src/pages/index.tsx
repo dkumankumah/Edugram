@@ -3,6 +3,7 @@
  @author @Danny Nansink, 500821004
  **/
 import {
+<<<<<<< HEAD
     Alert,
     AlertDescription,
     AlertIcon,
@@ -26,13 +27,40 @@ import {
 } from '@chakra-ui/react'
 import React, {useState} from "react";
 import {useRouter} from "next/router";
+=======
+    Box,
+    chakra,
+    Container,
+    SimpleGrid,
+    VisuallyHidden,
+    IconButton,
+    useColorModeValue,
+    Button, Divider,
+    Flex,
+    Heading,
+    Link,
+    Modal, ModalBody,
+    ModalCloseButton, ModalContent, ModalFooter,
+    ModalHeader,
+    ModalOverlay, Stack, Text, Image, FormHelperText, FormControl, FormErrorMessage,
+    useDisclosure, VStack, InputRightElement, InputGroup, Alert, AlertDescription, AlertTitle, AlertIcon,
+} from '@chakra-ui/react'
+import React, {useState} from "react";
+import {Router, useRouter} from "next/router";
+>>>>>>> 9dafa381de851d791bc44627e7f428528f0d7674
 
 // component imports
 import {InputField} from "../components/shared/InputField/InputField";
 import {GoogleBtn} from "../components/shared/GoogleBtn";
+<<<<<<< HEAD
 import CustomFooter from "../components/Footer";
 import HeroSection from "../components/heroSection";
 
+=======
+import Footer from "../components/Footer";
+import CustomFooter from "../components/Footer";
+import {LoginModal} from "../components/shared/LoginModal/LoginModal"
+>>>>>>> 9dafa381de851d791bc44627e7f428528f0d7674
 
 const Home = () => {
     const {isOpen, onOpen, onClose} = useDisclosure();
@@ -44,6 +72,7 @@ const Home = () => {
     const handleShowPassword = () => setShow(!show)
     const router = useRouter();
 
+<<<<<<< HEAD
     function saveToken(token: string) {
         localStorage.setItem('token', token)
     }
@@ -82,6 +111,9 @@ const Home = () => {
                 console.log(err)
             });
     }
+=======
+
+>>>>>>> 9dafa381de851d791bc44627e7f428528f0d7674
 
     function clearCredentials() {
         setEmail('')
@@ -96,6 +128,7 @@ const Home = () => {
             <Link bg={"lightblue"} p={2} maxW='300' borderRadius={20} textAlign='center' href='/example'>Go to the
                 example page</Link>
             <Button bg={"#FFCA48"} maxW={'150'} borderRadius={20} alignSelf='end' onClick={onOpen}> Login </Button>
+<<<<<<< HEAD
             <Modal isOpen={isOpen} onClose={onClose} closeOnEsc={true} closeOnOverlayClick={true}
                    onCloseComplete={clearCredentials}>
                 <ModalOverlay backdropFilter='blur(5px)' bg='blackAlpha.300'
@@ -174,6 +207,11 @@ const Home = () => {
         </Flex>
 
             <HeroSection/>
+=======
+           <LoginModal isOpen={isOpen} onClose={onClose} closeOnEsc={true} closeOnOverlayClick={true} onclosecomplete={clearCredentials}/>
+        </Flex>
+
+>>>>>>> 9dafa381de851d791bc44627e7f428528f0d7674
         <CustomFooter/>
     </>
     )

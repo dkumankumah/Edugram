@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 import React, {useEffect, useState} from "react";
 import AdminContainer from "../components/admin/container/adminContainer";
 import {Card, CardBody, Text} from "@chakra-ui/react";
@@ -236,6 +237,16 @@ const Dashboard = () => {
             {/*/!*    </CardBody>*!/*/}
             {/*/!*</Card>*!/*/}
 
+=======
+import React from "react";
+import AdminContainer from "../components/admin/container/adminContainer";
+
+
+const Dashboard = () => {
+    return (
+        <AdminContainer>
+            <h1>Dashboard is here Page</h1>
+>>>>>>> 9dafa381de851d791bc44627e7f428528f0d7674
         </AdminContainer>
     )
 }

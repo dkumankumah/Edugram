@@ -40,7 +40,10 @@
     "callsites": "^3.1.0",
     "caniuse-lite": "^1.0.30001431",
     "chalk": "^4.1.2",
+<<<<<<< HEAD
     "chart.js": "^4.0.1",
+=======
+>>>>>>> 9dafa381de851d791bc44627e7f428528f0d7674
     "client-only": "^0.0.1",
     "color-convert": "^2.0.1",
     "color-name": "^1.1.4",
@@ -98,7 +101,10 @@
     "esutils": "^2.0.3",
     "etag": "^1.8.1",
     "express": "^4.18.2",
+<<<<<<< HEAD
     "express-healthcheck": "^0.1.0",
+=======
+>>>>>>> 9dafa381de851d791bc44627e7f428528f0d7674
     "fast-deep-equal": "^3.1.3",
     "fast-glob": "^3.2.12",
     "fast-json-stable-stringify": "^2.1.0",
@@ -110,6 +116,10 @@
     "find-config": "^1.0.0",
     "find-root": "^1.1.0",
     "find-up": "^5.0.0",
+<<<<<<< HEAD
+=======
+    "firebase-tools": "^11.17.0",
+>>>>>>> 9dafa381de851d791bc44627e7f428528f0d7674
     "flat-cache": "^3.0.4",
     "flatted": "^3.2.7",
     "focus-lock": "^0.11.3",
@@ -195,14 +205,20 @@
     "mime-types": "^2.1.35",
     "minimatch": "^3.1.2",
     "minimist": "^1.2.7",
+<<<<<<< HEAD
     "mongodb": "^4.12.1",
+=======
+>>>>>>> 9dafa381de851d791bc44627e7f428528f0d7674
     "mongoose": "^6.7.4",
     "ms": "^2.1.2",
     "nanoid": "^3.3.4",
     "natural-compare": "^1.4.0",
     "negotiator": "^0.6.3",
     "next": "^13.0.3",
+<<<<<<< HEAD
     "nodemon": "^2.0.20",
+=======
+>>>>>>> 9dafa381de851d791bc44627e7f428528f0d7674
     "object-assign": "^4.1.1",
     "object-inspect": "^1.12.2",
     "object-keys": "^1.1.1",
@@ -239,7 +255,10 @@
     "range-parser": "^1.2.1",
     "raw-body": "^2.5.1",
     "react": "^18.2.0",
+<<<<<<< HEAD
     "react-chartjs-2": "^5.0.1",
+=======
+>>>>>>> 9dafa381de851d791bc44627e7f428528f0d7674
     "react-clientside-effect": "^1.2.6",
     "react-dom": "^18.2.0",
     "react-fast-compare": "^3.2.0",
@@ -251,7 +270,10 @@
     "react-router": "^6.4.3",
     "react-router-dom": "^6.4.3",
     "react-style-singleton": "^2.2.1",
+<<<<<<< HEAD
     "realm": "^11.3.1",
+=======
+>>>>>>> 9dafa381de851d791bc44627e7f428528f0d7674
     "regenerator-runtime": "^0.13.10",
     "regexp.prototype.flags": "^1.4.3",
     "regexpp": "^3.2.0",

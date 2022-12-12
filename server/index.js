@@ -15,6 +15,11 @@ const bodyParser = require('body-parser')
 const Student = require("./models/Student");
 const Tutor = require("./models/Tutor");
 const Admin = require("./models/Admin");
+<<<<<<< HEAD
+=======
+const bcrypt = require('bcrypt')
+
+>>>>>>> 9dafa381de851d791bc44627e7f428528f0d7674
 /**
  * URI of the database, The username and password are in the .env file.
  */
@@ -38,12 +43,15 @@ app.get('/', (req, res) => {
     res.send('we are on home')
 })
 
+<<<<<<< HEAD
 // Returning response with 404 when incorrect url is requested
 app.use(function(req, res) {
   res.status(404).send({ error: { errors: [ { domain: 'global', reason: 'notFound', message: 'Not Found',
         description: 'Couldn\'t find the requested resource \'' + req.originalUrl + '\'' } ], code: 404, message: 'Not Found' } })
 });
 
+=======
+>>>>>>> 9dafa381de851d791bc44627e7f428528f0d7674
 
 app.post('/login', (req, res, next) => {
   const email = req.body.email;
@@ -82,6 +90,7 @@ const createToken = (firstName, lastName, role) => {
 }
 
 const checkPassword = (data, password, res) => {
+<<<<<<< HEAD
   console.log (data[0].role)
   data[0].password === password ? res.status(200).send({
     token: createToken(data[0].firstName, data[0].lastName, data[0].role),
@@ -97,9 +106,22 @@ const checkIfEmailExists = (data, email) => {
     message: 'Email exists, continue resetting'
   }) : res.status(400).send({
     error: 'Could not find email!'
+=======
+  bcrypt.compare(password, data[0].password).then(result => {
+    result ? res.status(200).send({
+      token: createToken(data[0].firstName, data[0].lastName, data[0].role),
+      message: 'succesfully logged in'
+    }) : res.status(400).send({
+      error: 'Invalid credentials'
+    })
+>>>>>>> 9dafa381de851d791bc44627e7f428528f0d7674
   })
 }
 
 app.listen(8000, () => {
+<<<<<<< HEAD
   console.log("Server listening on port 8000");
+=======
+  console.log("Server started on port 8000");
+>>>>>>> 9dafa381de851d791bc44627e7f428528f0d7674
 });

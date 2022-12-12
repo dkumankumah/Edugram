@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 import React, {useEffect} from "react";
 import AdminContainer from "../components/admin/container/adminContainer";
 import {async} from "rxjs";
@@ -19,6 +20,13 @@ const Tickets = () => {
 //     }, []);
 
 
+=======
+import React from "react";
+import AdminContainer from "../components/admin/container/adminContainer";
+
+
+const Tickets = () => {
+>>>>>>> 9dafa381de851d791bc44627e7f428528f0d7674
     return (
         <AdminContainer>
             <h1>Tickets is here Page</h1>
@@ -27,4 +35,8 @@ const Tickets = () => {
 }
 
 
+<<<<<<< HEAD
+=======
+
+>>>>>>> 9dafa381de851d791bc44627e7f428528f0d7674
 export default Tickets

@@ -34,7 +34,11 @@ export async function getStaticProps () {
             tutors
         },
     };
+<<<<<<< HEAD
 }
+=======
+};
+>>>>>>> 9dafa381de851d791bc44627e7f428528f0d7674
 
 function RadioCard(props: any) {
     const { getInputProps, getCheckboxProps } = useRadio(props)

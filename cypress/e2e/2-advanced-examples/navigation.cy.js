@@ -3,7 +3,11 @@
 context('Navigation', () => {
   beforeEach(() => {
     cy.visit('https://example.cypress.io')
+<<<<<<< HEAD
     cy.get('.navigation-nav').contains('Commands').click()
+=======
+    cy.get('.navbar-nav').contains('Commands').click()
+>>>>>>> 9dafa381de851d791bc44627e7f428528f0d7674
     cy.get('.dropdown-menu').contains('Navigation').click()
   })
 

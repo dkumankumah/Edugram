@@ -11,8 +11,13 @@ interface LinkItemProps {
 }
 
 const LinkItems: Array<LinkItemProps> = [
+<<<<<<< HEAD
     {title: 'About Us', path: '/about'},
     {title: 'Contact Us', path: '/contact'},
+=======
+    {title: 'About Us', path: '/about-us'},
+    {title: 'Contact Us', path: '/contact-us'},
+>>>>>>> 9dafa381de851d791bc44627e7f428528f0d7674
     {title: 'Pricing', path: '/pricing'},
     {title: 'Testimonials', path: '/testimonials'},
     {title: 'Blogs', path: '/blogs'},
