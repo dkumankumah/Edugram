@@ -7,8 +7,6 @@ N
 src/components/edugramLogo.tsx,8\6\862857515ed132e23433f87e7715ec1c2a35adf2
 E
 src/pages/example.tsx,6\8\6804eeb546396b4291858751b779accfcdb852f8
-B
-src/pages/_app.tsx,2\e\2eefa41a18ed6ea3f58b3748f9e5559a28e77646
 C
 src/pages/blogs.tsx,7\c\7c41aba34d682c5f04ad416b5cadf88cd2d8af40
 `
@@ -17,8 +15,6 @@ C
 +src/components/admin/navigation/navItem.tsx,7\0\70d89485576643cac37214334e6ce6307a663449
 [
 +src/components/admin/navigation/sidebar.tsx,e\f\ef48951bf9356c7f8368dc22b559c43f39824b1a
-a
-1src/components/admin/container/adminContainer.tsx,c\4\c401536f62bd777c1db533279257c9b83f585245
 Z
 *src/components/admin/navigation/navbar.tsx,2\b\2baea83e8cdbdaa309a5a9f9dc91df91ab2332e4
 N
