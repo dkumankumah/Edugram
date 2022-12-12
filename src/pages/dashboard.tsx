@@ -1,4 +1,4 @@
-import React, {useEffect} from "react";
+import React, {useEffect, useState} from "react";
 import AdminContainer from "../components/admin/container/adminContainer";
 import {Card, CardBody, Text} from "@chakra-ui/react";
 import Chart from "chart.js/auto";
@@ -8,18 +8,109 @@ import {CategoryScale} from 'chart.js';
 Chart.register(CategoryScale);
 
 const Dashboard = () => {
+    const baseUrl = "http://localhost:8001/tickets"
+    // const [data, setData] = useState(null);
+    const [chart, setChart] = useState([])
+    // const [chart, setChart] = useState({})
 
-//     useEffect(() => {
-//         fetch('https://localhost:3000/tickets')
-//             .then(response => response.json())
-//             // .then(data => setTotalReactPackages(data.total))
-//             .catch(error => {
-//                 this.setState({errorMessage: error.toString()});
-//                 console.error('There was an error!', error);
-//             });
+    // const getTickets =async () => {
+    //     await fetch(
+    //         baseUrl, {
+    //             method: 'GET',
+    //             headers: {
+    //                 'Content-Type': 'application/json',
+    //                 'Access-Control-Allow-Origin': 'http://localhost:8001',
+    //             },
+    //         }
+    //     ).then((response) => {
+    //         let labels = [];
+    //         let data = [];
+    //         response.json().then((json) => {
+    //             console.log('check check', json)
+    //             setChart(json.data)
+    //         })
+    //     }).catch(err => {
+    //         console.log(err)
+    //     })
+    //
+    // }
+    // useEffect(() => {
+    //     // Make a GET request to the Node.js server to fetch the data
+    //     fetch(baseUrl)
+    //         .then(response => response.json())
+    //         .then(data => {
+    //             setData(data);
+    //             console.log(data)
+    //         });
+    // }, []);
+    //
+    // if (!data) {
+    //     return <p>Loading data...</p>;
+    // }
+
+    useEffect(() => {
+        let ticketAmountOnADay : string[]
+        let dateOfCreatedTickets: any[] = [];
+        let amountOfTickets;
+        const getTickets = async () => {
+            await fetch(
+                baseUrl, {
+                    method: 'GET',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Access-Control-Allow-Origin': 'http://localhost:8001',
+                    },
+                }
+            )
+                .then((response) => response.json())
+                .then((data) => {
+                    data.forEach((obj: any) => {
+                        console.log('test: ', new Date(obj.dateCreated).toLocaleDateString('en-us', {
+                            month: "short",
+                            day: "numeric"
+                        }))
+                        //Add date to an Array of
+                        //Check if there are similar dates, sum to the date that is already in the Array
+                    })
+
+                    // console.log('test: ', new Date(obj.dateCreated)))
+//                     for ( let dataObj of data) {
+//                         // confirmedCases.push(parseInt(dataObj.Cases));
 //
-// // empty dependency array means this effect will only run once (like componentDidMount in classes)
-//     }, []);
+//                         // dateOfCases.push(tempDate.getUTCDate());
+// //in order to get better visualization of the chart,
+//                         //the getUTCDate was used to reduce the number of info
+//                         //shown under the chart.
+//                         let dateCreated = new Date (dataObj.dateCreated);
+//                         dateOfCreatedTickets.push(dateCreated.getUTCDate());
+//                         console.log('Chart: ',dateCreated);
+//                     }
+                    setChart(data)
+                });
+            // response.json().then((json) => {
+            //     // console.log('check check', json)
+            //     setChart(json)
+            //     // console.log('chart 1: ',chart)
+            // })
+            // }).catch(err => {
+            //     console.log(err)
+            // })
+        };
+        getTickets();
+    }, []);
+
+
+    const formatDate = (date: Date) => {
+        return [
+            (date.getDate()),
+            (date.getMonth() + 1),
+            date.getFullYear(),
+        ].join('/');
+    }
+    // if(!Data)
+    // {
+    //     return <Loading/>;
+    // }
 
 
     const options1 = {
@@ -37,13 +128,14 @@ const Dashboard = () => {
         },
         scales: {
             x: {
-
                 grid: {
                     display: false,
                     drawBorder: false, // <-- this removes y-axis line
                 }
             },
             y: {
+
+                // type: 'realtime',
                 display: false,
                 ticks: {
                     display: false
@@ -56,13 +148,19 @@ const Dashboard = () => {
         }
     };
 
+    // console.log("chart is..: ", chart.map(obj => obj));
+    // console.log("chart is..: ", chart);
+    // console.log("chart is: ", chart.map((chartObject, index) => ());
     const labels = ["January", "February", "March", "April", "May", "June", "July"];
+
     const data = {
         labels,
+        // labels : chart.map(obj=>()),
         datasets: [
             {
                 label: 'Dataset 2',
                 data: [0, 10, 20, 30, 93, 60, 80, 110, 65],
+                // data: [0, 10, 20, 30, 93, 60, 80, 110, 65],
                 backgroundColor: '#4EA4B1',
                 borderRadius: 10,
                 barThickness: 30,
@@ -120,22 +218,23 @@ const Dashboard = () => {
                     <Bar
                         options={options1}
                         data={data}
+                        // data={this.state.data}
                     />
                 </CardBody>
             </Card>
 
-            {/*<Card maxW='sm'*/}
-            {/*      maxH="md"*/}
-            {/*    // key={tutor._id}*/}
-            {/*      cursor='pointer'*/}
-            {/*      bg="#FFFFFF"*/}
-            {/*      borderRadius='20'>*/}
-            {/*    <CardBody>*/}
-            {/*        <Text as='b'>Tickets by Status</Text>*/}
+            {/*/!*<Card maxW='sm'*!/*/}
+            {/*/!*      maxH="md"*!/*/}
+            {/*/!*    // key={tutor._id}*!/*/}
+            {/*/!*      cursor='pointer'*!/*/}
+            {/*/!*      bg="#FFFFFF"*!/*/}
+            {/*/!*      borderRadius='20'>*!/*/}
+            {/*/!*    <CardBody>*!/*/}
+            {/*/!*        <Text as='b'>Tickets by Status</Text>*!/*/}
 
-            {/*        <Bar options={options2} data={data2}/>*/}
-            {/*    </CardBody>*/}
-            {/*</Card>*/}
+            {/*/!*        <Bar options={options2} data={data2}/>*!/*/}
+            {/*/!*    </CardBody>*!/*/}
+            {/*/!*</Card>*!/*/}
 
         </AdminContainer>
     )

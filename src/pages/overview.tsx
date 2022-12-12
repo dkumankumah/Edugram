@@ -34,7 +34,7 @@ export async function getStaticProps () {
             tutors
         },
     };
-};
+}
 
 function RadioCard(props: any) {
     const { getInputProps, getCheckboxProps } = useRadio(props)

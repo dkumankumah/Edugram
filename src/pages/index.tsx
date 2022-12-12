@@ -48,6 +48,8 @@ const Home = () => {
         localStorage.setItem('token', token)
     }
 
+    console.log('test')
+
     function login(email: string, password: string) {
         if (error) {
             setError('')

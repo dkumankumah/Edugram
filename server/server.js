@@ -20,6 +20,7 @@ mongoose.connect(uri, { useNewUrlParser: true, useUnifiedTopology: true})
 
 /* Configure app to use bodyParser()
    this will let us get the data from a POST */
+app.use(cors());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 
