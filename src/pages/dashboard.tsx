@@ -49,9 +49,9 @@ const Dashboard = () => {
     // }
 
     useEffect(() => {
-        let ticketAmountOnADay: string[]
-        let dateOfCreatedTickets: any[] = [];
-        let amountOfTickets;
+        let myMap = new Map();
+        let ticket: string;
+        const elementCounts: any = {};
         const getTickets = async () => {
             await fetch(
                 baseUrl, {
@@ -64,37 +64,43 @@ const Dashboard = () => {
             )
                 .then((response) => response.json())
                 .then((data) => {
-                    data.forEach((obj: any) => {
-                        console.log('test: ', new Date(obj.dateCreated).toLocaleDateString('en-us', {
+
+                    // data.map((obj: any) => {
+                    //     console.log('test: ', ticket = new Date(obj.dateCreated).toLocaleDateString('en-us', {
+                    //         month: "short",
+                    //         day: "numeric"
+                    //     }))
+                    //     elementCounts[ticket] = (elementCounts[ticket] || 0) + 1;
+                    //     myMap.set(ticket, myMap.get(ticket) + 1 || 1);
+                    //
+                    //     //Add date to an Array of
+                    //     //Check if there are similar dates, sum to the date that is already in the Array
+                    // })
+                    data.sort((a: any, b: any) => {
+                        const dateA = new Date(a.dateCreated);
+                        const dateB = new Date(b.dateCreated);
+                        if (dateA < dateB) {
+                            return -1;
+                        }
+                        if (dateA > dateB) {
+                            return 1;
+                        }
+                        return 0;
+                    }).map((obj: any) => {
+
+                        console.log('test: ', ticket = new Date(obj.dateCreated).toLocaleDateString('en-us', {
                             month: "short",
                             day: "numeric"
                         }))
+                        elementCounts[ticket] = (elementCounts[ticket] || 0) + 1;
+                        myMap.set(ticket, myMap.get(ticket) + 1 || 1);
+
                         //Add date to an Array of
                         //Check if there are similar dates, sum to the date that is already in the Array
                     })
-
-                    // console.log('test: ', new Date(obj.dateCreated)))
-//                     for ( let dataObj of data) {
-//                         // confirmedCases.push(parseInt(dataObj.Cases));
-//
-//                         // dateOfCases.push(tempDate.getUTCDate());
-// //in order to get better visualization of the chart,
-//                         //the getUTCDate was used to reduce the number of info
-//                         //shown under the chart.
-//                         let dateCreated = new Date (dataObj.dateCreated);
-//                         dateOfCreatedTickets.push(dateCreated.getUTCDate());
-//                         console.log('Chart: ',dateCreated);
-//                     }
-                    setChart(data)
+                    console.log('Data: ', data);
+                    console.log('MAP: ', myMap);
                 });
-            // response.json().then((json) => {
-            //     // console.log('check check', json)
-            //     setChart(json)
-            //     // console.log('chart 1: ',chart)
-            // })
-            // }).catch(err => {
-            //     console.log(err)
-            // })
         };
         getTickets();
     }, []);
@@ -107,10 +113,6 @@ const Dashboard = () => {
             date.getFullYear(),
         ].join('/');
     }
-    // if(!Data)
-    // {
-    //     return <Loading/>;
-    // }
 
 
     const options1 = {
