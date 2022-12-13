@@ -9,8 +9,10 @@ Chart.register(CategoryScale);
 
 const Dashboard = () => {
     const baseUrl = "http://localhost:8001/tickets"
+
     // const [data, setData] = useState(null);
     const [chart, setChart] = useState([])
+    const [map, setMap] = useState(new Map());
     // const [chart, setChart] = useState({})
 
     // const getTickets =async () => {
@@ -87,32 +89,27 @@ const Dashboard = () => {
                         }
                         return 0;
                     }).map((obj: any) => {
-
                         console.log('test: ', ticket = new Date(obj.dateCreated).toLocaleDateString('en-us', {
                             month: "short",
                             day: "numeric"
                         }))
                         elementCounts[ticket] = (elementCounts[ticket] || 0) + 1;
                         myMap.set(ticket, myMap.get(ticket) + 1 || 1);
-
+                        setMap(myMap)
                         //Add date to an Array of
                         //Check if there are similar dates, sum to the date that is already in the Array
                     })
-                    console.log('Data: ', data);
-                    console.log('MAP: ', myMap);
+                    // console.log('Data: ', data);
+                    // console.log('MAP: ', myMap);
                 });
         };
         getTickets();
+
+        console.log('MAP: ', myMap);
     }, []);
 
 
-    const formatDate = (date: Date) => {
-        return [
-            (date.getDate()),
-            (date.getMonth() + 1),
-            date.getFullYear(),
-        ].join('/');
-    }
+
 
 
     const options1 = {
@@ -150,18 +147,21 @@ const Dashboard = () => {
         }
     };
 
-    // console.log("chart is..: ", chart.map(obj => obj));
+    // console.log("chart is..: ", myMap);
     // console.log("chart is..: ", chart);
     // console.log("chart is: ", chart.map((chartObject, index) => ());
-    const labels = ["January", "February", "March", "April", "May", "June", "July"];
+    // const labels = ["January", "February", "March", "April", "May", "June", "July"];
+    const labels = Array.from(map.keys());
 
+    console.log(labels)
     const data = {
         labels,
         // labels : chart.map(obj=>()),
         datasets: [
             {
                 label: 'Dataset 2',
-                data: [0, 10, 20, 30, 93, 60, 80, 110, 65],
+                // data: [0, 10, 20, 30, 93, 60, 80, 110, 65],
+                data: Array.from(map.values()),
                 // data: [0, 10, 20, 30, 93, 60, 80, 110, 65],
                 backgroundColor: '#4EA4B1',
                 borderRadius: 10,
