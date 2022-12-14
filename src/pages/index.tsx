@@ -2,39 +2,17 @@
  The landing and login page
  @author @Danny Nansink, 500821004
  **/
-import {
-    Alert,
-    AlertDescription,
-    AlertIcon,
-    Button,
-    Divider,
-    Flex,
-    Heading,
-    InputGroup,
-    InputRightElement,
-    Link,
-    Modal,
-    ModalBody,
-    ModalCloseButton,
-    ModalContent,
-    ModalFooter,
-    ModalHeader,
-    ModalOverlay,
-    Stack,
-    Text,
-    useDisclosure,
-} from '@chakra-ui/react'
+import {Button, Flex, Heading, Link, useDisclosure,} from '@chakra-ui/react'
 
 import React, {useState} from "react";
-import {Router, useRouter} from "next/router";
+import {useRouter} from "next/router";
 
 // component imports
-import {InputField} from "../components/shared/InputField/InputField";
-import {GoogleBtn} from "../components/shared/GoogleBtn";
 import HeroSection from "../components/heroSection";
 
 import CustomFooter from "../components/Footer";
-import {LoginModal} from "../components/shared/LoginModal/LoginModal"
+import {LoginModal} from "../components/shared/LoginModal/LoginModal";
+import Layout from "../components/frontpageLayout";
 
 const Home = () => {
     const {isOpen, onOpen, onClose} = useDisclosure();
@@ -101,7 +79,10 @@ const Home = () => {
                 <LoginModal isOpen={isOpen} onClose={onClose} closeOnEsc={true} closeOnOverlayClick={true} onclosecomplete={clearCredentials}/>
             </Flex>
 
-            <CustomFooter/>
+            <HeroSection/>
+            <Layout/>
+
+
     </>
     )
 }

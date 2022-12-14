@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import {
     Box,
     Button,
@@ -40,6 +40,12 @@ const CONFETTI_DARK = `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2
 const Contact = () => {
 
     const {hasCopied, onCopy} = useClipboard('example@example.com');
+    const [input, setInput] = useState('')
+    const handleInputChange = (e:any) => {
+        setInput(e.target.value);
+    }
+
+    const isError = input === ''
 
     return (
         <>
@@ -146,23 +152,21 @@ const Contact = () => {
                                     <VStack spacing={5}>
                                         <FormControl isRequired>
                                             <FormLabel>Name</FormLabel>
-
                                             <InputGroup>
-                                                <InputLeftElement/>
-                                                <BsPerson/>
+                                                <InputLeftElement><BsPerson/></InputLeftElement>
+
                                                 <Input type="text" name="name" placeholder="Your Name"/>
                                             </InputGroup>
                                         </FormControl>
-
                                         <FormControl isRequired>
                                             <FormLabel>Email</FormLabel>
-
                                             <InputGroup>
                                                 <InputLeftElement><MdOutlineEmail/></InputLeftElement>
                                                 <Input
                                                     type="email"
                                                     name="email"
                                                     placeholder="Your Email"
+                                                    onChange={handleInputChange}
                                                 />
                                             </InputGroup>
                                         </FormControl>
@@ -184,8 +188,7 @@ const Contact = () => {
                                             color="white"
                                             _hover={{
                                                 bg: 'blue.500',
-                                            }}
-                                            isFullWidth>
+                                            }}>
                                             Send Message
                                         </Button>
                                     </VStack>
