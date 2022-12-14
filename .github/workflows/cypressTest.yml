@@ -12,7 +12,7 @@ jobs:
       # and run all Cypress tests
 
       - name: Cypress.io
-        uses: cypress-io/github-action@v2
+        uses: cypress-io/github-action@v4.1.0
         with:
 #          server: yarn node-server
           build: yarn build
