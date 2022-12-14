@@ -6,8 +6,15 @@
     "email": "okechukwu.onwunli@hva.nl",
     "password": "123456",
     "__v": 0,
-    "role": "tutor"
+    "role": "tutor",
+    "course": [
+      {
+        "subject": "Programmeren",
+        "fee": 37
+      }
+    ]
   },
+
   {
     "_id": "2",
     "firstName": "Pieter",
@@ -15,7 +22,17 @@
     "email": "pieter.leek@hva.nl",
     "password": "123456",
     "__v": 0,
-    "role": "tutor"
+    "role": "tutor",
+    "course": [
+      {
+        "subject": "Programmeren",
+        "fee": 35
+      },
+      {
+        "subject": "Wiskunde",
+        "fee": 25
+      }
+    ]
   },
   {
     "_id": "3",
@@ -24,6 +41,12 @@
     "email": "raymon.bookelman@hva.nl",
     "password": "123456",
     "__v": 0,
-    "role": "tutor"
+    "role": "tutor",
+    "course": [
+      {
+        "subject": "Programmeren",
+        "fee": 25
+      }
+    ]
   }
 ]
