@@ -7,10 +7,27 @@ import Link from "next/link";
 // component imports
 import { SearchField } from "../SearchField";
 import { ProfileBtn } from "../../ProfileBtn";
+import {useState} from "react";
+import {useRouter} from "next/router";
 
 interface ComponentProps extends FlexProps {}
 
 export function Navbar({ ...props }: ComponentProps) {
+  const router = useRouter();
+
+  const [value, setValue] = useState('');
+  const handleChangeEvent = (event:any) => {
+    setValue(event.target.value);
+  };
+  const handleKeyDown = (event:any) => {
+    if (event.key === 'Enter') {
+      router.push({
+        pathname: `/search/${value.toLowerCase()}`
+      })
+    }
+
+  };
+
   return (
     <Flex bg="blueGreen" h="65px">
       <Grid w="100%" templateColumns={{ sm: "80% 20%", smx: "20% 70% 10%" }}>
@@ -29,7 +46,12 @@ export function Navbar({ ...props }: ComponentProps) {
         <GridItem w="100%">
           <Flex justify={{ sm: "center", md: "flex-end" }} mt={2}>
             <SearchField
-              label="SearchField, What do you want to learn?"
+                value={value}
+                data={value.toLowerCase()}
+                onChange={handleChangeEvent}
+                onKeyDown={handleKeyDown}
+                label="SearchField, What do you want to learn?"
+                id="searchfield"
               placeholder="What do you want to learn?"
             />
           </Flex>

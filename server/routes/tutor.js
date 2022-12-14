@@ -62,6 +62,18 @@ router.patch('/:tutorId', async (req, res) => {
 
 });
 
+//Retrieve tutors based on a specific subject
+router.get('/search/:subject', async (req, res) => {
+  try {
+      const query = {"course.subject": req.params.subject}
+      const tutors = await Tutor.find(query);
+      res.json(tutors);
+  }
+  catch (err) {
+    res.json({message: err})
+  }
+})
+
 //login request
 router.post('/tutor', async (req, res) => {
     const email = req.body.email;
