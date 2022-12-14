@@ -18,12 +18,8 @@ import {DashboardCard} from "../components/shared/DashboardCard";
 import {InputField} from "../components/shared/InputField/InputField";
 import {decodeJWT, getToken, isAuthenticated, isTutor} from "./api/api.storage";
 import {UserModel} from "../models/UserModel";
-import NotFoundPage from "./notFoundPage";
-import {router} from "next/client";
+import {TutorModel} from "../models/TutorModel";
 
-interface PageProps {
-    tutor: UserModel
-}
 
 export const Profile = () => {
     const [firstname, setFirstname] = useState('')
@@ -32,7 +28,7 @@ export const Profile = () => {
     const [phonenumber, setPhonenumber] = useState('')
     const [gender, setGender] = useState('')
     const [birthdate, setBirthdate] = useState('')
-    const [tutor, setTutor] = useState({} as UserModel)
+    const [tutor, setTutor] = useState({} as TutorModel)
 
     useEffect(() => {
         isAuthenticated() ? getTutor(decodeJWT().id) : console.log('redirect to login')
