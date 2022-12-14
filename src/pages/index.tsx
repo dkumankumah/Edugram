@@ -35,12 +35,6 @@ const Home = () => {
     const [email, setEmail] = useState('')
     const [password, setPassword] = useState('');
     const [error, setError] = useState('');
-    const [success, setSuccess] = useState('');
-    const [show, setShow] = React.useState(false)
-    const handleShowPassword = () => setShow(!show)
-    const router = useRouter();
-
-
 
     function clearCredentials() {
         setEmail('')

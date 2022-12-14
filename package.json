@@ -318,7 +318,6 @@
     "start": "next start",
     "lint": "next lint",
     "cypress:open": "cypress open"
-
   },
   "repository": {
     "type": "git",

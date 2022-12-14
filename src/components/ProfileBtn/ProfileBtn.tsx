@@ -12,6 +12,7 @@ import {
   MenuDivider,
   MenuButtonProps,
 } from "@chakra-ui/react";
+import {logout} from "../../pages/api/api.storage";
 
 interface ComponentProps extends MenuButtonProps {
   label: string;
@@ -33,6 +34,7 @@ export function ProfileBtn({name, label, id, ...props }: ComponentProps) {
         <MenuGroup title="Help">
           <MenuItem>Docs</MenuItem>
           <MenuItem>FAQ</MenuItem>
+          <MenuItem onClick={logout}>Log out</MenuItem>
         </MenuGroup>
       </MenuList>
     </Menu>

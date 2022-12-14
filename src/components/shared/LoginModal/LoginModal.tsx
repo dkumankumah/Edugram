@@ -60,7 +60,7 @@ export function LoginModal( {
                     //set token
                     setSuccess(data.message)
                     // addToken('haha')
-                    // localStorage.setItem('token', data.token)
+                    localStorage.setItem('token', data.token)
                     window.location.href = '/dashboard'
                 }
 

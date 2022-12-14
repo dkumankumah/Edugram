@@ -39,7 +39,7 @@ router.post('/', async (req, res) => {
 router.get('/:tutorId', async (req, res) => {
     try{
         const tutor = await Tutor.findById(req.params.tutorId);
-        res.json(tutor);
+        res.send(tutor);
     } catch (err) {
         res.json({message: err})  
     }

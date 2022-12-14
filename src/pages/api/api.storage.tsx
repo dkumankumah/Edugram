@@ -36,15 +36,15 @@ export function decodeJWT() {
 }
 
 export function isAdmin(): boolean {
-    let isAdmin = decodeJWT().user[0].role
+    let isAdmin = decodeJWT().role
     return isAdmin === 'admin'
 }
 export function isStudent(): boolean {
-    let isStudent = decodeJWT().user[0].role
+    let isStudent = decodeJWT().role
     return isStudent === 'student'
 }
 
 export function isTutor(): boolean {
-    let isTutor = decodeJWT().user[0].role
+    let isTutor = decodeJWT().role
     return isTutor === 'tutor'
 }
