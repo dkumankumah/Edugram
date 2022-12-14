@@ -9,46 +9,7 @@ Chart.register(CategoryScale);
 
 const Dashboard = () => {
     const baseUrl = "http://localhost:8001/tickets"
-
-    // const [data, setData] = useState(null);
-    const [chart, setChart] = useState([])
     const [map, setMap] = useState(new Map());
-    // const [chart, setChart] = useState({})
-
-    // const getTickets =async () => {
-    //     await fetch(
-    //         baseUrl, {
-    //             method: 'GET',
-    //             headers: {
-    //                 'Content-Type': 'application/json',
-    //                 'Access-Control-Allow-Origin': 'http://localhost:8001',
-    //             },
-    //         }
-    //     ).then((response) => {
-    //         let labels = [];
-    //         let data = [];
-    //         response.json().then((json) => {
-    //             console.log('check check', json)
-    //             setChart(json.data)
-    //         })
-    //     }).catch(err => {
-    //         console.log(err)
-    //     })
-    //
-    // }
-    // useEffect(() => {
-    //     // Make a GET request to the Node.js server to fetch the data
-    //     fetch(baseUrl)
-    //         .then(response => response.json())
-    //         .then(data => {
-    //             setData(data);
-    //             console.log(data)
-    //         });
-    // }, []);
-    //
-    // if (!data) {
-    //     return <p>Loading data...</p>;
-    // }
 
     useEffect(() => {
         let myMap = new Map();
@@ -90,6 +51,7 @@ const Dashboard = () => {
                         return 0;
                     }).map((obj: any) => {
                         console.log('test: ', ticket = new Date(obj.dateCreated).toLocaleDateString('en-us', {
+                            year: "numeric",
                             month: "short",
                             day: "numeric"
                         }))
@@ -99,13 +61,11 @@ const Dashboard = () => {
                         //Add date to an Array of
                         //Check if there are similar dates, sum to the date that is already in the Array
                     })
-                    // console.log('Data: ', data);
-                    // console.log('MAP: ', myMap);
                 });
         };
-        getTickets();
-
-        console.log('MAP: ', myMap);
+        getTickets().then(r => {
+            console.log('MAP: ', myMap);
+        });
     }, []);
 
 
@@ -147,13 +107,9 @@ const Dashboard = () => {
         }
     };
 
-    // console.log("chart is..: ", myMap);
-    // console.log("chart is..: ", chart);
-    // console.log("chart is: ", chart.map((chartObject, index) => ());
-    // const labels = ["January", "February", "March", "April", "May", "June", "July"];
+
     const labels = Array.from(map.keys());
 
-    console.log(labels)
     const data = {
         labels,
         // labels : chart.map(obj=>()),
