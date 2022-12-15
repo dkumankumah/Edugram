@@ -53,7 +53,7 @@ export default function ChatApp() {
                 <Flex flex={1} direction="column" pt={4} mx={5} overflowX="scroll" overflowY="scroll"
                       sx={{'::-webkit-scrollbar': {display: 'none'}}}>
                 </Flex>
-                {getMessages(chat)}
+                {getMessages(chat!)}
                 <Bottombar/>
             </Flex>
         </Flex>
