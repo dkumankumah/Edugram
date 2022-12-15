@@ -1,15 +1,15 @@
 /**
  * @author Bugra Karaaslan, 500830631, This is a register form.
  */
-import { Flex, Text } from "@chakra-ui/react";
+import {Flex, Text} from "@chakra-ui/react";
 import axios from "axios";
 
 // component imports
-import { InputField } from "../components/shared/InputField/InputField";
-import { SubmitButton } from "../components/shared/Buttons/SubmitButton";
-import { GoogleBtn } from "../components/shared/GoogleBtn";
-import { PasswordInput } from "../components/shared/PasswordInput";
-import React, { useState } from "react";
+import {InputField} from "../components/shared/InputField/InputField";
+import {SubmitButton} from "../components/shared/Buttons/SubmitButton";
+import {GoogleBtn} from "../components/shared/GoogleBtn";
+import {PasswordInput} from "../components/shared/PasswordInput";
+import React, {useState} from "react";
 
 export function RegisterFormTutor() {
 
