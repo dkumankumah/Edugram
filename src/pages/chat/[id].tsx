@@ -16,7 +16,7 @@ const getMessages = (chat) =>
         console.log("chat: " + chat);
         console.log("msg: " + msg.sender);
         return (
-            <Flex key={Math.random()} alignSelf={sender ? "flex-end" :  "flex-start"} bg={sender ? "green.100" : "blue.100"} w="fit-content" minWidth="100px" borderRadius="lg" p={3} m={1}>
+            <Flex alignSelf={sender ? "flex-end" :  "flex-start"} bg={sender ? "green.100" : "blue.100"} w="fit-content" minWidth="100px" borderRadius="lg" p={3} m={1}>
                 <Text>{msg.message}</Text>
             </Flex>
         )
