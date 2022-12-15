@@ -330,7 +330,6 @@
     "lint": "next lint",
     "cypress": "cypress run --config-file cypress.config.ts",
     "cypress:open": "cypress open"
-
   },
   "repository": {
     "type": "git",
