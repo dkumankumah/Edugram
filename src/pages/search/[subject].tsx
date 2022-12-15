@@ -85,7 +85,8 @@ export default function Overview ({ tutors, subject }: PageProps) {
                             })}
 
                         </HStack>
-                        <Text as = "h1"> {tutors.length} Tutors found for {subject}</Text>
+                        <Text as = "h1"
+                              data-cy="tutorheader"> {tutors.length} Tutors found for {subject}</Text>
                     </GridItem>
                     <GridItem  order={-3} >
                     </GridItem>
