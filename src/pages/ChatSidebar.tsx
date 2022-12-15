@@ -38,8 +38,10 @@ const socket = io.connect("ws://localhost:3001", { transports: ['websocket', 'po
 
 
 export default function ChatSidebar() {
-    let tempArray: ChatModel[] = [];
-    const [chatList, setChatlist] = useState();
+    const tempArray: ChatModel[] = [];
+    const temp: ChatModel[] = [];
+
+    const [chatList, setChatlist] = useState(temp);
     useEffect(() => {
         socket.on("user-chats", (data) => {
             data.forEach(function (value: ChatModel) {
@@ -56,7 +58,6 @@ export default function ChatSidebar() {
 
             });
             console.log("This is tempArray: " + tempArray)
-            // @ts-ignore
             setChatlist(tempArray);
         });
     }, [socket]);
