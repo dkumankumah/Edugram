@@ -38,14 +38,4 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
-<<<<<<< HEAD
-src/components/admin/navigation/navHoverBox.tsx
-src/components/admin/navigation/TestNavItem.tsx
-src/components/admin/navigation/test.tsx
-src/components/admin/navigation/testnav.tsx
-=======
-src/components/admin/navbar/navHoverBox.tsx
-src/components/admin/navbar/TestNavItem.tsx
-src/components/admin/navbar/test.tsx
-src/components/admin/navbar/testnav.tsx
->>>>>>> 9dafa381de851d791bc44627e7f428528f0d7674
+
