@@ -2549,7 +2549,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@chakra-ui/icon@npm:3.0.13, @chakra-ui/icon@npm:^3.0.13":
+"@chakra-ui/icon@npm:3.0.13":
   version: 3.0.13
   resolution: "@chakra-ui/icon@npm:3.0.13"
   dependencies:
@@ -2558,18 +2558,6 @@ __metadata:
     "@chakra-ui/system": ">=2.0.0"
     react: ">=18"
   checksum: 29bb5a0d037a754ea341887e3b1c0699c5168ed50f5a99bc85ce11ecb11990547a582637acf2520f9ea22c2c4c959e777312491f6864aff6dc45555438bc7d33
-  languageName: node
-  linkType: hard
-
-"@chakra-ui/icons@npm:^2.0.13":
-  version: 2.0.13
-  resolution: "@chakra-ui/icons@npm:2.0.13"
-  dependencies:
-    "@chakra-ui/icon": "npm:3.0.13"
-  peerDependencies:
-    "@chakra-ui/system": ">=2.0.0"
-    react: ">=18"
-  checksum: 91d346004c24533d4dde48f654cb40f4b2a65bd4084a537fe110949d554788b74c80ee3f362150a541cda64fc506d1e3f8d2a152b8c0e48880cfd988c643c522
   languageName: node
   linkType: hard
 
@@ -13763,8 +13751,6 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "theplatformers@workspace:."
   dependencies:
-    "@chakra-ui/icon": ^3.0.13
-    "@chakra-ui/icons": ^2.0.13
     "@chakra-ui/react": ^2.4.3
     "@emotion/react": ^11.10.5
     "@emotion/styled": ^11.10.5

@@ -28,8 +28,6 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
         [null, {\
           "packageLocation": "./",\
           "packageDependencies": [\
-            ["@chakra-ui/icon", "virtual:24551a958158d0b000bebf2745945911dbd5a8f334b4effe177700e649859ca6a1550b9b26be7d47a3f8e3eccb12721cc8a7704caeaf1e4234b31a676346861e#npm:3.0.13"],\
-            ["@chakra-ui/icons", "virtual:24551a958158d0b000bebf2745945911dbd5a8f334b4effe177700e649859ca6a1550b9b26be7d47a3f8e3eccb12721cc8a7704caeaf1e4234b31a676346861e#npm:2.0.13"],\
             ["@chakra-ui/react", "virtual:24551a958158d0b000bebf2745945911dbd5a8f334b4effe177700e649859ca6a1550b9b26be7d47a3f8e3eccb12721cc8a7704caeaf1e4234b31a676346861e#npm:2.4.3"],\
             ["@emotion/react", "virtual:24551a958158d0b000bebf2745945911dbd5a8f334b4effe177700e649859ca6a1550b9b26be7d47a3f8e3eccb12721cc8a7704caeaf1e4234b31a676346861e#npm:11.10.5"],\
             ["@emotion/styled", "virtual:24551a958158d0b000bebf2745945911dbd5a8f334b4effe177700e649859ca6a1550b9b26be7d47a3f8e3eccb12721cc8a7704caeaf1e4234b31a676346861e#npm:11.10.5"],\
@@ -4273,57 +4271,12 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
           ],\
           "linkType": "SOFT"\
         }],\
-        ["virtual:24551a958158d0b000bebf2745945911dbd5a8f334b4effe177700e649859ca6a1550b9b26be7d47a3f8e3eccb12721cc8a7704caeaf1e4234b31a676346861e#npm:3.0.13", {\
-          "packageLocation": "./.yarn/__virtual__/@chakra-ui-icon-virtual-4f550ea975/0/cache/@chakra-ui-icon-npm-3.0.13-de8701fd70-29bb5a0d03.zip/node_modules/@chakra-ui/icon/",\
-          "packageDependencies": [\
-            ["@chakra-ui/icon", "virtual:24551a958158d0b000bebf2745945911dbd5a8f334b4effe177700e649859ca6a1550b9b26be7d47a3f8e3eccb12721cc8a7704caeaf1e4234b31a676346861e#npm:3.0.13"],\
-            ["@chakra-ui/shared-utils", "npm:2.0.3"],\
-            ["@chakra-ui/system", null],\
-            ["@types/chakra-ui__system", null],\
-            ["@types/react", "npm:18.0.26"],\
-            ["react", "npm:18.2.0"]\
-          ],\
-          "packagePeers": [\
-            "@chakra-ui/system",\
-            "@types/chakra-ui__system",\
-            "@types/react",\
-            "react"\
-          ],\
-          "linkType": "HARD"\
-        }],\
         ["virtual:f5cbb7a9dac34cdf1392db066906e1527003484e79bef1475242c6c75b7d240e6ffde971bbde5f3a96752685f2d075f51d636f22fc4683205b82b956a2694c85#npm:3.0.13", {\
           "packageLocation": "./.yarn/__virtual__/@chakra-ui-icon-virtual-26ea54ea23/0/cache/@chakra-ui-icon-npm-3.0.13-de8701fd70-29bb5a0d03.zip/node_modules/@chakra-ui/icon/",\
           "packageDependencies": [\
             ["@chakra-ui/icon", "virtual:f5cbb7a9dac34cdf1392db066906e1527003484e79bef1475242c6c75b7d240e6ffde971bbde5f3a96752685f2d075f51d636f22fc4683205b82b956a2694c85#npm:3.0.13"],\
             ["@chakra-ui/shared-utils", "npm:2.0.3"],\
             ["@chakra-ui/system", "virtual:f5cbb7a9dac34cdf1392db066906e1527003484e79bef1475242c6c75b7d240e6ffde971bbde5f3a96752685f2d075f51d636f22fc4683205b82b956a2694c85#npm:2.3.4"],\
-            ["@types/chakra-ui__system", null],\
-            ["@types/react", "npm:18.0.26"],\
-            ["react", "npm:18.2.0"]\
-          ],\
-          "packagePeers": [\
-            "@chakra-ui/system",\
-            "@types/chakra-ui__system",\
-            "@types/react",\
-            "react"\
-          ],\
-          "linkType": "HARD"\
-        }]\
-      ]],\
-      ["@chakra-ui/icons", [\
-        ["npm:2.0.13", {\
-          "packageLocation": "./.yarn/cache/@chakra-ui-icons-npm-2.0.13-b94da368bd-91d346004c.zip/node_modules/@chakra-ui/icons/",\
-          "packageDependencies": [\
-            ["@chakra-ui/icons", "npm:2.0.13"]\
-          ],\
-          "linkType": "SOFT"\
-        }],\
-        ["virtual:24551a958158d0b000bebf2745945911dbd5a8f334b4effe177700e649859ca6a1550b9b26be7d47a3f8e3eccb12721cc8a7704caeaf1e4234b31a676346861e#npm:2.0.13", {\
-          "packageLocation": "./.yarn/__virtual__/@chakra-ui-icons-virtual-ca7f3b41f9/0/cache/@chakra-ui-icons-npm-2.0.13-b94da368bd-91d346004c.zip/node_modules/@chakra-ui/icons/",\
-          "packageDependencies": [\
-            ["@chakra-ui/icons", "virtual:24551a958158d0b000bebf2745945911dbd5a8f334b4effe177700e649859ca6a1550b9b26be7d47a3f8e3eccb12721cc8a7704caeaf1e4234b31a676346861e#npm:2.0.13"],\
-            ["@chakra-ui/icon", "virtual:24551a958158d0b000bebf2745945911dbd5a8f334b4effe177700e649859ca6a1550b9b26be7d47a3f8e3eccb12721cc8a7704caeaf1e4234b31a676346861e#npm:3.0.13"],\
-            ["@chakra-ui/system", null],\
             ["@types/chakra-ui__system", null],\
             ["@types/react", "npm:18.0.26"],\
             ["react", "npm:18.2.0"]\
@@ -18160,8 +18113,6 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
           "packageLocation": "./",\
           "packageDependencies": [\
             ["theplatformers", "workspace:."],\
-            ["@chakra-ui/icon", "virtual:24551a958158d0b000bebf2745945911dbd5a8f334b4effe177700e649859ca6a1550b9b26be7d47a3f8e3eccb12721cc8a7704caeaf1e4234b31a676346861e#npm:3.0.13"],\
-            ["@chakra-ui/icons", "virtual:24551a958158d0b000bebf2745945911dbd5a8f334b4effe177700e649859ca6a1550b9b26be7d47a3f8e3eccb12721cc8a7704caeaf1e4234b31a676346861e#npm:2.0.13"],\
             ["@chakra-ui/react", "virtual:24551a958158d0b000bebf2745945911dbd5a8f334b4effe177700e649859ca6a1550b9b26be7d47a3f8e3eccb12721cc8a7704caeaf1e4234b31a676346861e#npm:2.4.3"],\
             ["@emotion/react", "virtual:24551a958158d0b000bebf2745945911dbd5a8f334b4effe177700e649859ca6a1550b9b26be7d47a3f8e3eccb12721cc8a7704caeaf1e4234b31a676346861e#npm:11.10.5"],\
             ["@emotion/styled", "virtual:24551a958158d0b000bebf2745945911dbd5a8f334b4effe177700e649859ca6a1550b9b26be7d47a3f8e3eccb12721cc8a7704caeaf1e4234b31a676346861e#npm:11.10.5"],\
