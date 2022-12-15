@@ -1,8 +1,5 @@
 /// <reference types="cypress" />
-
 import {headers} from "next/headers";
-import {mount} from "cypress/react";
-import Overview from "../../src/pages/search/[subject]"
 
 describe("Testing overview page", () => {
     beforeEach(() => {
