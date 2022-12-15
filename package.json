@@ -4,6 +4,8 @@
   "description": "Tutor app",
   "main": "next.config.js",
   "dependencies": {
+    "@chakra-ui/icon": "^3.0.13",
+    "@chakra-ui/icons": "^2.0.13",
     "@chakra-ui/react": "^2.4.1",
     "@emotion/react": "^11.10.5",
     "@emotion/styled": "^11.10.5",
@@ -267,6 +269,8 @@
     "shebang-regex": "^3.0.0",
     "side-channel": "^1.0.4",
     "slash": "^3.0.0",
+    "socket.io": "^4.5.4",
+    "socket.io-client": "^4.5.4",
     "source-map": "^0.5.7",
     "source-map-js": "^1.0.2",
     "start-server-and-test": "^1.14.0",
