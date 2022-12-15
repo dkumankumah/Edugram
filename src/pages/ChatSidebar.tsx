@@ -5,7 +5,7 @@ import {ArrowLeftIcon} from "@chakra-ui/icons"
 import {router} from "next/router";
 import React, {useEffect, useState} from "react";
 import * as io from "socket.io-client";
-const Chat = require("../../../../server/models/chat");
+const Chat = require("../../server/models/chat");
 
 let chosenChatTutor = "";
 
@@ -36,7 +36,7 @@ const showChats = (data) =>
 const socket = io.connect("ws://localhost:3001", { transports: ['websocket', 'polling', 'flashsocket'] });
 
 
-export default function Sidebar() {
+export default function ChatSidebar() {
     const [chatList, setChatlist] = useState();
     let tempArray = [];
     useEffect(() => {
@@ -86,4 +86,3 @@ export default function Sidebar() {
 }
 
 export {chosenChatTutor};
-

@@ -1,5 +1,5 @@
 import {Flex} from "@chakra-ui/layout"
-import Sidebar, {chosenChatTutor} from "../../components/chatComponents/Sidebar";
+import ChatSidebar, {chosenChatTutor} from "../ChatSidebar";
 import Topbar from "../../components/chatComponents/Topbar";
 import Bottombar from "../../components/chatComponents/Bottombar";
 import {Text} from "@chakra-ui/react";
@@ -42,7 +42,7 @@ export default function ChatApp() {
             <Head>
                 <title>Chat app</title>
             </Head>
-            <Sidebar/>
+            <ChatSidebar/>
 
             <Flex
                 flex={1}
