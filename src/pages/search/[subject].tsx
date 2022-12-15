@@ -208,7 +208,7 @@ export default function Overview ({ tutors, subject }: PageProps) {
     }
 }
 
-function RadioCard(props: any) {
+export function RadioCard(props: any) {
     const { getInputProps, getCheckboxProps } = useRadio(props)
 
     const input = getInputProps()

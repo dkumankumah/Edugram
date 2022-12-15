@@ -5,10 +5,11 @@ export interface UserModel {
     email: string;
     password: string;
     address?: Address;
+    gender: string;
     dateOfBirth?: string;
     profile: Profile;
     educationLevel?: string;
-    phonenumber?: number;
+    phoneNumber?: number;
     verified?: boolean;
     averageResponseTime?: number;
     role: string;

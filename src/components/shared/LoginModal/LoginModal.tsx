@@ -60,7 +60,7 @@ export function LoginModal( {
                     //set token
                     setSuccess(data.message)
                     // addToken('haha')
-                    // localStorage.setItem('token', data.token)
+                    localStorage.setItem('token', data.token)
                     window.location.href = '/dashboard'
                 }
 
@@ -107,7 +107,6 @@ export function LoginModal( {
                                 onChange={(e) => {
                                     setEmail(e.target.value)
                                 }} id={'Email'}>
-
                     </InputField>
                     <InputGroup size='md'>
                         <InputRightElement width='4.5rem'>
