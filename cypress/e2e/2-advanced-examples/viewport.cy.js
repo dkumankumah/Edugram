@@ -8,21 +8,20 @@ context('Viewport', () => {
   it('cy.viewport() - set the viewport size and dimension', () => {
     // https://on.cypress.io/viewport
 
-<<<<<<< HEAD
     cy.get('#navigation').should('be.visible')
     cy.viewport(320, 480)
 
     // the navigation should have collapse since our screen is smaller
     cy.get('#navigation').should('not.be.visible')
     cy.get('.navigation-toggle').should('be.visible').click()
-=======
+
     cy.get('#navbar').should('be.visible')
     cy.viewport(320, 480)
 
     // the navbar should have collapse since our screen is smaller
     cy.get('#navbar').should('not.be.visible')
     cy.get('.navbar-toggle').should('be.visible').click()
->>>>>>> 9dafa381de851d791bc44627e7f428528f0d7674
+
     cy.get('.nav').find('a').should('be.visible')
 
     // lets see what our app looks like on a super large screen
