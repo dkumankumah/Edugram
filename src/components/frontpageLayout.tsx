@@ -14,7 +14,7 @@ const faqs: any[] = [
         a: "You can signup for free. For students, you have to put in credits in order to book a teacher",
     },
     {
-        q: "Can I only 1 subject?",
+        q: "Can I only teach 1 subject?",
         a: "Edugram wants you to expand your knowledge with everybody, therefor you can teach as much as you want!",
     },
     {

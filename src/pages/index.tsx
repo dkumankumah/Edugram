@@ -46,7 +46,8 @@ const Home = () => {
                     body: JSON.stringify({email: email, password: password})
 
                 }
-            ).then(r => r.json()).then((data) => {
+            ).then(r => r.json())
+                .then((data) => {
 
                 if (data && data.error) {
                     setError(data.error)
@@ -76,14 +77,15 @@ const Home = () => {
                 <Link bg={"lightblue"} p={2} maxW='300' borderRadius={20} textAlign='center' href='/example'>Go to the
                     example page</Link>
                 <Button bg={"#FFCA48"} maxW={'150'} borderRadius={20} alignSelf='end' onClick={onOpen}> Login </Button>
-                <LoginModal isOpen={isOpen} onClose={onClose} closeOnEsc={true} closeOnOverlayClick={true} onclosecomplete={clearCredentials}/>
+                <LoginModal isOpen={isOpen} onClose={onClose} closeOnEsc={true} closeOnOverlayClick={true}
+                            onclosecomplete={clearCredentials}/>
             </Flex>
 
             <HeroSection/>
             <Layout/>
 
 
-    </>
+        </>
     )
 }
 

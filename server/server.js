@@ -1,3 +1,7 @@
+/**
+ * @author Bugra Karaaslan, 500830631, connection to MongoDB
+ * To run the server write command 'node server' in the terminal.
+ */
 require("dotenv").config({ path: require('find-config')('.env') })
 const express = require("express");
 const mongoose = require("mongoose");
