@@ -2,7 +2,7 @@ const mongoose = require('mongoose');
 const {Schema} = require("mongoose");
 const chatSchema = new Schema({
   messages: {
-    type: Array,
+    type: [],
     required: true,
   },
   student: {
