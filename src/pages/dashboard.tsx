@@ -69,9 +69,6 @@ const Dashboard = () => {
     }, []);
 
 
-
-
-
     const options1 = {
 
         responsive: true,
@@ -148,6 +145,7 @@ const Dashboard = () => {
 
 
         </AdminContainer>
+
     )
 
 

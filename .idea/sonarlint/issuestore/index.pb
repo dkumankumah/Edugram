@@ -16,8 +16,6 @@ X
 .gitignore,a\5\a5cc2925ca8258af241be7e5b0381edf30266302
 V
 &src/components/admin/navbar/navbar.tsx,2\0\20dd922dcd26ff49da30831f0d16910e5e3eda3c
-C
-src/pages/index.tsx,d\2\d2d3bb60cab7e8c869b5fdf0a820b7edf2fc7859
 T
 $src/components/RegisterFormtutor.tsx,7\8\7819da4293b4341801f7b2189ff9fc3de85006b6
 [

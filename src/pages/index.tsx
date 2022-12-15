@@ -5,7 +5,7 @@
 import {Button, Flex, Heading, Link, useDisclosure,} from '@chakra-ui/react'
 
 import React, {useState} from "react";
-import {useRouter} from "next/router";
+
 
 // component imports
 import HeroSection from "../components/heroSection";
@@ -17,7 +17,10 @@ const Home = () => {
     const [email, setEmail] = useState('')
     const [password, setPassword] = useState('');
     const [error, setError] = useState('');
-    const [success, setSuccess] = useState('');
+
+    const [success, setSuccess
+    ]
+        = useState('');
 
     function saveToken(token: string) {
         localStorage.setItem('token', token)
@@ -44,20 +47,21 @@ const Home = () => {
             ).then(r => r.json())
                 .then((data) => {
 
-                if (data && data.error) {
-                    setError(data.error)
-                }
-                if (data.message) {
-                    //set token
-                    setSuccess(data.message)
-                    saveToken(data.token)
-                    window.location.href = '/dashboard'
-                }
+                    if (data && data.error) {
+                        setError(data.error)
+                    }
+                    if (data.message) {
+                        //set token
+                        setSuccess(data.message)
+                        saveToken(data.token)
+                        window.location.href = '/dashboard'
+                    }
 
-            }).catch((err) => {
-                console.log(err)
-            });
+                }).catch((err) => {
+                    console.log(err)
+                });
     }
+
 
     function clearCredentials() {
         setEmail('')
@@ -67,6 +71,7 @@ const Home = () => {
 
     return (
         <>
+
             <Flex flexDir={'column'}>
                 <Heading textAlign={'center'}>The platform</Heading>
                 <Link bg={"lightblue"} p={2} maxW='300' borderRadius={20} textAlign='center' href='/example'>Go to the
@@ -75,6 +80,7 @@ const Home = () => {
                 <LoginModal isOpen={isOpen} onClose={onClose} closeOnEsc={true} closeOnOverlayClick={true}
                             onclosecomplete={clearCredentials}/>
             </Flex>
+
 
             <HeroSection/>
             <Layout/>

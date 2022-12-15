@@ -1,15 +1,16 @@
 import {Flex} from "@chakra-ui/layout"
-import Sidebar, {chosenChatTutor} from "../../components/chatComponents/Sidebar";
+import ChatSidebar, {chosenChatTutor} from "../ChatSidebar";
 import Topbar from "../../components/chatComponents/Topbar";
 import Bottombar from "../../components/chatComponents/Bottombar";
 import {Text} from "@chakra-ui/react";
 import Head from "next/head";
 import React, {useEffect, useState} from "react";
 import * as io from "socket.io-client";
+import {ChatModel} from "../../models/ChatModel";
 
 const socket = io.connect("ws://localhost:3001", { transports: ['websocket', 'polling', 'flashsocket'] });
 
-const getMessages = (chat) =>
+const getMessages = (chat: ChatModel) =>
     chat?.messages.map(msg => {
         //test1 needs to be replaced with logged in user or student if tutor is logged in
         const sender = msg.sender === "test1";
@@ -42,7 +43,7 @@ export default function ChatApp() {
             <Head>
                 <title>Chat app</title>
             </Head>
-            <Sidebar/>
+            <ChatSidebar/>
 
             <Flex
                 flex={1}
@@ -52,7 +53,7 @@ export default function ChatApp() {
                 <Flex flex={1} direction="column" pt={4} mx={5} overflowX="scroll" overflowY="scroll"
                       sx={{'::-webkit-scrollbar': {display: 'none'}}}>
                 </Flex>
-                {getMessages(chat)}
+                {getMessages(chat!)}
                 <Bottombar/>
             </Flex>
         </Flex>

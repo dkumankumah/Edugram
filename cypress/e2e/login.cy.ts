@@ -30,7 +30,10 @@ describe("Login page test", () => {
             body: {
                 email: 'daniel.kumankumah@hva.nl',
                 password: '123456'
+            }, headers : {
+
             }
+
         }).as('login')
 
         cy.get("Button").click();

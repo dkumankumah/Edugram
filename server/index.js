@@ -67,12 +67,14 @@ app.post('/login', (req, res, next) => {
     })
 })
 
-const createToken = (firstName, lastName, role) => {
+const createToken = (id, firstName, lastName, role) => {
   return jwt.sign(
     {
+      id: id,
       firstName: firstName,
       lastName: lastName,
       role: role
+
     }, process.env.ACCES_TOKEN_SECRET
   )
 }
@@ -80,7 +82,7 @@ const createToken = (firstName, lastName, role) => {
 const checkPassword = (data, password, res) => {
   bcrypt.compare(password, data[0].password).then(result => {
     result ? res.status(200).send({
-      token: createToken(data[0].firstName, data[0].lastName, data[0].role),
+      token: createToken(data[0].id, data[0].firstName, data[0].lastName, data[0].role),
       message: 'succesfully logged in'
     }) : res.status(400).send({
       error: 'Invalid credentials'
