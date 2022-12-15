@@ -30,3 +30,6 @@ describe('SideBar', () => {
         cy.get('h1').contains('Tickets is here Page')
     })
 })
+
+
+export {}
