@@ -22,6 +22,7 @@ import {
 } from '@chakra-ui/react'
 import React, {useState} from "react";
 import {Router, useRouter} from "next/router";
+import ChatSidebar from "./ChatSidebar"
 
 // component imports
 import {InputField} from "../components/shared/InputField/InputField";
@@ -48,6 +49,7 @@ const Home = () => {
             <Heading textAlign={'center'}>The platform</Heading>
             <Link bg={"lightblue"} p={2} maxW='300' borderRadius={20} textAlign='center' href='/example'>Go to the
                 example page</Link>
+            <Link bg={"lightblue"} p={2} maxW='300' borderRadius={20} textAlign='center' href='/ChatSidebar'>Sidebar</Link>
             <Button bg={"#FFCA48"} maxW={'150'} borderRadius={20} alignSelf='end' onClick={onOpen}> Login </Button>
            <LoginModal isOpen={isOpen} onClose={onClose} closeOnEsc={true} closeOnOverlayClick={true} onclosecomplete={clearCredentials}/>
         </Flex>
