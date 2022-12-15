@@ -9,8 +9,6 @@ import {useRouter} from "next/router";
 
 // component imports
 import HeroSection from "../components/heroSection";
-
-import CustomFooter from "../components/Footer";
 import {LoginModal} from "../components/shared/LoginModal/LoginModal";
 import Layout from "../components/frontpageLayout";
 
@@ -20,9 +18,6 @@ const Home = () => {
     const [password, setPassword] = useState('');
     const [error, setError] = useState('');
     const [success, setSuccess] = useState('');
-    const [show, setShow] = React.useState(false)
-    const handleShowPassword = () => setShow(!show)
-    const router = useRouter();
 
     function saveToken(token: string) {
         localStorage.setItem('token', token)
