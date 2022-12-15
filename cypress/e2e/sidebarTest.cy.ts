@@ -1,3 +1,5 @@
+
+/// <reference types="cypress" />
 describe('SideBar', () => {
     it('should navigate to the Dashboard page', () => {
         // Start from the index page
