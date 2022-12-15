@@ -11,12 +11,13 @@ const socket = io.connect("ws://localhost:3001", { transports: ['websocket', 'po
 
 const getMessages = (chat) =>
     chat?.messages.map(msg => {
-        //TODO: test1 needs to be replaced with logged in user or student if tutor is logged in
+        //test1 needs to be replaced with logged in user or student if tutor is logged in
         const sender = msg.sender === "test1";
         console.log("chat: " + chat);
         console.log("msg: " + msg.sender);
+        const array = new Uint32Array(10);
         return (
-            <Flex alignSelf={sender ? "flex-end" :  "flex-start"} bg={sender ? "green.100" : "blue.100"} w="fit-content" minWidth="100px" borderRadius="lg" p={3} m={1}>
+            <Flex key = {Math.random()} alignSelf={sender ? "flex-end" :  "flex-start"} bg={sender ? "green.100" : "blue.100"} w="fit-content" minWidth="100px" borderRadius="lg" p={3} m={1}>
                 <Text>{msg.message}</Text>
             </Flex>
         )
@@ -27,7 +28,7 @@ const getMessages = (chat) =>
 export default function ChatApp() {
     const [chat, setChat] = useState();
     console.log("tutor to be emitted: " + chosenChatTutor);
-    //TODO: test1 needs to be replaced with logged in user or student if tutor is logged in
+    //test1 needs to be replaced with logged in user or student if tutor is logged in
     socket.emit('join-chat', "test1", chosenChatTutor);
     useEffect(() => {
         socket.on("update-chat", (chat) => {

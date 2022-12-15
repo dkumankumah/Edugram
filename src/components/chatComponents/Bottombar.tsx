@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from "react";
+import React, {useState} from "react";
 import {Button, FormControl, Input} from "@chakra-ui/react";
 import * as io from "socket.io-client";
 import {chosenChatTutor} from "./Sidebar";
@@ -12,7 +12,7 @@ export default function Bottombar() {
     const sendMessage = async (e) => {
         console.log(input)
         e.preventDefault();
-        //TODO: test1 needs to be replaced with logged in user or student if tutor is logged in
+        //test1 needs to be replaced with logged in user or student if tutor is logged in
         socket.emit("send-message", input, "test1", chosenChatTutor, "test1")
         setInput("");
     }
