@@ -35,6 +35,14 @@ router.get(
   }
 );
 
+router.post('/tutorRegister',function(req,res){
+  var firstname = req.body.firstName;
+  var lastname = req.body.lastName;
+  var email = req.body.email;
+  var password = req.body.password;
+  console.log("Firstname = "+firstname+", LastName is "+lastname, 'email is: ', email, 'password is: ', password);
+  res.end("yes");
+});
 // Adds a new tutor
 router.post( "/tutor", [
   body('firstName').trim().escape().notEmpty().withMessage("First name can not be empty"),
@@ -75,6 +83,27 @@ router.post( "/tutor", [
   }
 );
 
+router.post('/', async (req, res, next) => {
+  const role = 'tutor';
+  const hashedPassword = await bcrypt.hash(req.body.password, 10);
+
+  const tutor = new Tutor({
+    firstName: req.body.firstName,
+    lastName: req.body.lastName,
+    email: req.body.email,
+    password: hashedPassword,
+    role: role
+  });
+
+  try {
+    const savedTutor = tutor.save();
+    res.status(201).json(savedTutor)
+  } catch (err) {
+    res.status(400).json({message: err})
+  }
+
+});
+
 //Gets a specific tutor
 router.get("/:tutorId", async (req, res) => {
   try {
@@ -104,23 +133,23 @@ router.patch("/:tutorId", async (req, res) => {
 });
 
 //login request
-router.post("/tutor", async (req, res) => {
-  const email = req.body.email;
-  const password = req.body.password;
-  console.log(email);
-  console.log(password);
-
-  Tutor.findOne({ email: req.body.email }, function (err, user) {
-    if (!user) {
-      console.log("no user found");
-    } else {
-      if (req.body.password === user.password) {
-        console.log("Success Fully login");
-      } else {
-        console.log("invalid password");
-      }
-    }
-  });
-});
+// router.post("/tutor", async (req, res) => {
+//   const email = req.body.email;
+//   const password = req.body.password;
+//   console.log(email);
+//   console.log(password);
+//
+//   Tutor.findOne({ email: req.body.email }, function (err, user) {
+//     if (!user) {
+//       console.log("no user found");
+//     } else {
+//       if (req.body.password === user.password) {
+//         console.log("Success Fully login");
+//       } else {
+//         console.log("invalid password");
+//       }
+//     }
+//   });
+// });
 
 module.exports = router;
