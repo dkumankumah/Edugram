@@ -1,8 +1,8 @@
 /**
  * @author Bugra Karaaslan, 500830631, This is a register form.
  */
-import { Flex, Text, FormErrorMessage } from "@chakra-ui/react";
-import axios from "axios";
+import { Flex, Text, FormErrorMessage, FormControl } from "@chakra-ui/react";
+
 
 // component imports
 import { InputField } from "../components/shared/InputField/InputField";
@@ -10,6 +10,8 @@ import { SubmitButton } from "../components/shared/Buttons/SubmitButton";
 import { GoogleBtn } from "../components/shared/GoogleBtn";
 import { PasswordInput } from "../components/shared/PasswordInput";
 import React, { useState } from "react";
+import { useRouter } from "next/router";
+
 export function RegisterFormTutor() {
   const [role, setRole] = useState("student");
   const [tutorClicked, setTutorClicked] = useState(false);
@@ -25,10 +27,14 @@ export function RegisterFormTutor() {
     password: "",
     role: role,
   });
+  const router = useRouter();
+  
+  const [errors, setErrors] = useState(null)
 
   const createTutor = async (event: React.FormEvent) => {
     event.preventDefault();
     let newTutor = tutor;
+    console.log(newTutor);
 
     if (tutor.firstName === "") {
       setvalidFirstName(true);
@@ -42,8 +48,27 @@ export function RegisterFormTutor() {
     if (tutor.password === "") {
       setvalidPassword(true);
     }
-    axios.post("http://localhost:8000/tutor", newTutor);
+    // axios.post("http://localhost:8000/tutor", newTutor);
+    // router.push("http://localhost:3000/overview")
+
+    fetch("http://localhost:8000/tutor", {
+      method: 'POST',
+      body: JSON.stringify( { firstName: newTutor.firstName, lastName: newTutor.lastName, email: newTutor.email, password: newTutor.password, role: newTutor.role}),
+    })
+      .then((response) => response.json())
+      .then((result) => {
+        if (result.errors) {
+          setErrors(result.errors);
+        } else {
+          console.log('succesfull')
+        }
+      })
+      .catch((error) => {
+        console.error(error);
+      });
+
   };
+
 
   const getTutorForm = () => {
     setTutorClicked(true);
@@ -63,7 +88,7 @@ export function RegisterFormTutor() {
     setTutor((prevInput) => {
       return {
         ...prevInput,
-        [name]: value,
+        [name]: value.trim(),
       };
     });
   };
@@ -109,17 +134,20 @@ export function RegisterFormTutor() {
         Create your {role} account
       </Text>
 
-      <InputField
-        label="first name"
-        mt={10}
-        isRequired
-        name="firstName"
-        onChange={handleChange}
-        value={tutor.firstName}
-        placeholder="First name"
-        id="firstName"
-        isInvalid={validFirstName}
-      />
+      <FormControl>
+        <InputField
+          label="first name"
+          mt={10}
+          isRequired
+          name="firstName"
+          onChange={handleChange}
+          value={tutor.firstName}
+          placeholder="First name"
+          id="firstName"
+          isInvalid={validFirstName}
+        />
+        <FormErrorMessage>  </FormErrorMessage>
+      </FormControl>
 
       <InputField
         label="last name"
