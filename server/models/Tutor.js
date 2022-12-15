@@ -34,6 +34,19 @@ const TutorSchema = new Schema({
     type: String,
     required: false
   },
+  phoneNumber: {
+    type: String,
+    required: false
+  },
+  gender: {
+    type: String,
+    required: false
+  },
+  dateOfBirth: {
+    type: String,
+    required: false
+  },
+
   profile: Profile,
   course: [
     {subject: String, fee: Number}

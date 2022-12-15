@@ -18,6 +18,7 @@ interface PropsForCard extends CardProps {
     buttonText: string,
     optionalBodyOne?: any,
     optionalBodyTwo?: any,
+    onClick?: () => void;
 
 }
 
@@ -29,7 +30,8 @@ export function DashboardCard({
                                   buttonText,
                                   label,
                                   optionalBodyOne,
-                                  optionalBodyTwo
+                                  optionalBodyTwo,
+                                  onClick
                               }: PropsForCard) {
     return (
         <Card height={height} width={cardWidth} borderRadius={20} boxShadow={'2xl'} variant={'elevated'}>
@@ -38,12 +40,12 @@ export function DashboardCard({
                         borderBottomRightRadius={20} textAlign={'center'}>
                 <Heading textAlign={'center'} fontSize='20px' color={'white'} noOfLines={1}>{headerName}</Heading>
             </CardHeader>
-            <CardBody alignSelf={"center"}>
+            <CardBody alignSelf={"center"} paddingBottom={'0px'}>
                 {optionalBodyOne}
                 {optionalBodyTwo}
             </CardBody>
-            <CardFooter alignSelf={"center"}>
-                <SubmitButton width={buttonWidth} label={label}>{buttonText}</SubmitButton>
+            <CardFooter alignSelf={"center"} paddingBottom={'15px'}>
+                <SubmitButton width={buttonWidth} onClick={onClick} label={label}>{buttonText}</SubmitButton>
             </CardFooter>
         </Card>
     )

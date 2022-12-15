@@ -107,7 +107,6 @@ export function LoginModal( {
                                 onChange={(e) => {
                                     setEmail(e.target.value)
                                 }} id={'Email'}>
-
                     </InputField>
                     <InputGroup size='md'>
                         <InputRightElement width='4.5rem'>
