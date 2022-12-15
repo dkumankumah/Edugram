@@ -1,6 +1,6 @@
 const mongoose = require('mongoose');
-const Chat = require('./models/chat');
-const Message = require("./models/message");
+const Chat = require('../../server/models/chat');
+const Message = require('../../server/models/message');
 const io = require('socket.io')(3001)
 require("dotenv").config({path: require('find-config')('.env')});
 const username = process.env.DATABASE_CONNECTION_USERNAME;
