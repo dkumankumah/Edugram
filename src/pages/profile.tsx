@@ -133,21 +133,21 @@ export const Profile = () => {
                         <CardBody>
                             <FormControl>
                                 <FormLabel fontSize={'xs'}>Firstname</FormLabel>
-                                <Input mb={2} variant='filled' fontSize={'sm'}
+                                <Input data-cy='firstName' mb={2} variant='filled' fontSize={'sm'}
                                        placeholder={tutor.firstName ? tutor.firstName : 'First name unknown'}
                                        value={firstName}
                                        onChange={(e) => {
                                            setFirstname(e.target.value)
                                        }}/>
                                 <FormLabel fontSize={'xs'}>Lastname</FormLabel>
-                                <Input mb={2} variant='filled' fontSize={'sm'}
+                                <Input data-cy='lastName' mb={2} variant='filled' fontSize={'sm'}
                                        placeholder={tutor.lastName ? tutor.lastName : 'Last name unknown'}
                                        value={lastName}
                                        onChange={(e) => {
                                            setLastname(e.target.value)
                                        }}/>
                                 <FormLabel fontSize={'xs'}>Birthdate</FormLabel>
-                                <Input mb={2} variant='filled' fontSize={'sm'} type={'date'}
+                                <Input data-cy='birthDate' mb={2} variant='filled' fontSize={'sm'} type={'date'}
                                        placeholder={tutor.dateOfBirth ? tutor.dateOfBirth : 'Birthdate unknown'}
                                        value={birthdate} onChange={(e) => {
                                     setBirthdate(e.target.value)
@@ -161,11 +161,11 @@ export const Profile = () => {
                                            setGender(e.target.value)
                                        }}/>
                                 <FormLabel fontSize={'xs'}>Email</FormLabel>
-                                <Input mb={2} variant='filled' fontSize={'sm'} isReadOnly={true}
+                                <Input data-cy='email' mb={2} variant='filled' fontSize={'sm'} isReadOnly={true}
                                        placeholder={tutor.email ? tutor.email : 'Email unknown'}
                                        value={tutor.email}/>
                                 <FormLabel fontSize={'xs'}>Phonenumber</FormLabel>
-                                <Input mb={2} variant='filled' fontSize={'sm'} type={'number'} maxLength={10}
+                                <Input data-cy='phoneNumber' mb={2} variant='filled' fontSize={'sm'} type={'number'} maxLength={10}
                                        placeholder={tutor.phoneNumber ? tutor.phoneNumber.toString() : 'Number unknown'}
                                        value={phoneNumber} onChange={(e) => {
                                     setPhonenumber(e.target.value)
