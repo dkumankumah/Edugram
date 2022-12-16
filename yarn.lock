@@ -7776,6 +7776,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"express-healthcheck@npm:^0.1.0":
+  version: 0.1.0
+  resolution: "express-healthcheck@npm:0.1.0"
+  checksum: 075874d49a2a8c2fab2ae604c23c0247bac4b1aabf46b7af667afc99c02095697f55e6d7d3b4ee320c8e633ad8b1535cc792fd3a0cf806373af34081c3f06c3c
+  languageName: node
+  linkType: hard
+
 "express@npm:^4.16.4, express@npm:^4.18.2":
   version: 4.18.2
   resolution: "express@npm:4.18.2"
@@ -12363,11 +12370,11 @@ __metadata:
   linkType: hard
 
 "rxjs@npm:^7.5.1, rxjs@npm:^7.5.4, rxjs@npm:^7.5.5":
-  version: 7.6.0
-  resolution: "rxjs@npm:7.6.0"
+  version: 7.8.0
+  resolution: "rxjs@npm:7.8.0"
   dependencies:
     tslib: ^2.1.0
-  checksum: b3abbbfe1ddfd06fca9314b83cbd13bcddc3320429218136f75c79a4802ac430dd13873364aac1ded54fd457f8c77df332d205a92d8a1c61656565bb718c50af
+  checksum: 61b4d4fd323c1043d8d6ceb91f24183b28bcf5def4f01ca111511d5c6b66755bc5578587fe714ef5d67cf4c9f2e26f4490d4e1d8cabf9bd5967687835e9866a2
   languageName: node
   linkType: hard
 
@@ -13006,7 +13013,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"styled-jsx@npm:5.1.0, styled-jsx@npm:^5.1.0":
+"styled-jsx@npm:5.1.0":
   version: 5.1.0
   resolution: "styled-jsx@npm:5.1.0"
   dependencies:
@@ -13019,6 +13026,22 @@ __metadata:
     babel-plugin-macros:
       optional: true
   checksum: e5b70476fd9059147dfe35dd912e537e422a7f900cc88f80456c97da495c655598875d64de2199641d627770a7e55ed08be0fd82646bc386791fdb1d0e5af2b1
+  languageName: node
+  linkType: hard
+
+"styled-jsx@npm:^5.1.0":
+  version: 5.1.1
+  resolution: "styled-jsx@npm:5.1.1"
+  dependencies:
+    client-only: 0.0.1
+  peerDependencies:
+    react: ">= 16.8.0 || 17.x.x || ^18.0.0-0"
+  peerDependenciesMeta:
+    "@babel/core":
+      optional: true
+    babel-plugin-macros:
+      optional: true
+  checksum: 523a33b38603492547e861b98e29c873939b04e15fbe5ef16132c6f1e15958126647983c7d4675325038b428a5e91183d996e90141b18bdd1bbadf6e2c45b2fa
   languageName: node
   linkType: hard
 
@@ -13327,6 +13350,7 @@ __metadata:
     esutils: ^2.0.3
     etag: ^1.8.1
     express: ^4.18.2
+    express-healthcheck: ^0.1.0
     fast-deep-equal: ^3.1.3
     fast-glob: ^3.2.12
     fast-json-stable-stringify: ^2.1.0
