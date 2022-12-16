@@ -325,7 +325,6 @@
     "cypress": "cypress run --config-file cypress.config.ts",
     "cypress:open": "cypress open",
     "start-websocket": "node server/websocket/websocket.js"
-
   },
   "repository": {
     "type": "git",
