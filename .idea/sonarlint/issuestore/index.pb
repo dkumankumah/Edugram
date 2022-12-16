@@ -7,8 +7,6 @@ F
 src/pages/register.tsx,2\0\2073fef3abd85d53c98c14a2e107798ca3fb0db8
 H
 src/theme/breakpoints.ts,2\f\2f872b401ca9e9312e0ada8773af074172e94280
-a
-1src/components/admin/container/adminContainer.tsx,c\4\c401536f62bd777c1db533279257c9b83f585245
 X
 (src/components/ProfileBtn/ProfileBtn.tsx,4\e\4e12fdd1b68258228dc9febe55c9b74388fff99e
 :
@@ -24,7 +22,5 @@ G
 cypress/e2e/login.cy.ts,8\0\804872e378d8b31f68d426673d59a57f1afc975d
 M
 cypress/e2e/sidebarTest.cy.ts,1\1\11eb450aae21b542b1f44ba633e5ad342b1b3da8
-Y
-)src/components/chatComponents/Sidebar.tsx,0\2\029c55546e03e8bf2568b040e4021053eb458e19
 I
 src/components/Footer.tsx,6\a\6a1906fbef47b21e13258a3accfe644e256f3344

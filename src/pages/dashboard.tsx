@@ -27,18 +27,6 @@ const Dashboard = () => {
             )
                 .then((response) => response.json())
                 .then((data) => {
-
-                    // data.map((obj: any) => {
-                    //     console.log('test: ', ticket = new Date(obj.dateCreated).toLocaleDateString('en-us', {
-                    //         month: "short",
-                    //         day: "numeric"
-                    //     }))
-                    //     elementCounts[ticket] = (elementCounts[ticket] || 0) + 1;
-                    //     myMap.set(ticket, myMap.get(ticket) + 1 || 1);
-                    //
-                    //     //Add date to an Array of
-                    //     //Check if there are similar dates, sum to the date that is already in the Array
-                    // })
                     data.sort((a: any, b: any) => {
                         const dateA = new Date(a.dateCreated);
                         const dateB = new Date(b.dateCreated);
@@ -142,12 +130,7 @@ const Dashboard = () => {
                     />
                 </CardBody>
             </Card>
-
-
         </AdminContainer>
-
     )
-
-
 }
 export default Dashboard
