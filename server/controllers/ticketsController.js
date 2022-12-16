@@ -3,32 +3,14 @@ const mongoose = require('mongoose'),
 const io = require("yarn/lib/cli");
 
 
-// Tickets.watch([]).on("change",(data)=>{
-//   console.log({data})
-// })
-
 // Create a change stream. The 'change' event gets emitted when there's a
 // change in the database. Print what the change stream emits.
-Tickets.watch().on('change', data => console.log('Changed data is: ',data));
-
-// await Tickets.create({
-//   createdBy: "testUser@example.com",
-//   assignedBy: "admi2n@example.com",
-//   dateCreated: "1970-01-20T08:01:33.518Z",
-//   dateOfEnding: "Tue Oct 11 2022 00:00:00 GMT+0200 (Central European Summer Time)",
-//   status: [
-//     "Open"
-//   ],
-//   subject: "testing testing",
-//   escription: "I am having trouble logging into the system",
-//   _id: "6391b54e64901ecd3b78a2f8",
-//   __v: 0
-// });
+Tickets.watch().on('change', data => console.log('Changed data is: ', data));
 
 
 // Retrieve all the tasks saved in the database
 exports.getTickets = async (req, res) => {
-   Tickets.find({}, function (err, ticket) {
+  Tickets.find({}, function (err, ticket) {
     if (err) {
       res.status(400).send(err);
     } else {
@@ -36,11 +18,10 @@ exports.getTickets = async (req, res) => {
       res.json(ticket);
     }
   });
-
 };
 
 // Create a new task
-exports.createTicket = async  (req, res) =>{
+exports.createTicket = async (req, res) => {
   const newTicket = new Tickets(req.body);
   await newTicket.save(function (err, task) {
     if (err) {
@@ -52,7 +33,7 @@ exports.createTicket = async  (req, res) =>{
 };
 
 // Retrieve a task by taskId
-exports.getTaskById =  (req, res) => {
+exports.getTaskById = (req, res) => {
   Tickets.findById(req.params.id, function (err, task) {
     if (err) {
       res.status(404).send({
@@ -70,7 +51,7 @@ exports.getTaskById =  (req, res) => {
 };
 
 // Edit a task by taskId
-exports.editTaskById =  (req, res) => {
+exports.editTaskById = (req, res) => {
   Tickets.findOneAndUpdate({_id: req.params.id}, req.body, {new: true}, function (err, task) {
     if (err) {
       res.status(400).send(err);
@@ -81,7 +62,7 @@ exports.editTaskById =  (req, res) => {
 };
 
 // Delete a task by taskId
-exports.deleteTaskById =  (req, res) => {
+exports.deleteTaskById = (req, res) => {
   Tickets.remove({
     _id: req.params.id
   }, function (err, task) {

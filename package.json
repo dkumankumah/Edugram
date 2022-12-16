@@ -330,7 +330,8 @@
     "lint": "next lint",
     "cypress": "cypress run --config-file cypress.config.ts",
     "cypress:open": "cypress open",
-    "start-websocket": "node server/websocket/websocket.js"
+    "start-websocket": "node server/websocket/websocket.js",
+    "startNodemon": "nodemon server/server.js"
   },
   "repository": {
     "type": "git",

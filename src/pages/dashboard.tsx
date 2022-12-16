@@ -4,9 +4,12 @@ import {Card, CardBody, Text} from "@chakra-ui/react";
 import Chart from "chart.js/auto";
 import {Bar} from 'react-chartjs-2'
 import {CategoryScale} from 'chart.js';
+import * as io from "socket.io-client";
+import {chosenChatTutor} from "./ChatSidebar";
 
 Chart.register(CategoryScale);
 
+const socket = io.connect("ws://localhost:3001", { transports: ['websocket', 'polling', 'flashsocket'] });
 const Dashboard = () => {
     const baseUrl = "http://localhost:8001/tickets"
     const [map, setMap] = useState(new Map());
@@ -56,6 +59,14 @@ const Dashboard = () => {
         });
     }, []);
 
+
+    const sendMessage = async (e :any) => {
+        // console.log(input)
+        e.preventDefault();
+        //test1 needs to be replaced with logged in user or student if tutor is logged in
+        // socket.emit("send-message", input, "test1", chosenChatTutor, "test1")
+
+    }
 
     const options1 = {
 
