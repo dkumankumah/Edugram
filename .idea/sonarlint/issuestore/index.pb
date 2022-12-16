@@ -24,8 +24,6 @@ G
 cypress/e2e/login.cy.ts,8\0\804872e378d8b31f68d426673d59a57f1afc975d
 M
 cypress/e2e/sidebarTest.cy.ts,1\1\11eb450aae21b542b1f44ba633e5ad342b1b3da8
-G
-src/pages/chat/[id].tsx,0\4\04aea0d595e9cb7a3e501819b61b18c4aade1a4d
 Y
 )src/components/chatComponents/Sidebar.tsx,0\2\029c55546e03e8bf2568b040e4021053eb458e19
 I

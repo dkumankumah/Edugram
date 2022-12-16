@@ -7,7 +7,7 @@ export default function AdminPanel() {
             {/*<MobileNav />*/}
             {/*<ChatSidebar/>*/}
             {/*<SidebarWithHeader />*/}
-            <AdminContainer> </AdminContainer>
+            {/*<AdminContainer> </AdminContainer>*/}
         </>
     )
 }
