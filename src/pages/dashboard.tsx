@@ -1,6 +1,7 @@
 import React from "react";
 import ProfileNavigation from "../components/shared/ProfileNavigation/ProfileNavigation";
 import {Box} from "@chakra-ui/react";
+import AdminContainer from "../components/admin/container/adminContainer";
 
 const Dashboard = () => {
 
@@ -12,7 +13,7 @@ const Dashboard = () => {
             Dashboard
         </Box>
 
-         // </AdminContainer>
+          // </AdminContainer>
     )
 }
 export default Dashboard
