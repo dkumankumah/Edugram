@@ -53,7 +53,7 @@ const Home = () => {
                     example page</Link>
                 <Link bg={"lightblue"} p={2} maxW='300' borderRadius={20} textAlign='center'
                       href='/ChatSidebar'>Sidebar</Link>
-                <Button bg={"#FFCA48"} maxW={'150'} borderRadius={20} alignSelf='end' onClick={onOpen}> Login </Button>
+                <Button data-cy="loginButton" bg={"#FFCA48"} maxW={'150'} borderRadius={20} alignSelf='end' onClick={onOpen}> Login </Button>
                 <LoginModal isOpen={isOpen} onClose={onClose} closeOnEsc={true} closeOnOverlayClick={true}
                             onclosecomplete={clearCredentials}/>
             </Flex>
