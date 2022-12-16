@@ -14,7 +14,7 @@ const Dashboard = () => {
     const [map, setMap] = useState(new Map());
 
     useEffect(() => {
-        setIsAuth(isAdmin())
+        // setIsAuth(isAdmin())
         let myMap = new Map();
         let ticket: string;
         const elementCounts: any = {};
@@ -116,7 +116,7 @@ const Dashboard = () => {
     };
 
     console.log(isAuth)
-    if(isAuth) {
+    // if(isAuth) {
         return (
             <AdminContainer>
                 <h1>Dashboard is here Page</h1>
@@ -136,17 +136,17 @@ const Dashboard = () => {
                 </Card>
             </AdminContainer>
         )
-    }
-    else return (
-
-        // <AdminContainer>
-
-        <Box>
-            <ProfileNavigation/>
-            Dashboard
-        </Box>
-
-          // </AdminContainer>
-    )
+    // }
+    // else return (
+    //
+    //     // <AdminContainer>
+    //
+    //     <Box>
+    //         <ProfileNavigation/>
+    //         Dashboard
+    //     </Box>
+    //
+    //       // </AdminContainer>
+    // )
 }
 export default Dashboard
