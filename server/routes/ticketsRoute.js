@@ -7,11 +7,11 @@ const ticketController = require('../controllers/ticketsController');
 router.get("/tickets", ticketController.getTickets);
 router.post("/tickets", ticketController.createTicket);
 
-module.exports = function(app) {
+module.exports = function (app) {
   // Tasks List Routes
-  app.route('/tickets')
-    .get(ticketList.getTickets)
-    .post(ticketList.createTicket);
+  // app.route('/tickets')
+  //   .get(ticketList.getTickets)
+  //   .post(ticketList.createTicket);
 
   app.route('/tickets/:ticketId')
     .get(ticketList.getTaskById)

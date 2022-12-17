@@ -34,7 +34,7 @@ const getTickets = async (req, res) => {
     } else {
       res.status(200)
       res.json(ticket);
-      res.send("Get all Tickets");
+      // res.send("Get all Tickets");
     }
   });
 };

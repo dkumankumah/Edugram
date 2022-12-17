@@ -16,8 +16,7 @@ const cache = apiCache.middleware;
 // const { swaggerDocs: V1SwaggerDocs } = require("src/v1/swagger");
 const PORT = process.env.PORT || 8001
 //Importing route
-const routes = require('./routes/ticketsRoute');
-
+const ticketRoute = require('./routes/ticketsRoute');
 
 // Mongoose instance connection url connection
 // mongoose.Promise = global.Promise;
@@ -29,17 +28,16 @@ mongoose.connect(uri, { useNewUrlParser: true, useUnifiedTopology: true})
 /* Configure app to use bodyParser()
    this will let us get the data from a POST */
 app.use(cors());
-app.use(cache("2 minutes"));
+app.use(cache("10 minutes"));
 app.use(bodyParser.json());
 
+app.use(ticketRoute);
 //Register the route
-// routes(app);
 
-// Get an instance of the express Router
-let router = express.Router();
 
 // Health route to make sure everything is working (accessed at GET http://localhost:3000/health)
 app.use('/health', require('express-healthcheck')({
+
 }));
 
 

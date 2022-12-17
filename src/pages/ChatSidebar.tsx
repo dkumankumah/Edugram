@@ -1,5 +1,5 @@
 import {Flex} from "@chakra-ui/layout";
-import {Avatar, Button, IconButton, Link, Text} from "@chakra-ui/react";
+import {Avatar, IconButton, Text} from "@chakra-ui/react";
 import {ArrowLeftIcon} from "@chakra-ui/icons"
 // @ts-ignore
 import {router} from "next/router";

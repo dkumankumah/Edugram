@@ -1,11 +1,14 @@
 import React, {useEffect, useState} from "react";
-import {Card, CardBody} from "@chakra-ui/react";
+import {
+    Card,
+    CardBody
+} from "@chakra-ui/react";
+
 import AdminContainer from "../components/admin/container/adminContainer";
 import Chart from "chart.js/auto";
 import {Bar} from 'react-chartjs-2'
 import {CategoryScale} from 'chart.js';
 import socketIOClient from 'socket.io-client';
-
 Chart.register(CategoryScale);
 
 
@@ -63,10 +66,10 @@ const Dashboard = () => {
 
 
     useEffect(() => {
-        // const socket = socketIOClient('http://localhost:3001');
-        // socket.on('connect', () => {
-        //     console.log('Connected to the Socket.IO server!');
-        // });
+        const socket = socketIOClient('http://localhost:3001');
+        socket.on('connect', () => {
+            console.log('Connected to the Socket.IO server!');
+        });
     }, []);
 
     const options1 = {
