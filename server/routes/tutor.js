@@ -4,8 +4,8 @@ const Tutor = require("../models/Tutor");
 const bcrypt = require("bcrypt");
 const { check, validationResult, body } = require("express-validator");
 
-const userValidation = [
-  
+const userValidation = 
+[
     check("firstName").exists().notEmpty().withMessage("Firstname ican not be empty")
       .trim().escape(),
     check("lastName").exists().notEmpty()
@@ -43,6 +43,7 @@ router.post('/tutorRegister',function(req,res){
   console.log("Firstname = "+firstname+", LastName is "+lastname, 'email is: ', email, 'password is: ', password);
   res.end("yes");
 });
+
 // Adds a new tutor
 router.post( "/tutor", [
   body('firstName').trim().escape().notEmpty().withMessage("First name can not be empty"),
@@ -65,14 +66,9 @@ router.post( "/tutor", [
     try {
       const errors = validationResult(req);
       if (!errors.isEmpty()) {
-        console.log(errors)
-        // return res.status(400).json({ errors: errors.array() });
-        // errors.array().forEach(error => {
-        //   req.flash('error', error.msg)
-        // })
-        const messages = errors.array()
-        // res.render('register', messages)
-        return
+        errors.array().forEach(error => {
+          console.log(error)
+        })
       }
 
       const savedTutor = tutor.save();
@@ -131,25 +127,5 @@ router.patch("/:tutorId", async (req, res) => {
     res.json({ message: err });
   }
 });
-
-//login request
-// router.post("/tutor", async (req, res) => {
-//   const email = req.body.email;
-//   const password = req.body.password;
-//   console.log(email);
-//   console.log(password);
-//
-//   Tutor.findOne({ email: req.body.email }, function (err, user) {
-//     if (!user) {
-//       console.log("no user found");
-//     } else {
-//       if (req.body.password === user.password) {
-//         console.log("Success Fully login");
-//       } else {
-//         console.log("invalid password");
-//       }
-//     }
-//   });
-// });
 
 module.exports = router;
