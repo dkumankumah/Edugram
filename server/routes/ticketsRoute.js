@@ -2,6 +2,10 @@ const express = require('express')
 const Ticket = require("../models/ticketsModal");
 const router = express.Router()
 const ticketList = require('../controllers/ticketsController');
+const ticketController = require('../controllers/ticketsController');
+
+router.get("/tickets", ticketController.getTickets);
+router.post("/tickets", ticketController.createTicket);
 
 module.exports = function(app) {
   // Tasks List Routes
@@ -15,14 +19,6 @@ module.exports = function(app) {
     .delete(ticketList.deleteTaskById);
 };
 
-// router.get('/', async (req, res) => {
-//   try {
-//     const tickets = await Ticket.find()
-//     res.json(tickets);
-//   } catch (err) {
-//     res.status(500).json({message: err})
-//   }
-// });
-//
-//
-// module.exports = router;
+
+module.exports = router;
+

@@ -1,6 +1,6 @@
 const mongoose = require('mongoose'),
   Tickets = mongoose.model('Tickets');
-const io = require("yarn/lib/cli");
+// const io = require("yarn/lib/cli");
 
 
 // Tickets.watch([]).on("change",(data)=>{
@@ -27,20 +27,24 @@ Tickets.watch().on('change', data => console.log('Changed data is: ',data));
 
 
 // Retrieve all the tasks saved in the database
-exports.getTickets = async (req, res) => {
+const getTickets = async (req, res) => {
   Tickets.find({}, function (err, ticket) {
     if (err) {
       res.status(400).send(err);
     } else {
       res.status(200)
       res.json(ticket);
+      res.send("Get all Tickets");
     }
   });
+};
 
+const getAllWorkouts = (req, res) => {
+  res.send("Get all workouts");
 };
 
 // Create a new task
-exports.createTicket = async  (req, res) =>{
+const createTicket = async  (req, res) =>{
   const newTicket = new Tickets(req.body);
   await newTicket.save(function (err, task) {
     if (err) {
@@ -99,4 +103,15 @@ exports.deleteTaskById =  (req, res) => {
       //res.json({ message: 'Task successfully deleted' });
     }
   });
+};
+
+
+module.exports = {
+  getAllWorkouts,
+  getTickets,
+  createTicket
+  // getOneWorkout,
+  // createNewWorkout,
+  // updateOneWorkout,
+  // deleteOneWorkout,
 };
