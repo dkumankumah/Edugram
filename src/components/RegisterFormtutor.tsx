@@ -2,7 +2,7 @@
  * @author Bugra Karaaslan, 500830631, This is a register form.
  */
 import { Flex, Text, FormErrorMessage, FormControl } from "@chakra-ui/react";
-
+import axios from 'axios';
 
 // component imports
 import { InputField } from "../components/shared/InputField/InputField";
@@ -48,27 +48,27 @@ export function RegisterFormTutor() {
     if (tutor.password === "") {
       setvalidPassword(true);
     }
-    // axios.post("http://localhost:8000/tutor", newTutor);
+    axios.post("http://localhost:8000/tutor", newTutor)
     // router.push("http://localhost:3000/overview")
 
-    fetch("http://localhost:8000/tutor", {
-      method: 'POST',
-      body: JSON.stringify( { firstName: newTutor.firstName, lastName: newTutor.lastName, email: newTutor.email, password: newTutor.password, role: newTutor.role}),
-    })
-      .then((response) => response.json())
-      .then((result) => {
-        if (result.errors) {
-          setErrors(result.errors);
-        } else {
-          console.log('succesfull')
-        }
-      })
-      .catch((error) => {
-        console.error(error);
-      });
+    // fetch("http://localhost:8000/tutor", {
+    //   method: 'POST',
+    //   body: JSON.stringify( { firstName: newTutor.firstName, lastName: newTutor.lastName, email: newTutor.email, password: newTutor.password, role: newTutor.role}),
+    // })
+    //   .then((response) => response.json())
+    //   .then((result) => {
+    //     if (result.errors) {
+    //       setErrors(result.errors);
+    //       console.log(errors)
+    //     } else {
+    //       console.log('successfull')
+    //     }
+    //   })
+    //   .catch((error) => {
+    //     console.error(error);
+    //   });
 
   };
-
 
   const getTutorForm = () => {
     setTutorClicked(true);
@@ -134,7 +134,7 @@ export function RegisterFormTutor() {
         Create your {role} account
       </Text>
 
-      <FormControl>
+ 
         <InputField
           label="first name"
           mt={10}
@@ -146,8 +146,7 @@ export function RegisterFormTutor() {
           id="firstName"
           isInvalid={validFirstName}
         />
-        <FormErrorMessage>  </FormErrorMessage>
-      </FormControl>
+
 
       <InputField
         label="last name"
