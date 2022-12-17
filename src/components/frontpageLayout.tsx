@@ -1,8 +1,9 @@
-import {Box, Container, SimpleGrid, Text, VStack,} from "@chakra-ui/react";
+
 import {FAQSection} from "./FAQSection";
 import {Feature} from "./Feature";
 import CustomFooter from "./Footer";
 import React from "react";
+import {Box, Container, SimpleGrid, VStack, Text} from "@chakra-ui/react";
 // import { HeroSection } from "./components/HeroSection";
 // import { Layout } from "./components/Layout";
 // import { PricingSection } from "./components/PricingSection";

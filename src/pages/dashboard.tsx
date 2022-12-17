@@ -1,16 +1,14 @@
 import React, {useEffect, useState} from "react";
-import ProfileNavigation from "../components/shared/ProfileNavigation/ProfileNavigation";
-import {Box, Card, CardBody} from "@chakra-ui/react";
+import {Card, CardBody} from "@chakra-ui/react";
 import AdminContainer from "../components/admin/container/adminContainer";
-import {isAdmin} from "./api/api.storage";
 import Chart from "chart.js/auto";
 import {Bar} from 'react-chartjs-2'
 import {CategoryScale} from 'chart.js';
 import socketIOClient from 'socket.io-client';
-import * as io from "socket.io-client";
+
 Chart.register(CategoryScale);
 
-const socket = io.connect("ws://localhost:3001", { transports: ['websocket', 'polling', 'flashsocket'] });
+
 
 const Dashboard = () => {
     const [isAuth, setIsAuth] = useState(false)
@@ -65,10 +63,10 @@ const Dashboard = () => {
 
 
     useEffect(() => {
-        const socket = socketIOClient('http://localhost:3001');
-        socket.on('connect', () => {
-            console.log('Connected to the Socket.IO server!');
-        });
+        // const socket = socketIOClient('http://localhost:3001');
+        // socket.on('connect', () => {
+        //     console.log('Connected to the Socket.IO server!');
+        // });
     }, []);
 
     const options1 = {
@@ -127,7 +125,7 @@ const Dashboard = () => {
         ],
     };
 
-    console.log(isAuth)
+    // console.log(isAuth)
     // if(isAuth) {
         return (
             <AdminContainer>

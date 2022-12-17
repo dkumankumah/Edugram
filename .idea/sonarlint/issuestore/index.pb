@@ -9,11 +9,13 @@ H
 src/pages/adminpanel.tsx,5\4\54d90d560e33069ab08e52de740c218223d8ad16
 M
 server/websocket/websocket.js,e\4\e41147e47c1bcc2583e46972e65f582af00fbbdb
-I
-src/pages/ChatSidebar.tsx,7\1\71f2d7b913a5e0b13e694076b926ead5da549532
 [
 +src/components/chatComponents/Bottombar.tsx,0\f\0fcbad6459cba0ab7112616fe140f0f676897510
 A
 src/v1/swagger.js,8\8\88050759281e0599a4d09cefb66bde5b23d19111
-=
-tsconfig.json,6\1\61ebb9fd6e8cf9082658121d5d81e297791dacd0
+>
+next.config.js,8\1\811a6d5a2e04fadb44d8eec365f2fa8af5c4facf
+>
+.gitlab-ci.yml,5\8\587d266bb27a4dc3022bbed44dfa19849df3044c
+G
+src/pages/chat/[id].tsx,0\4\04aea0d595e9cb7a3e501819b61b18c4aade1a4d
