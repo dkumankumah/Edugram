@@ -7077,7 +7077,7 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
           "packageLocation": "./.yarn/cache/@types-bcrypt-npm-5.0.0-c074c165c2-063c32c7a5.zip/node_modules/@types/bcrypt/",\
           "packageDependencies": [\
             ["@types/bcrypt", "npm:5.0.0"],\
-            ["@types/node", "npm:18.11.16"]\
+            ["@types/node", "npm:18.11.17"]\
           ],\
           "linkType": "HARD"\
         }]\
@@ -7096,7 +7096,7 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
           "packageLocation": "./.yarn/cache/@types-cors-npm-2.8.13-4b8ac1068f-7ef197ea19.zip/node_modules/@types/cors/",\
           "packageDependencies": [\
             ["@types/cors", "npm:2.8.13"],\
-            ["@types/node", "npm:18.11.16"]\
+            ["@types/node", "npm:18.11.17"]\
           ],\
           "linkType": "HARD"\
         }]\
@@ -7124,7 +7124,7 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
           "packageLocation": "./.yarn/cache/@types-jsonwebtoken-npm-8.5.9-79c2843a81-33815ab02d.zip/node_modules/@types/jsonwebtoken/",\
           "packageDependencies": [\
             ["@types/jsonwebtoken", "npm:8.5.9"],\
-            ["@types/node", "npm:18.11.16"]\
+            ["@types/node", "npm:18.11.17"]\
           ],\
           "linkType": "HARD"\
         }]\
@@ -7160,6 +7160,13 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
           "packageLocation": "./.yarn/cache/@types-node-npm-18.11.16-9ae9c5d49f-23603ecc1c.zip/node_modules/@types/node/",\
           "packageDependencies": [\
             ["@types/node", "npm:18.11.16"]\
+          ],\
+          "linkType": "HARD"\
+        }],\
+        ["npm:18.11.17", {\
+          "packageLocation": "./.yarn/cache/@types-node-npm-18.11.17-897ad73ae4-1933afd068.zip/node_modules/@types/node/",\
+          "packageDependencies": [\
+            ["@types/node", "npm:18.11.17"]\
           ],\
           "linkType": "HARD"\
         }]\
@@ -7235,7 +7242,7 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
           "packageLocation": "./.yarn/cache/@types-whatwg-url-npm-8.2.2-54c5c24e6c-5dc5afe078.zip/node_modules/@types/whatwg-url/",\
           "packageDependencies": [\
             ["@types/whatwg-url", "npm:8.2.2"],\
-            ["@types/node", "npm:18.11.16"],\
+            ["@types/node", "npm:18.11.17"],\
             ["@types/webidl-conversions", "npm:7.0.0"]\
           ],\
           "linkType": "HARD"\
@@ -7246,7 +7253,7 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
           "packageLocation": "./.yarn/cache/@types-yauzl-npm-2.10.0-7b242343cb-55d27ae5d3.zip/node_modules/@types/yauzl/",\
           "packageDependencies": [\
             ["@types/yauzl", "npm:2.10.0"],\
-            ["@types/node", "npm:18.11.16"]\
+            ["@types/node", "npm:18.11.17"]\
           ],\
           "linkType": "HARD"\
         }]\
@@ -9136,7 +9143,7 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
             ["engine.io", "npm:6.2.1"],\
             ["@types/cookie", "npm:0.4.1"],\
             ["@types/cors", "npm:2.8.13"],\
-            ["@types/node", "npm:18.11.16"],\
+            ["@types/node", "npm:18.11.17"],\
             ["accepts", "npm:1.3.8"],\
             ["base64id", "npm:2.0.0"],\
             ["cookie", "npm:0.4.2"],\

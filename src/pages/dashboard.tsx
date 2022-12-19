@@ -8,15 +8,30 @@ import AdminContainer from "../components/admin/container/adminContainer";
 import Chart from "chart.js/auto";
 import {Bar} from 'react-chartjs-2'
 import {CategoryScale} from 'chart.js';
-import socketIOClient from 'socket.io-client';
+import { io, Socket } from "socket.io-client";
+
+// import * as io from 'socket.io-client';
+import {chosenChatTutor} from "./ChatSidebar";
+// import socketIOClient from 'socket.io-client';
 Chart.register(CategoryScale);
 
 
-
 const Dashboard = () => {
+    let socket: Socket;
     const [isAuth, setIsAuth] = useState(false)
     const baseUrl = "http://localhost:8001/tickets"
     const [map, setMap] = useState(new Map());
+
+    const [dataa, setDataa] = useState([]);
+
+    socket.on("noArg", () => {
+        // ...
+    });
+
+
+
+
+    console.log('Socket: ',socket)
 
     // useEffect(() => {
     //     // setIsAuth(isAdmin())
@@ -64,12 +79,9 @@ const Dashboard = () => {
     //     });
     // }, []);
 
-
     useEffect(() => {
-        const socket = socketIOClient('http://localhost:3001');
-        socket.on('connect', () => {
-            console.log('Connected to the Socket.IO server!');
-        });
+        // const socket = io('http://localhost:8001',);
+        // socket.connect();
     }, []);
 
     const options1 = {

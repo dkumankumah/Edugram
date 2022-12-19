@@ -7,10 +7,6 @@ F
 server/models/Tutor.js,8\0\80a5405aadb49788e2dc20535043bf320a9616db
 H
 src/pages/adminpanel.tsx,5\4\54d90d560e33069ab08e52de740c218223d8ad16
-M
-server/websocket/websocket.js,e\4\e41147e47c1bcc2583e46972e65f582af00fbbdb
-[
-+src/components/chatComponents/Bottombar.tsx,0\f\0fcbad6459cba0ab7112616fe140f0f676897510
 A
 src/v1/swagger.js,8\8\88050759281e0599a4d09cefb66bde5b23d19111
 >

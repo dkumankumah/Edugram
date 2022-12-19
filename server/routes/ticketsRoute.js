@@ -6,18 +6,19 @@ const ticketController = require('../controllers/ticketsController');
 
 router.get("/tickets", ticketController.getTickets);
 router.post("/tickets", ticketController.createTicket);
+// router.get("/ticks",ticketController.getUpdatedTickets)
 
-module.exports = function (app) {
-  // Tasks List Routes
-  // app.route('/tickets')
-  //   .get(ticketList.getTickets)
-  //   .post(ticketList.createTicket);
-
-  app.route('/tickets/:ticketId')
-    .get(ticketList.getTaskById)
-    .put(ticketList.editTaskById)
-    .delete(ticketList.deleteTaskById);
-};
+// module.exports = function (app) {
+//   // Tasks List Routes
+//   // app.route('/tickets')
+//   //   .get(ticketList.getTickets)
+//   //   .post(ticketList.createTicket);
+//
+//   app.route('/tickets/:ticketId')
+//     .get(ticketList.getTaskById)
+//     .put(ticketList.editTaskById)
+//     .delete(ticketList.deleteTaskById);
+// };
 
 
 module.exports = router;
