@@ -25,9 +25,11 @@ import { ActionButton } from "../components/shared/Button";
 
 
 interface ComponentProps {
+  title: string;
+  description: string;
 }
 
-const Hero = ({}: ComponentProps) => {
+const Hero = ({title, description}: ComponentProps) => {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -38,7 +40,7 @@ const Hero = ({}: ComponentProps) => {
   const handleChangeEvent = (event:any) => {
     setSearchData(event.target.value);
   };
-  
+
   const handleKeyDown = (event:any) => {
     if (event.key === 'Enter') {
       router.push({
@@ -68,15 +70,17 @@ const Hero = ({}: ComponentProps) => {
       <GridItem>
         <Grid templateColumns="50% 50%">
           <GridItem display="flex" justifyContent="flex-start">
-            <Link href="/">
-              <Image
+ 
+            <Image
                 mt={3}
                 ml={{ sm: "50px", md: "20px" }}
+                maxH="100px"
                 maxW={{ sm: "120px", md: "150px" }}
                 src="/images/edugram-logo.png"
                 alt="logo of Edugram"
-              />
-            </Link>
+              />     
+          
+                 
           </GridItem>
 
           <GridItem display="flex" justifyContent="flex-end">
@@ -113,18 +117,9 @@ const Hero = ({}: ComponentProps) => {
               maxW="2xl"
               p={6}
             >
-              <Text as="h1">Driven by Outcomes, Fuelled by Ambitions</Text>
-              <Text>
-                {" "}
-                Snippy is a rich coding snippets app that lets you create
-                your own code snippets, categorize them, and even sync them
-                in the cloud so you can use them anywhere. All that is free!
-                <br></br>
-                <br></br>
-                Snippy is a rich coding snippets app that lets you create
-                your own code snippets, categorize them, and even sync them
-                in the cloud so you can use them anywhere. All that is free!
-              </Text>
+              <Text as="h1">{title}</Text>
+              <Text m="5px 0px">{description}</Text>
+              <Text>{description}</Text>
             </Flex>
               <ActionButton ml={6} label="Get started">Get started</ActionButton>
               <ActionButton ml={6}  label="How it works">How it works</ActionButton>
