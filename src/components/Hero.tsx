@@ -11,6 +11,7 @@ import {
   useDisclosure,
 } from "@chakra-ui/react";
 import registerPageTutor from "../../public/data/registerPageTutor.json";
+import {useRouter} from "next/router";
 import { useState } from "react";
 import Link from "next/link";
 
@@ -31,6 +32,21 @@ const Hero = ({}: ComponentProps) => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
+  const [searchData, setSearchData] = useState("");
+  const router = useRouter();
+
+  const handleChangeEvent = (event:any) => {
+    setSearchData(event.target.value);
+  };
+  
+  const handleKeyDown = (event:any) => {
+    if (event.key === 'Enter') {
+      router.push({
+        pathname: `/search/${searchData.toLowerCase()}`
+      })
+    }
+
+  };
 
   function clearCredentials() {
     setEmail("");
@@ -86,7 +102,7 @@ const Hero = ({}: ComponentProps) => {
         justifyContent="center"
         alignItems="center"
       >
-        <SearchField data="" id="searchField" />
+        <SearchField onChange={handleChangeEvent} onKeyDown={handleKeyDown} data={searchData} id="searchField" />
       </GridItem>
       <GridItem>
         <Grid h="100%" templateColumns="50% 50%">
