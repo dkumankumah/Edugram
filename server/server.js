@@ -16,24 +16,45 @@ const apiCache = require("apicache");
 const cache = apiCache.middleware;
 // const { swaggerDocs: V1SwaggerDocs } = require("src/v1/swagger");
 const PORT = process.env.PORT || 8001
-
-// const io = require('socket.io')
-
 const http = require('http');
 const server = http.createServer(app);
-
+const {Server} = require("socket.io");
 
 const httpServer = require("http").createServer(app);
-const options = { /* ... */};
-const io = require("socket.io")(httpServer, {
+const registerOrderHandlers = require("./sockets/ticketSocket");
+// const registerOrderHandlers = require("./controllers/ticketsController");
+// const registerUserHandlers = require("./routes/ticketsRoute");
+
+ const io = new Server({
+   // allowRequest: (req, callback) => {
+   //   const noOriginHeader = req.headers.origin === undefined;
+   //   callback(null, noOriginHeader); // only allow requests without 'origin' header
+   // },
+
   cors: {
-    origin: ["http://localhost:3000"],
+    // origin: ["*"],
+    origin: "http://localhost:3000",
+    allowedHeaders: ["my-custom-header"],
+    // credentials: true
+
+    // origin: '*',
     // allowedHeaders: ["my-custom-header"],
-    credentials: true
+    // credentials: true
   }
 });
 
+app.set('io', io);
+app.use((req, res, next) => {
+  req.io = io;
 
+  console.log('a user connected');
+  io.on('disconnect', () => {
+    console.log('user disconnected');
+  });
+
+  return next();
+});
+// app.use('/', routes);
 
 // const httpServer = createServer();
 // const io = new Server(httpServer, {
@@ -72,27 +93,15 @@ app.use(ticketRoute);
 // Health route to make sure everything is working (accessed at GET http://localhost:3000/health)
 app.use('/health', require('express-healthcheck')({}));
 
-// io.on('connection',  (socket) =>{
-//   console.log('Connection!');
-//
-//   // USERS - Change
-//   changeStream.on('change', (change) => {
-//     console.log('COLLECTION CHANGED');
-//
-//     Tickets.find({}, (err, data) => {
-//       if (err) throw err;
-//
-//       if (data) {
-//         // RESEND ALL USERS
-//         socket.emit('Tickets', data);
-//       }
-//     });
-//   });
+
+// io.on('connection', function(socket){
+//   console.log("Connection");
 // });
 
 server.listen(PORT, () => {
   console.log(`API is listening on port ${PORT}`);
 });
+
 
 // Start the server
 // app.listen(PORT, () => {

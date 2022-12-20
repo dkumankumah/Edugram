@@ -42,6 +42,8 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
             ["@types/jsonwebtoken", "npm:8.5.9"],\
             ["@types/node", "npm:18.11.16"],\
             ["@types/react", "npm:18.0.25"],\
+            ["@types/socket.io", "npm:2.1.13"],\
+            ["@types/socket.io-client", "npm:1.4.36"],\
             ["accepts", "npm:1.3.8"],\
             ["acorn", "npm:8.8.1"],\
             ["acorn-jsx", "virtual:b88faf10bc38b7bf99c4359521e8a0ed3f77dcbbc8677c8ff2c327d003d8f82b0e79a6212f450e879d54de3af7d71a6a67818de313afc6e195445593b76b6db0#npm:5.3.2"],\
@@ -7101,6 +7103,16 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
           "linkType": "HARD"\
         }]\
       ]],\
+      ["@types/engine.io", [\
+        ["npm:3.1.7", {\
+          "packageLocation": "./.yarn/cache/@types-engine.io-npm-3.1.7-90ea7aeffa-62b129eac3.zip/node_modules/@types/engine.io/",\
+          "packageDependencies": [\
+            ["@types/engine.io", "npm:3.1.7"],\
+            ["@types/node", "npm:18.11.17"]\
+          ],\
+          "linkType": "HARD"\
+        }]\
+      ]],\
       ["@types/find-config", [\
         ["npm:1.0.1", {\
           "packageLocation": "./.yarn/cache/@types-find-config-npm-1.0.1-820a81e8de-d6d7e80e57.zip/node_modules/@types/find-config/",\
@@ -7224,6 +7236,37 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
           "packageLocation": "./.yarn/cache/@types-sizzle-npm-2.3.3-9403924950-586a9fb1f6.zip/node_modules/@types/sizzle/",\
           "packageDependencies": [\
             ["@types/sizzle", "npm:2.3.3"]\
+          ],\
+          "linkType": "HARD"\
+        }]\
+      ]],\
+      ["@types/socket.io", [\
+        ["npm:2.1.13", {\
+          "packageLocation": "./.yarn/cache/@types-socket.io-npm-2.1.13-e5a687a566-7c4748d306.zip/node_modules/@types/socket.io/",\
+          "packageDependencies": [\
+            ["@types/socket.io", "npm:2.1.13"],\
+            ["@types/engine.io", "npm:3.1.7"],\
+            ["@types/node", "npm:18.11.17"],\
+            ["@types/socket.io-parser", "npm:2.2.1"]\
+          ],\
+          "linkType": "HARD"\
+        }]\
+      ]],\
+      ["@types/socket.io-client", [\
+        ["npm:1.4.36", {\
+          "packageLocation": "./.yarn/cache/@types-socket.io-client-npm-1.4.36-8392e6cc54-08a40365bb.zip/node_modules/@types/socket.io-client/",\
+          "packageDependencies": [\
+            ["@types/socket.io-client", "npm:1.4.36"]\
+          ],\
+          "linkType": "HARD"\
+        }]\
+      ]],\
+      ["@types/socket.io-parser", [\
+        ["npm:2.2.1", {\
+          "packageLocation": "./.yarn/cache/@types-socket.io-parser-npm-2.2.1-baa0bbe7d5-4ebe488172.zip/node_modules/@types/socket.io-parser/",\
+          "packageDependencies": [\
+            ["@types/socket.io-parser", "npm:2.2.1"],\
+            ["@types/node", "npm:18.11.17"]\
           ],\
           "linkType": "HARD"\
         }]\
@@ -14212,6 +14255,8 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
             ["@types/jsonwebtoken", "npm:8.5.9"],\
             ["@types/node", "npm:18.11.16"],\
             ["@types/react", "npm:18.0.25"],\
+            ["@types/socket.io", "npm:2.1.13"],\
+            ["@types/socket.io-client", "npm:1.4.36"],\
             ["accepts", "npm:1.3.8"],\
             ["acorn", "npm:8.8.1"],\
             ["acorn-jsx", "virtual:b88faf10bc38b7bf99c4359521e8a0ed3f77dcbbc8677c8ff2c327d003d8f82b0e79a6212f450e879d54de3af7d71a6a67818de313afc6e195445593b76b6db0#npm:5.3.2"],\

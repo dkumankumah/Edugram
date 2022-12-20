@@ -1,15 +1,12 @@
 const mongoose = require('mongoose'),
   Tickets = mongoose.model('Tickets');
-const { Server } = require("socket.io");
-const io = new Server();
-
+// const io = require('server/server').get('io');
 
 const changeStream = Tickets.watch()
 
-changeStream.on('change', (next) => {
-  console.log('Test ',next);
-});
-
+// changeStream.on('change', (next) => {
+//   console.log('Test ',next);
+// });
 
 
 // console.log('Client: ', mongoose)
@@ -26,23 +23,24 @@ changeStream.on('change', (next) => {
 //   }
 // });
 
+
 // Tickets.watch([]).on("change",(data)=>{
 //   console.log({data})
 // })
-Tickets.watch([]).on("change", data => {
-  // process any change event
-
-  console.log('Data', data)
-  switch (data.operationType) {
-    case 'insert':
-      io.emit('chat message', data.fullDocument);
-      console.log('Insert: ',data.fullDocument);
-      break;
-    case 'update':
-      io.emit('Ticket message', data.updateDescription.updatedFields.createdBy);
-      console.log('Updated: ',data.updateDescription.updatedFields.createdBy);
-  }
-});
+// Tickets.watch([]).on("change", data => {
+//   // process any change event
+//
+//   console.log('Data', data)
+//   switch (data.operationType) {
+//     case 'insert':
+//       io.emit('chat message', data.fullDocument);
+//       console.log('Insert: ',data.fullDocument);
+//       break;
+//     case 'update':
+//       io.emit('Ticket message', data.updateDescription.updatedFields.createdBy);
+//       console.log('Updated: ',data.updateDescription.updatedFields.createdBy);
+//   }
+// });
 
 
 // Create a change stream. The 'change' event gets emitted when there's a
@@ -79,6 +77,20 @@ Tickets.watch([]).on("change", data => {
 //   });
 // }
 
+const getData = async (req, data) => {
+  console.log('Data', data)
+  switch (data.operationType) {
+    case 'insert':
+      io.emit('chat message', data.fullDocument);
+      console.log('Insert: ', data.fullDocument);
+      break;
+    case 'update':
+      io.emit('Ticket message', data.updateDescription.updatedFields.createdBy);
+      console.log('Updated: ', data.updateDescription.updatedFields.createdBy);
+    // global.io.emit('news', {hello: 'world'});
+  }
+};
+
 // Retrieve all the tasks saved in the database
 const getTickets = async (req, res) => {
   Tickets.find({}, function (err, ticket) {
@@ -112,8 +124,88 @@ const getTickets = async (req, res) => {
 //   });
 // });
 
-const getAllWorkouts = (req, res) => {
-  res.send("Get all workouts");
+const getAllWorkouts = async (req, res) => {
+  changeStream.on('change', (change) => {
+    console.log('Change detected:', change);
+
+    // Get the updated data from the database
+   Tickets.find({}, function (err, ticket) {
+      if (err) {
+        res.status(400).send(err);
+      } else {
+        res.status(200)
+        res.json(ticket);
+        // res.send("Get all Tickets");
+      }
+    }, function(err, doc) {
+      console.log('Updated data:', doc);
+
+      // Send the updated data to the client using Socket.io
+      req.io.emit('data-update', doc);
+    });
+  });
+  // changeStream.on("change", function(event) {
+  req.io.emit("data-update", {content: req.body.content});
+  // console.log(JSON.stringify(event));
+  // });
+  // req.io.emit("data-update", { content: req.body.content });
+  // changeStream.on("change", next => {
+
+  // req.io.emit('data-update', next.fullDocument.message);
+  res.status(200)
+  // return res.send());
+  // process any change event
+  // switch (next.operationType) {
+  //   case 'insert':
+  //     console.log(next.fullDocument.message);
+  //     break;
+  //   case 'update':
+  //     console.log(next.updateDescription.updatedFields.message);
+  // }
+  // })
+  // Tickets.find({}, function (err, ticket) {
+  //   if (err) {
+  //     res.status(400).send(err);
+  //   } else {
+  //     res.status(200)
+  //     res.json(ticket);
+  //     // res.send("Get all Tickets");
+  //   }
+  // }
+  // );
+  // return res.send({ success: true });
+// changeStream.on("data-update", next => {
+//   // process any change event
+//   res.io.emit('data-update',
+//     Tickets.find({}, function (err, ticket) {
+//       if (err) {
+//         res.status(400).send(err);
+//       } else {
+//         res.status(200)
+//         res.json(ticket);
+//         // res.send("Get all Tickets");
+//       }
+//     })
+// );
+//   switch (next.operationType) {
+//     case 'insert':
+//       Tickets.find({}, function (err, ticket) {
+//         if (err) {
+//           res.status(400).send(err);
+//         } else {
+//           res.status(200)
+//           res.json(ticket);
+//           // res.send("Get all Tickets");
+//         }
+//       })
+//
+//       console.log(next.fullDocument.message);
+//       return res.send({success: true});
+//       break;
+//     case 'update':
+//       console.log(next.updateDescription.updatedFields.message);
+//   }
+// })
 };
 
 // Create a new task
@@ -182,7 +274,8 @@ module.exports = {
   getAllWorkouts,
   getTickets,
   createTicket,
-
+  getData,
+  // changeStream
   // getOneWorkout,
   // createNewWorkout,
   // updateOneWorkout,

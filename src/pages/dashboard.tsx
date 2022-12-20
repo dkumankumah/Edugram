@@ -8,81 +8,92 @@ import AdminContainer from "../components/admin/container/adminContainer";
 import Chart from "chart.js/auto";
 import {Bar} from 'react-chartjs-2'
 import {CategoryScale} from 'chart.js';
-import { io, Socket } from "socket.io-client";
 
-// import * as io from 'socket.io-client';
 import {chosenChatTutor} from "./ChatSidebar";
-// import socketIOClient from 'socket.io-client';
+
+import io from 'socket.io-client';
+
 Chart.register(CategoryScale);
 
 
 const Dashboard = () => {
-    let socket: Socket;
+
     const [isAuth, setIsAuth] = useState(false)
     const baseUrl = "http://localhost:8001/tickets"
     const [map, setMap] = useState(new Map());
+    // const [dataa, setDataa] = useState(new Map());
 
-    const [dataa, setDataa] = useState([]);
-
-    socket.on("noArg", () => {
-        // ...
-    });
-
-
-
-
-    console.log('Socket: ',socket)
-
-    // useEffect(() => {
-    //     // setIsAuth(isAdmin())
-    //     let myMap = new Map();
-    //     let ticket: string;
-    //     const elementCounts: any = {};
-    //     const getTickets = async () => {
-    //         await fetch(
-    //             baseUrl, {
-    //                 method: 'GET',
-    //                 headers: {
-    //                     'Content-Type': 'application/json',
-    //                     'Access-Control-Allow-Origin': 'http://localhost:8001',
-    //                 },
-    //             }
-    //         )
-    //             .then((response) => response.json())
-    //             .then((data) => {
-    //                 data.sort((a: any, b: any) => {
-    //                     const dateA = new Date(a.dateCreated);
-    //                     const dateB = new Date(b.dateCreated);
-    //                     if (dateA < dateB) {
-    //                         return -1;
-    //                     }
-    //                     if (dateA > dateB) {
-    //                         return 1;
-    //                     }
-    //                     return 0;
-    //                 }).map((obj: any) => {
-    //                     console.log('test: ', ticket = new Date(obj.dateCreated).toLocaleDateString('en-us', {
-    //                         year: "numeric",
-    //                         month: "short",
-    //                         day: "numeric"
-    //                     }))
-    //                     elementCounts[ticket] = (elementCounts[ticket] || 0) + 1;
-    //                     myMap.set(ticket, myMap.get(ticket) + 1 || 1);
-    //                     setMap(myMap)
-    //                     //Add date to an Array of
-    //                     //Check if there are similar dates, sum to the date that is already in the Array
-    //                 })
-    //             });
-    //     };
-    //     getTickets().then(r => {
-    //         console.log('MAP: ', myMap);
-    //     });
-    // }, []);
+    let myMap = new Map();
+    let ticket: string;
 
     useEffect(() => {
-        // const socket = io('http://localhost:8001',);
-        // socket.connect();
+        const fetchData = async () => {
+
+         await fetch(
+                baseUrl, {
+                    method: 'GET',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Access-Control-Allow-Origin': '*',
+                        // 'Access-Control-Allow-Origin': 'http://localhost:8001',
+                    },
+                }
+            )
+                .then((response) => response.json())
+
+                .then((data) => {
+                    data.sort((a: any, b: any) => {
+                        const dateA = new Date(a.dateCreated);
+                        const dateB = new Date(b.dateCreated);
+                        if (dateA < dateB) {
+                            return -1;
+                        }
+                        if (dateA > dateB) {
+                            return 1;
+                        }
+                        return 0;
+                    }).map((obj: any) => {
+                        console.log('test: ', ticket = new Date(obj.dateCreated).toLocaleDateString('en-us', {
+                            year: "numeric",
+                            month: "short",
+                            day: "numeric"
+                        }))
+                        // elementCounts[ticket] = (elementCounts[ticket] || 0) + 1;
+                        myMap.set(ticket, myMap.get(ticket) + 1 || 1);
+                        // setMap(myMap)
+                        // console.log('Result: ',myMap)
+                        // setDataa(myMap)
+                        setMap(myMap)
+                        //Add date to an Array of
+                        //Check if there are similar dates, sum to the date that is already in the Array
+                    })
+                }
+                );
+
+          console.log('Result: ',data)
+            // setDataa(result);
+        };
+
+        fetchData();
     }, []);
+
+    useEffect(() => {
+        const socket = io('ws://localhost:8001', {
+            path: "/ticketss",
+            // withCredentials: false,
+            extraHeaders: {
+                "Access-Control-Allow-Origin": "http://localhost:8001",
+            }
+        });
+        socket.on('data-update', updatedData => {
+            setMap(updatedData);
+            console.log('Map Results: ',map)
+        });
+        return () => {
+            socket.disconnect();
+        };
+    }, []);
+
 
     const options1 = {
 
@@ -119,7 +130,6 @@ const Dashboard = () => {
         }
     };
 
-
     const labels = Array.from(map.keys());
 
     const data = {
@@ -140,8 +150,6 @@ const Dashboard = () => {
         ],
     };
 
-    // console.log(isAuth)
-    // if(isAuth) {
         return (
             <AdminContainer>
                 <h1>Dashboard is here Page</h1>
