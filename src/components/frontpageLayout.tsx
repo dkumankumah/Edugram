@@ -7,6 +7,7 @@ import React from "react";
 // import { Layout } from "./components/Layout";
 // import { PricingSection } from "./components/PricingSection";
 // import { Helmet } from "react-helmet";
+import Hero from "./Hero";
 
 const faqs: any[] = [
     {
@@ -94,7 +95,7 @@ const Layout = () => {
     return (
         <>
 
-            <Box bg="gray.50">
+            <Box bg="gray.50" pt={{base: '50px', lg: "0px"}}>
                 {/*<HeroSection />*/}
 
                 <VStack
