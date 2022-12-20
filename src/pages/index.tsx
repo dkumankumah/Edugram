@@ -14,7 +14,7 @@ const Home = () => {
   return (
     <>
       <Hero {...data}/>
-      <Layout />
+      <Layout/>
     </>
   );
 };
