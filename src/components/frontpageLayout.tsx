@@ -94,10 +94,7 @@ const features: FeatureType[] = [
 const Layout = () => {
     return (
         <>
-
             <Box bg="gray.50" pt={{base: '50px', lg: "0px"}}>
-                {/*<HeroSection />*/}
-
                 <VStack
                     backgroundColor="white"
                     w="full"
@@ -135,9 +132,6 @@ const Layout = () => {
                         ))}
                     </SimpleGrid>
                 </Container>
-                {/*<Container py={28} maxW="container.lg" w="full" id="pricing">*/}
-                {/*    <PricingSection/>*/}
-                {/*</Container>*/}
                 <Container py={28} maxW="container.md">
                     <Box w="full">
                         <VStack spacing={10} w="full">
