@@ -6,6 +6,7 @@ import {useRouter} from "next/router";
 import {useEffect, useState} from "react";
 import {isAuthenticated} from "./api/api.storage";
 import Home from "./index";
+import Footer from "../components/Footer"
 
 export default function App({Component: Page, pageProps}: AppProps) {
     const [authenticated, setAuthenticated] = useState(false)
@@ -19,6 +20,7 @@ export default function App({Component: Page, pageProps}: AppProps) {
             <ChakraProvider theme={theme}>
                 {router.asPath === "/register" || router.asPath === "/" ? null : (<Navbar/>)}
                 <Page {...pageProps} />
+                <Footer/>
             </ChakraProvider>
     );
 }
