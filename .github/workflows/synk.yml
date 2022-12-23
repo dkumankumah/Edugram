@@ -7,5 +7,7 @@ jobs:
       - uses: actions/checkout@main
       - name: Run Snyk to check for vulnerabilities
         uses: snyk/actions/node@master
+        with:
+          build: yarn build
         env:
           SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
