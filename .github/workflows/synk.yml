@@ -8,6 +8,7 @@ jobs:
       - name: Run Snyk to check for vulnerabilities
         uses: snyk/actions/node@master
         with:
+          install: yarn install
           build: yarn build
         env:
           SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
