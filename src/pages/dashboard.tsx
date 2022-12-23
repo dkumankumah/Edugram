@@ -252,8 +252,8 @@ const Dashboard = () => {
                         <CardBody>
                             {studentList?.map((student) => {
                                 return (
-                                <Flex alignItems="center">
-                                    <Flex flex='1' flexDirection="row" justifyContent={"space-between"} gap='4' alignItems='center' flexWrap='wrap'>
+                                <Flex key={student.id} alignItems="center">
+                                    <Flex   flex='1' flexDirection="row" justifyContent={"space-between"} gap='4' alignItems='center' flexWrap='wrap'>
 
                                         <Flex alignItems={"center"} >
                                             <Avatar name={student.name + " " + student.lastName} />
