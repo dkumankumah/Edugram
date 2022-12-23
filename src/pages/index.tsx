@@ -22,7 +22,7 @@ import {
 } from '@chakra-ui/react'
 import React, {useState} from "react";
 import {Router, useRouter} from "next/router";
-import ChatSidebar from "../components/chatComponents/ChatSidebar"
+import ChatSidebar from "../ChatSidebar"
 
 // component imports
 import {InputField} from "../components/shared/InputField/InputField";

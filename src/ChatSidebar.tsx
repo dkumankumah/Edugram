@@ -5,7 +5,7 @@ import {ArrowLeftIcon} from "@chakra-ui/icons"
 import {router} from "next/router";
 import React, {useEffect, useState} from "react";
 import * as io from "socket.io-client";
-import {ChatModel} from "../../models/ChatModel";
+import {ChatModel} from "./models/ChatModel";
 import {useLocation} from "react-router";
 // const Chat = require("../../server/models/chat");
 
