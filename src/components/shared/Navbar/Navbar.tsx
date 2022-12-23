@@ -19,6 +19,7 @@ export function Navbar({ ...props }: ComponentProps) {
   const handleChangeEvent = (event:any) => {
     setValue(event.target.value);
   };
+  
   const handleKeyDown = (event:any) => {
     if (event.key === 'Enter') {
       router.push({
@@ -46,11 +47,11 @@ export function Navbar({ ...props }: ComponentProps) {
         <GridItem w="100%">
           <Flex justify={{ sm: "center", md: "flex-end" }} mt={2}>
             <SearchField
+                aria-label="What do you want to learn?"
                 value={value}
                 data={value.toLowerCase()}
                 onChange={handleChangeEvent}
                 onKeyDown={handleKeyDown}
-                label="SearchField, What do you want to learn?"
                 id="searchfield"
               placeholder="What do you want to learn?"
             />
