@@ -1,46 +1,62 @@
 import React, {useEffect, useState} from "react";
-import {
-    Card,
-    CardBody
-} from "@chakra-ui/react";
-
 import AdminContainer from "../components/admin/container/adminContainer";
+import {Card, CardBody, Text} from "@chakra-ui/react";
 import Chart from "chart.js/auto";
 import {Bar} from 'react-chartjs-2'
 import {CategoryScale} from 'chart.js';
-
+import * as io from "socket.io-client";
 import {chosenChatTutor} from "./ChatSidebar";
-
-import io from 'socket.io-client';
 
 Chart.register(CategoryScale);
 
-
+const socket = io.connect("http://localhost:8001");
+// const socket = io.connect("ws://localhost:3001", { transports: ['websocket', 'polling', 'flashsocket'] });
 const Dashboard = () => {
-
-    const [isAuth, setIsAuth] = useState(false)
     const baseUrl = "http://localhost:8001/tickets"
     const [map, setMap] = useState(new Map());
-    // const [dataa, setDataa] = useState(new Map());
 
-    let myMap = new Map();
-    let ticket: string;
+    const sendMessage = async (e: any) => {
+        e.preventDefault();
+        try {
+            const ticket = await socket.emit("new-ticket");
+            console.log(ticket);
+        } catch (error) {
+            console.error(error);
+        }
+    };
+
+    // componentDidMount() {
+    //     // Connect to the Socket.io server
+    //     this.socket = io.connect(serverUrl);
+    //
+    //     // Set up a callback function to handle new ticket data
+    //     this.socket.on('newTicket', async (ticket) => {
+    //         try {
+    //             // Retrieve the latest ticket data and transform it as needed
+    //             const ticketCountsByCategory = await this.getTicketCountsByCategory();
+    //             // Update the state with the new ticket data
+    //             this.setState({ ticketCountsByCategory });
+    //         } catch (error) {
+    //             console.error(error);
+    //         }
+    //     });
+    // }
 
     useEffect(() => {
-        const fetchData = async () => {
-
-         await fetch(
+        let myMap = new Map();
+        let ticket: string;
+        const elementCounts: any = {};
+        const getTickets = async () => {
+            await fetch(
                 baseUrl, {
                     method: 'GET',
                     headers: {
                         'Content-Type': 'application/json',
-                        'Access-Control-Allow-Origin': '*',
-                        // 'Access-Control-Allow-Origin': 'http://localhost:8001',
+                        'Access-Control-Allow-Origin': 'http://localhost:8001',
                     },
                 }
             )
                 .then((response) => response.json())
-
                 .then((data) => {
                     data.sort((a: any, b: any) => {
                         const dateA = new Date(a.dateCreated);
@@ -58,41 +74,19 @@ const Dashboard = () => {
                             month: "short",
                             day: "numeric"
                         }))
-                        // elementCounts[ticket] = (elementCounts[ticket] || 0) + 1;
+                        elementCounts[ticket] = (elementCounts[ticket] || 0) + 1;
                         myMap.set(ticket, myMap.get(ticket) + 1 || 1);
-                        // setMap(myMap)
-                        // console.log('Result: ',myMap)
-                        // setDataa(myMap)
                         setMap(myMap)
                         //Add date to an Array of
                         //Check if there are similar dates, sum to the date that is already in the Array
                     })
-                }
-                );
-
-          console.log('Result: ',data)
-            // setDataa(result);
+                });
         };
-
-        fetchData();
+        getTickets().then(r => {
+            console.log('MAP: ', myMap);
+        });
     }, []);
 
-    useEffect(() => {
-        const socket = io('ws://localhost:8001', {
-            path: "/ticketss",
-            // withCredentials: false,
-            extraHeaders: {
-                "Access-Control-Allow-Origin": "http://localhost:8001",
-            }
-        });
-        socket.on('data-update', updatedData => {
-            setMap(updatedData);
-            console.log('Map Results: ',map)
-        });
-        return () => {
-            socket.disconnect();
-        };
-    }, []);
 
 
     const options1 = {
@@ -150,36 +144,25 @@ const Dashboard = () => {
         ],
     };
 
-        return (
-            <AdminContainer>
-                <h1>Dashboard is here Page</h1>
-                <Card
-                    maxW='md'
-                    maxH="md"
-                    cursor='pointer'
-                    bg="#FFFFFF"
-                    borderRadius='10'>
-                    <CardBody>
-                        {/*<Text as='b'>Daily Tickets</Text>*/}
-                        <Bar
-                            options={options1}
-                            data={data}
-                        />
-                    </CardBody>
-                </Card>
-            </AdminContainer>
-        )
-    // }
-    // else return (
-    //
-    //     // <AdminContainer>
-    //
-    //     <Box>
-    //         <ProfileNavigation/>
-    //         Dashboard
-    //     </Box>
-    //
-    //       // </AdminContainer>
-    // )
+    return (
+
+        <AdminContainer>
+            <h1>Dashboard is here Page</h1>
+            <Card
+                maxW='md'
+                maxH="md"
+                cursor='pointer'
+                bg="#FFFFFF"
+                borderRadius='10'>
+                <CardBody>
+                    <Text as='b'>Daily Tickets</Text>
+                    <Bar
+                        options={options1}
+                        data={data}
+                    />
+                </CardBody>
+            </Card>
+        </AdminContainer>
+    )
 }
 export default Dashboard

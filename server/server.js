@@ -18,56 +18,17 @@ const cache = apiCache.middleware;
 const PORT = process.env.PORT || 8001
 const http = require('http');
 const server = http.createServer(app);
-const {Server} = require("socket.io");
+const socketIo = require("socket.io");
+const MongoClient = require('mongodb').MongoClient;
+const io = require('socket.io')(server);
+// const {Server} = require("socket.io");
+// const io = socketIo(server, { cors: { origin: "*" } });
+// const httpServer = require("http").createServer(app);
 
-const httpServer = require("http").createServer(app);
-const registerOrderHandlers = require("./sockets/ticketSocket");
-// const registerOrderHandlers = require("./controllers/ticketsController");
-// const registerUserHandlers = require("./routes/ticketsRoute");
-
- const io = new Server({
-   // allowRequest: (req, callback) => {
-   //   const noOriginHeader = req.headers.origin === undefined;
-   //   callback(null, noOriginHeader); // only allow requests without 'origin' header
-   // },
-
-  cors: {
-    // origin: ["*"],
-    origin: "http://localhost:3000",
-    allowedHeaders: ["my-custom-header"],
-    // credentials: true
-
-    // origin: '*',
-    // allowedHeaders: ["my-custom-header"],
-    // credentials: true
-  }
-});
-
-app.set('io', io);
-app.use((req, res, next) => {
-  req.io = io;
-
-  console.log('a user connected');
-  io.on('disconnect', () => {
-    console.log('user disconnected');
-  });
-
-  return next();
-});
-// app.use('/', routes);
-
-// const httpServer = createServer();
-// const io = new Server(httpServer, {
-//   // ...
-//
-// });
-
-// const io = new Server(httpServer, {
+//  const io = new Server(server,{
 //   cors: {
-//     origin: "https://example.com",
-//     methods: ["GET", "POST"],
-//     allowedHeaders: ["my-custom-header"],
-//     credentials: true
+//     // origin: ["*"],
+//     origin: "*",
 //   }
 // });
 
@@ -75,40 +36,58 @@ app.use((req, res, next) => {
 const ticketRoute = require('./routes/ticketsRoute');
 
 // Mongoose instance connection url connection
-mongoose.Promise = global.Promise;
+
+// mongoose.Promise = global.Promise;
 const uri = `mongodb+srv://${username}:${password}@cluster0.wscvjuf.mongodb.net/Edugram?retryWrites=true&w=majority`;
 mongoose.connect(uri, {useNewUrlParser: true, useUnifiedTopology: true})
   .then(() => console.log('connected to db'))
   .catch((err) => console.log(err));
 
-/* Configure app to use bodyParser()
-   this will let us get the data from a POST */
+
+MongoClient.connect('mongodb+srv://bugra:bugra34Edu@cluster0.wscvjuf.mongodb.net/Edugram?retryWrites=true&w=majority',
+  { useUnifiedTopology: true }, (err, client) => {
+  if (err) {
+    console.error(err);
+    return;
+  }
+  console.log('Connected to MongoDB');
+
+  const db = client.db("Edugram");
+  const ticketsCollection = db.collection('tickets');
+
+  // Create a change stream to listen for changes to the tickets collection
+  const changeStream = ticketsCollection.watch();
+
+  // Set up a callback function to handle new data
+  changeStream.on('change', (change) => {
+    // Check if the change is an insert operation
+    if (change.operationType === 'insert') {
+      // Emit a Socket.io event with the new ticket data
+      io.emit('newTicket', change.fullDocument);
+    }
+  });
+});
+
+/**
+ * Configure app to use bodyParser()
+ * Add the routes here as well to get noticed
+ * Cache is installed and set for 2 minutes
+ */
 app.use(cors());
-app.use(cache("2 minutes"));
 app.use(bodyParser.json());
 
 //Register the route
 app.use(ticketRoute);
 
+
 // Health route to make sure everything is working (accessed at GET http://localhost:3000/health)
 app.use('/health', require('express-healthcheck')({}));
-
-
-// io.on('connection', function(socket){
-//   console.log("Connection");
-// });
 
 server.listen(PORT, () => {
   console.log(`API is listening on port ${PORT}`);
 });
 
 
-// Start the server
-// app.listen(PORT, () => {
-//   console.log(`API is listening on port ${PORT}`);
-//   /// *** ADD ***
-//   // V1SwaggerDocs(app, PORT);
-// });
 
-// All of our routes will be prefixed with /api
-// app.use('/api', router);
+
+

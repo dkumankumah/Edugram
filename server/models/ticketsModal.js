@@ -7,7 +7,7 @@ const ticketSchema = new mongoose.Schema({
     },
     assignedBy: {
       type: String,
-      required: true
+      required: false
     },
     dateCreated: {
       type: Date,
