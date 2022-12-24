@@ -11,30 +11,24 @@ import {
     InputGroup,
     InputLeftElement,
     Link,
-    Stack,
     Select,
+    Stack,
     Textarea,
     Tooltip,
     useClipboard,
     useColorModeValue,
-    VStack,
+    useToast,
+    VStack
 } from '@chakra-ui/react';
 
-import {BsGithub, BsLinkedin, BsPerson, BsTwitter} from 'react-icons/bs';
+import {BsGithub, BsLinkedin, BsTwitter} from 'react-icons/bs';
 import {MdEmail, MdOutlineEmail} from 'react-icons/md';
-import NavItem from "../components/admin/navbar/navItem";
 
 interface LinkItemProps {
     title: string;
     values: string;
 }
 
-// const LinkItems: Array<LinkItemProps> = [
-//     {title: 'Login Issue',  values: 'loginIssue'},
-//     {title: 'Payment Issue',  values: 'paymentIssue'},
-//     {title: 'Account Details',  values: 'accountDetails'},
-//     {title: 'Fraud',  values: 'fraud'},
-// ];
 
 const LinkItems: Array<{ value: string, label: string }> = [
     {value: 'loginIssue', label: 'Login Issue'},
@@ -68,29 +62,49 @@ const Contact = () => {
     const [description, setDescription] = useState('');
     const [error, setError] = useState('');
     const [success, setSuccess] = useState('');
+    const toast = useToast();
 
-    const handleInputChange = (e: any) => {
-        setInput(e.target.value);
+    const showToast = (message: any) => {
+        if (message == "201") {
+            toast({
+                title: 'Success!',
+                description: 'Your application has been received. We will review your application and respond within the next 48 hours.',
+                status: 'success',
+                duration: 5000,
+                isClosable: true,
+                position: 'bottom-right',
+            });
+        } else {
+            toast({
+                title: 'Error!',
+                description: message,
+                // description: 'Something went wrong. Check the fields before submitting.',
+                status: 'error',
+                duration: 5000,
+                isClosable: true,
+                position: 'bottom-right',
+            });
+        }
     }
 
     const handleChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
         setSelectedValue(event.target.value);
     };
-    const clearCredentials = () => {
+
+    function clearCredentials(e: any) {
+
+        e.preventDefault(); // 👈️ prevent page refresh
         setEmail('')
         setDescription('')
         setSelectedValue('')
     }
-    const sendMessage = () => {
+
+    function sendMessage() {
         fetch('http://localhost:8001/createTicket', {
             method: 'POST',
             body: JSON.stringify({
                 createdBy: email,
                 dateCreated: new Date(),
-                // dateOfEnding: "Tue Oct 11 2022 00:00:00 GMT+0200 (Central European Summer Time)",
-                // status: [
-                //     "Open"
-                // ],
                 subject: selectedValue,
                 description: description
             }),
@@ -98,17 +112,26 @@ const Contact = () => {
                 'Content-Type': 'application/json'
             }
         })
-            .then(response => response.json())
+            .then((response) => {
+                if (response.status === 201) {
+                  showToast(response.status)
+
+                    // Display the JSON response
+                    return response.json();
+                } else {
+                    throw new Error('An error occurred while sending the message');
+                }
+            })
             .then(data => {
                 console.log(data);
-                // clearCredentials();
+                // showToast('')
+
             })
             .catch(error => {
                 console.error(error);
+                showToast(error.message)
             });
-    };
-
-
+    }
 
 
     const isError = input === '';
@@ -228,6 +251,7 @@ const Contact = () => {
                                                     onChange={(e: any) => {
                                                         setEmail(e.target.value)
                                                     }}
+                                                    value={email}
                                                     pattern={emailRegex}
                                                 />
                                             </InputGroup>
@@ -254,9 +278,9 @@ const Contact = () => {
                                                 onChange={(e: any) => {
                                                     setDescription(e.target.value)
                                                 }}
+                                                value={description}
                                             />
                                         </FormControl>
-
                                         <Button
                                             colorScheme="grey"
                                             bg="green.400"
@@ -266,7 +290,10 @@ const Contact = () => {
                                                 // bg: 'blue.500',
                                                 bg: 'red.500',
                                             }}
-                                            onClick={sendMessage}>
+                                            onClick={()=>{
+                                               sendMessage()
+                                            }
+                                            }>
                                             Send Message
                                         </Button>
                                     </VStack>
