@@ -92,7 +92,6 @@ const Contact = () => {
     };
 
     function clearCredentials(e: any) {
-
         e.preventDefault(); // 👈️ prevent page refresh
         setEmail('')
         setDescription('')
@@ -103,10 +102,10 @@ const Contact = () => {
         fetch('http://localhost:8001/createTicket', {
             method: 'POST',
             body: JSON.stringify({
-                createdBy: email,
+                createdBy: email.trim(),
                 dateCreated: new Date(),
                 subject: selectedValue,
-                description: description
+                description: description.trim()
             }),
             headers: {
                 'Content-Type': 'application/json'

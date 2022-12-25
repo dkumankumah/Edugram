@@ -16,29 +16,9 @@ mongoose.connect(uri, {useNewUrlParser: true, useUnifiedTopology: true}).then(()
   console.log('Connected')
 }).catch(err => console.log(err))
 
-// changeStream.on('change', (change) => {
-//
-//   console.log('Change detected:', change);
-//   if (change.operationType === 'insert') {
-//     // Tickets.find({}, (err, ticket) => {
-//
-//       console.log('TicketData Fetched:', change);
-//       // req.io.emit('new data', ticket.fullDocument);
-//       // io.emit('data-update', ticket.fullDocument);
-//       // send('Event emitted');
-//     }
-//   // } else if (change.operationType === 'update') {
-//   //   console.log("Updated.")
-//   // }
-// });
-
 io.on('connection', (socket) => {
   console.log('A user connected');
 
-  // Tickets.watch().on('change', next => {
-  //   console.log('a change occurred:', next);
-  //   // io.emit('database update', next);
-  // });
   Chat.find().then(result => {
     socket.emit('user-chats', result)
   });
@@ -46,6 +26,38 @@ io.on('connection', (socket) => {
   socket.on('disconnect', () => {
     console.log('user disconnected');
   });
+
+  Tickets.find({}).then(result => {
+    socket.emit('data', result)
+  });
+
+  // Set up a listener for the 'getData' event
+  socket.on('getData', async () => {
+    // Fetch updated data from the database
+    // const data = Tickets.find();
+    // Send the updated data to the client
+    // await const result= Tickets.find();
+    // socket.emit('data', result);
+    Tickets.find({}).then(result => {
+      socket.emit('data', result)
+    });
+  });
+
+  // io.to().emit("update-tickets", await Tickets.findOne({}));
+  // Tickets.find({}).then(result => {
+  //   socket.emit('user-chats', result)
+  // });
+
+  // socket.on("create-ticket", async (message, student, tutor, sender) => {
+  //   console.log("New ticket: " + student + " : " + message + " to: " + tutor);
+  //   await Tickets.findOneAndUpdate(
+  //     {tutor: tutor, student: student},
+  //     {$push: {messages: new Message({message: message, sender: sender})}},
+  //   );
+  // });
+
+  // Send the data to the client through the Socket.io connection
+  // socket.emit('data', data);
 
   socket.on("send-message", async (message, student, tutor, sender) => {
     console.log("Message sent by " + student + " : " + message + " to: " + tutor);
@@ -55,13 +67,31 @@ io.on('connection', (socket) => {
     );
   });
 
-
   socket.on("join-chat", async (student, tutor) => {
     socket.join(student + tutor);
     io.to(student + tutor).emit("update-chat", await Chat.findOne({tutor: tutor, student: student}));
     Chat.find({student: student}).then(result => {
       socket.emit('user-chats', result)
     });
-    console.log("test")
+    // console.log("test")
   })
+
+  const changeStream = Tickets.watch();
+  changeStream.on('change', (change) => {
+    console.log('Change detected in the tickets collection:', change);
+
+    // Fetch the updated data from the database
+    // const data = Tickets.find({})
+
+    // Send the updated data to all connected clients
+    // io.emit('data', data);
+
+    Tickets.find({}).then(result => {
+      socket.emit('data', result)
+    });
+  });
 });
+
+
+
+
