@@ -37,8 +37,8 @@ io.on('connection', (socket) => {
     console.log('Change detected in the tickets collection:', change);
 
     // Fetch the updated data from the database
-    Tickets.find({}).then(result => {
-      socket.emit('data', result)
+    Tickets.find().then(result => {
+      socket.emit('update-tickets', result)
     });
   });
 
