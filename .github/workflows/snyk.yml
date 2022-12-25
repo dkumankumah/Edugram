@@ -10,5 +10,7 @@ jobs:
         with:
           install: yarn install
           build: yarn build
+          command: monitor
         env:
           SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
+     
