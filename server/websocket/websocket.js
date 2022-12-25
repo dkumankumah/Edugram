@@ -27,37 +27,22 @@ io.on('connection', (socket) => {
     console.log('user disconnected');
   });
 
+  //This Renders at the start of visiting the page
   Tickets.find({}).then(result => {
     socket.emit('data', result)
   });
 
-  // Set up a listener for the 'getData' event
-  socket.on('getData', async () => {
-    // Fetch updated data from the database
-    // const data = Tickets.find();
-    // Send the updated data to the client
-    // await const result= Tickets.find();
-    // socket.emit('data', result);
+  const changeStream = Tickets.watch();
+  changeStream.on('change', (change) => {
+    console.log('Change detected in the tickets collection:', change);
+
+    // Fetch the updated data from the database
     Tickets.find({}).then(result => {
       socket.emit('data', result)
     });
   });
 
-  // io.to().emit("update-tickets", await Tickets.findOne({}));
-  // Tickets.find({}).then(result => {
-  //   socket.emit('user-chats', result)
-  // });
-
-  // socket.on("create-ticket", async (message, student, tutor, sender) => {
-  //   console.log("New ticket: " + student + " : " + message + " to: " + tutor);
-  //   await Tickets.findOneAndUpdate(
-  //     {tutor: tutor, student: student},
-  //     {$push: {messages: new Message({message: message, sender: sender})}},
-  //   );
-  // });
-
-  // Send the data to the client through the Socket.io connection
-  // socket.emit('data', data);
+  // Set up a listener for the 'getData' event
 
   socket.on("send-message", async (message, student, tutor, sender) => {
     console.log("Message sent by " + student + " : " + message + " to: " + tutor);
@@ -76,20 +61,7 @@ io.on('connection', (socket) => {
     // console.log("test")
   })
 
-  const changeStream = Tickets.watch();
-  changeStream.on('change', (change) => {
-    console.log('Change detected in the tickets collection:', change);
 
-    // Fetch the updated data from the database
-    // const data = Tickets.find({})
-
-    // Send the updated data to all connected clients
-    // io.emit('data', data);
-
-    Tickets.find({}).then(result => {
-      socket.emit('data', result)
-    });
-  });
 });
 
 

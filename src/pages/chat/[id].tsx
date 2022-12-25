@@ -33,12 +33,9 @@ export default function ChatApp() {
     socket.emit('join-chat', "test1", chosenChatTutor);
     useEffect(() => {
         socket.on("update-chat", (chat) => {
-            // console.log('Chat: ', chat)
             setChat(chat);
-
         });
     }, [socket]);
-    console.log('Chat: ', chat)
     return (
         <Flex
             h="100vh"

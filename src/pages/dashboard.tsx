@@ -19,6 +19,7 @@ const Dashboard = () => {
     const [map, setMap] = useState(new Map());
     // const [dataa, setDataa] = useState(new Map());
     const [dataa, setDataa] = useState([]);
+    const [dataForChart, setDataForChart] = useState([]);
 
 
     useEffect(() => {
@@ -39,15 +40,41 @@ const Dashboard = () => {
 
     // console.log('keys', dataa.keys())
     socket.on('data', (newData: any) => {
-
+        let myMap = new Map();
+        let ticket: string;
+        const elementCounts: any = {};
         // const difference = _.difference(newData, dataa);
         // if (difference.length > 0) {
-            setDataa(newData);
+        setDataa(newData);
+        setDataForChart(newData);
+        dataForChart.sort((a: any, b: any) => {
+                                const dateA = new Date(a.dateCreated);
+                                const dateB = new Date(b.dateCreated);
+                                if (dateA < dateB) {
+                                    return -1;
+                                }
+                                if (dateA > dateB) {
+                                    return 1;
+                                }
+                                return 0;
+                            }).map((obj: any) => {
+                                console.log('test: ', ticket = new Date(obj.dateCreated).toLocaleDateString('en-us', {
+                                    year: "numeric",
+                                    month: "short",
+                                    day: "numeric"
+                                }))
+                                elementCounts[ticket] = (elementCounts[ticket] || 0) + 1;
+                                myMap.set(ticket, myMap.get(ticket) + 1 || 1);
+                                setMap(myMap)
+                                //Add date to an Array of
+                                //Check if there are similar dates, sum to the date that is already in the Array
+                            })
         // }
         // console.log('Data: ', dataa)
     });
 
-    console.log('Data: ', dataa)
+    // console.log('Data in useState: ', dataForChart)
+    console.log('Data in Chart: ', map)
 
 
     // useEffect(() => {
