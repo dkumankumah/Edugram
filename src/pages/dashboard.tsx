@@ -15,7 +15,6 @@ const Dashboard = () => {
     const [dataa, setDataa] = useState([]);
     let [arrayChartData, setArrayChartData] = useState([]);
 
-
     useEffect(() => {
         socket.on('data', (result: any) => {
             // socket.emit('getData');
