@@ -1,10 +1,12 @@
 import React, {useEffect, useState} from "react";
-import AdminContainer from "../components/admin/container/adminContainer";
 import {Card, CardBody, Text} from "@chakra-ui/react";
 import Chart from "chart.js/auto";
 import {CategoryScale} from 'chart.js';
 import * as io from "socket.io-client";
 import {Bar} from "react-chartjs-2";
+import AdminContainer from "../components/admin/container/adminContainer";
+import DashboardTable from "../components/admin/container/dashboardTable";
+import {Stack} from "@chakra-ui/layout";
 
 Chart.register(CategoryScale);
 
@@ -131,7 +133,7 @@ const Dashboard = () => {
             <Card
                 maxW='md'
                 maxH="md"
-                cursor='pointer'
+                // cursor='pointer'
                 bg="#FFFFFF"
                 borderRadius='10'>
                 <CardBody>
@@ -142,7 +144,22 @@ const Dashboard = () => {
                     />
                 </CardBody>
             </Card>
+
+
+            <Card
+                minH="100%"
+                w='75%'
+                bg="#FFFFFF"
+                borderRadius='10'
+                variant={'elevated'}>
+                <CardBody>
+                    <DashboardTable/>
+                </CardBody>
+            </Card>
+
         </AdminContainer>
     )
 }
+
 export default Dashboard
+

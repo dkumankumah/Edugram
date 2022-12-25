@@ -32,6 +32,7 @@ import CustomFooter from "../components/Footer";
 import {LoginModal} from "../components/shared/LoginModal/LoginModal"
 import HeroSection from "../components/heroSection";
 import Layout from "../components/frontpageLayout";
+import DashboardTable from "../components/admin/container/dashboardTable";
 
 const Home = () => {
     const {isOpen, onOpen, onClose} = useDisclosure();

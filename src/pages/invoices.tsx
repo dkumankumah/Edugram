@@ -5,7 +5,6 @@ const Invoices = () => {
     return (
         <Box>
             <ProfileNavigation/>
-
             Invoices page
         </Box>
     )
