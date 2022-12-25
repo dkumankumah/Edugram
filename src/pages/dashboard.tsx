@@ -8,26 +8,19 @@ import {Bar} from "react-chartjs-2";
 
 Chart.register(CategoryScale);
 
-// const socket = io.connect("http://localhost:8001");
-// const socket = io.connect('ws://localhost:3001');
 const socket = io.connect("ws://localhost:3001", {transports: ['websocket', 'polling', 'flashsocket']});
-// const socket = io.connect("ws://localhost:3001", { transports: ['websocket', 'polling', 'flashsocket'] });
 const Dashboard = () => {
     const baseUrl = "http://localhost:8001/tickets"
     const [chartMap, setChartMap] = useState(new Map());
-    const [mappedData, setMappedData] = useState(new Map());
     const [dataa, setDataa] = useState([]);
-    let [dataForChart, setDataForChart] = useState([]);
-    let [test, setTest] = useState();
+    let [arrayChartData, setArrayChartData] = useState([]);
 
 
     useEffect(() => {
         socket.on('data', (result: any) => {
             // socket.emit('getData');
             console.log('Getting Data', result)
-
             getChartData(result);
-
         });
     }, []);
 
@@ -35,74 +28,10 @@ const Dashboard = () => {
         let myMap = new Map();
         let array: any[] = [];
         let ticket: string;
-        const elementCounts: any = {};
-
         setDataa(newData);
 
-
-        try {
-            console.log("The following data is: ", newData)
-            newData.sort((a: any, b: any) => {
-                const dateA = new Date(a.dateCreated);
-                const dateB = new Date(b.dateCreated);
-                if (dateA < dateB) {
-                    return -1;
-                }
-                if (dateA > dateB) {
-                    return 1;
-                }
-                console.log("Im here in sortFunction.")
-                return 0;
-            }).map((obj: any) => {
-
-
-                ticket = new Date(obj.dateCreated).toLocaleDateString('en-us', {
-                    year: "numeric",
-                    month: "short",
-                    day: "numeric"
-                })
-                elementCounts[ticket] = (elementCounts[ticket] || 0) + 1;
-
-
-                // setMappedData(myMap)
-                myMap.set(ticket, myMap.get(ticket) + 1 || 1);
-                setChartMap(myMap)
-                array.push(obj)
-                setDataForChart(array)
-                console.log("Im here in mapFunction.")
-                //Add date to an Array of
-                //Check if there are similar dates, sum to the date that is already in the Array
-            })
-        } catch (err) {
-            throw new Error()
-        }
-
-        // setDataForChart(test);
-        // console.log("New Map: ", map)
-        // console.log('Updated Data: ', dataForChart)
+        getChartData(newData)
     });
-
-
-    // const labels = Array.from(map.keys());
-    //
-    // const data = {
-    //     labels,
-    //     // labels : chart.map(obj=>()),
-    //     datasets: [
-    //         {
-    //             label: 'Dataset 2',
-    //             // data: [0, 10, 20, 30, 93, 60, 80, 110, 65],
-    //             data: Array.from(map.values()),
-    //             // data: [0, 10, 20, 30, 93, 60, 80, 110, 65],
-    //             backgroundColor: '#4EA4B1',
-    //             borderRadius: 10,
-    //             barThickness: 30,
-    //             // borderWidth: 2,
-    //             borderSkipped: false, // To make all side rounded
-    //         },
-    //     ],
-    // };
-
 
     const getChartData = (fromSocket: any) => {
         let myMap = new Map();
@@ -132,7 +61,7 @@ const Dashboard = () => {
                 myMap.set(ticket, myMap.get(ticket) + 1 || 1);
                 setChartMap(myMap)
                 array.push(obj)
-                setDataForChart(array)
+                setArrayChartData(array)
                 console.log("Im here in mapFunction.")
                 //Add date to an Array of
                 //Check if there are similar dates, sum to the date that is already in the Array
@@ -144,10 +73,7 @@ const Dashboard = () => {
         }
     }
 
-    // console.log('Data in Chart: ', chartMap)
-    // console.log('Updated Data After socket: ', dataForChart)
-
-    const  chartData = {
+    const chartData = {
         labels: Array.from(chartMap.keys()),
         // labels : chart.map(obj=>()),
         datasets: [
@@ -198,7 +124,7 @@ const Dashboard = () => {
             },
         }
     };
-    console.log('Data for input:',chartData)
+    console.log('Data for input:', chartData)
     return (
 
         <AdminContainer>
