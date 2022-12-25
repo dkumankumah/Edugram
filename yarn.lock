@@ -7748,6 +7748,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"express-healthcheck@npm:^0.1.0":
+  version: 0.1.0
+  resolution: "express-healthcheck@npm:0.1.0"
+  checksum: 075874d49a2a8c2fab2ae604c23c0247bac4b1aabf46b7af667afc99c02095697f55e6d7d3b4ee320c8e633ad8b1535cc792fd3a0cf806373af34081c3f06c3c
+  languageName: node
+  linkType: hard
+
 "express@npm:^4.16.4, express@npm:^4.18.2":
   version: 4.18.2
   resolution: "express@npm:4.18.2"
@@ -13321,6 +13328,7 @@ __metadata:
     esutils: ^2.0.3
     etag: ^1.8.1
     express: ^4.18.2
+    express-healthcheck: ^0.1.0
     fast-deep-equal: ^3.1.3
     fast-glob: ^3.2.12
     fast-json-stable-stringify: ^2.1.0
