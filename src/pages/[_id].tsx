@@ -18,15 +18,13 @@ const TutorInfo = () => {
     <Container
       maxW="8xl"
       display="flex"
-      border="1px solid blue"
       p={0}
-      // h="100vh"
+      h="100vh"
       flexDir={{base: "column-reverse", lg: "row"}}
     >
       <Flex
         w="100%"
         h="100%"
-        border="1px solid blue"
         flexDir="column"
         mt="100px"
         p={2}
@@ -149,7 +147,7 @@ const TutorInfo = () => {
         </Flex>
       </Flex>
 
-      <Flex w="100%" justify="center" h="100%" mt="100px" border="1px solid red">
+      <Flex w="100%" justify="center" h="100%" mt="100px">
         <TutorCard/>
       </Flex>
     </Container>
