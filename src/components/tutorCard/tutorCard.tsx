@@ -32,13 +32,13 @@ export function TutorCard() {
       flexDir="column"
       align="center"
     >
-      <Flex
-        bg="eduWhite"
-        w="220px"
-        h="195px"
-        mt="50px"
-        borderRadius={30}
-      ></Flex>
+      <Image
+        src="/images/default-profile-image.png"
+        alt="Profile image"
+        width={220}
+        height={195}
+        style={{borderRadius: "30px", marginTop: "50px"}}
+      />
       <Text as="h2" mt={2} fontWeight={600}>
         Isabella
       </Text>
@@ -73,7 +73,7 @@ export function TutorCard() {
         })}
       </Flex>
 
-      <TableContainer >
+      <TableContainer>
         <Table variant="unstyled">
           <Tr>
             <Td>Hourly rate:</Td>
@@ -90,8 +90,9 @@ export function TutorCard() {
         </Table>
       </TableContainer>
 
-      <SubmitButton mt={6} label="book a lesson">Book a lesson</SubmitButton>
-
+      <SubmitButton mt={6} label="book a lesson">
+        Book a lesson
+      </SubmitButton>
     </Flex>
   );
 }
