@@ -6,7 +6,7 @@ import * as io from "socket.io-client";
 import {Bar} from "react-chartjs-2";
 import AdminContainer from "../components/admin/container/adminContainer";
 import DashboardTable from "../components/admin/container/dashboardTable";
-import {Stack} from "@chakra-ui/layout";
+import {Box, Flex, Stack} from "@chakra-ui/layout";
 
 Chart.register(CategoryScale);
 
@@ -129,34 +129,93 @@ const Dashboard = () => {
     return (
 
         <AdminContainer>
-            <h1>Dashboard is here Page</h1>
-            <Card
-                maxW='md'
-                maxH="md"
-                // cursor='pointer'
-                bg="#FFFFFF"
-                borderRadius='10'>
-                <CardBody>
-                    <Text as='b'>Daily Tickets</Text>
-                    <Bar
-                        data={chartData}
-                        options={options}
-                    />
-                </CardBody>
-            </Card>
+            {/*<h1>Dashboard is here Page</h1>*/}
+
+            <Flex color='black' minWidth='max-content' gap='20'>
+                <Card
+                    maxW='md'
+                    maxH="md"
+                    h=''
+                    w='40%'
+                    // cursor='pointer'
+                    bg="#FFFFFF"
+                    borderRadius='10'>
+                    <CardBody>
+                        <Text as='b'>Daily Tickets</Text>
+                        <Bar
+                            data={chartData}
+                            options={options}
+                        />
+                    </CardBody>
+                </Card>
+
+                <Card
+                    // maxW='md'
+                    maxH="md"
+                    w='45%'
+                    // cursor='pointer'
+                    bg="#FFFFFF"
+                    borderRadius='10'>
+                    <CardBody>
+                        <Text as='b'>Tickets By Status</Text>
+                        {/*<Bar*/}
+                        {/*    data={chartData}*/}
+                        {/*    options={options}*/}
+                        {/*/>*/}
+                    </CardBody>
+                </Card>
+                <Card
+                    maxW='45%'
+                    maxH="md"
+                    w='40%'
+                    // cursor='pointer'
+                    bg="#FFFFFF"
+                    borderRadius='10'>
+                    <CardBody>
+                        <Text as='b'>Activity</Text>
+                        {/*<Bar*/}
+                        {/*    data={chartData}*/}
+                        {/*    options={options}*/}
+                        {/*/>*/}
+                    </CardBody>
+                </Card>
+            </Flex>
 
 
-            <Card
-                minH="100%"
-                w='75%'
-                bg="#FFFFFF"
-                borderRadius='10'
-                variant={'elevated'}>
-                <CardBody>
-                    <DashboardTable/>
-                </CardBody>
-            </Card>
+            <Flex color='black' minWidth='max-content' gap='20'>
+                <Card
+                    mt={5}
+                    minH="100%"
+                    w='66%'
+                    bg="#FFFFFF"
+                    borderRadius='10'
+                    variant={'elevated'}>
+                    <CardBody>
+                        <Text as='b'>Recent Tickets</Text>
+                        <DashboardTable/>
+                    </CardBody>
+                </Card>
 
+                <Card
+                    mt={5}
+                    // minH="100%"
+                    w='30%'
+                    bg="#FFFFFF"
+                    borderRadius='10'
+                    variant={'elevated'}>
+                    <CardBody>
+                        <Text as='b'>Last Updates</Text>
+                        <Box
+                            bg= "#107385"
+                            borderRadius='20'
+                            py = "5px"
+                            px = "18px">
+                            <Text color="#F5F5F5">/u</Text>
+                        </Box>
+                        {/*<DashboardTable/>*/}
+                    </CardBody>
+                </Card>
+            </Flex>
         </AdminContainer>
     )
 }

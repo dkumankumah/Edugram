@@ -1,12 +1,8 @@
 
 F
 src/pages/api/hello.ts,c\9\c9a23308a93c267d84e45423bbba4c89a6c9141b
-F
-server/models/Tutor.js,8\0\80a5405aadb49788e2dc20535043bf320a9616db
 A
 src/v1/swagger.js,8\8\88050759281e0599a4d09cefb66bde5b23d19111
->
-next.config.js,8\1\811a6d5a2e04fadb44d8eec365f2fa8af5c4facf
 >
 .gitlab-ci.yml,5\8\587d266bb27a4dc3022bbed44dfa19849df3044c
 C
@@ -19,21 +15,13 @@ F
 server/models/Admin.js,c\7\c7e72bb05823447525f1fc9a6a601eed8a3c92a7
 =
 tsconfig.json,6\1\61ebb9fd6e8cf9082658121d5d81e297791dacd0
-T
-$server/controllers/testController.js,4\6\46cd5787fb134fd3ba105d58ac3805358421837f
 E
 server/models/chat.js,2\f\2f822c7df25d9bb32f63e76c8a4475232c7ae955
-S
-#server/middleware/authentication.js,6\2\62ad80102836446cbecacadcff4610da3026a708
 K
 server/middleware/logger.js,e\4\e4e84701d9f9aba345eed1cca8d429a4d372bfb5
-a
-1src/components/admin/container/adminContainer.tsx,c\4\c401536f62bd777c1db533279257c9b83f585245
 E
 src/pages/example.tsx,6\8\6804eeb546396b4291858751b779accfcdb852f8
 F
 src/pages/messages.tsx,b\2\b22f64d5131ef41a3f12fa073a2a6ba0df762aea
 H
 src/pages/adminpanel.tsx,5\4\54d90d560e33069ab08e52de740c218223d8ad16
-W
-'src/components/admin/navbar/sidebar.tsx,1\5\158fbdd18dceb0dd402204b64b443ee0307e70a8
