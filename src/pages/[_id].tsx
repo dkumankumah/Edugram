@@ -19,7 +19,6 @@ const TutorInfo = () => {
       maxW="8xl"
       display="flex"
       p={0}
-      h="100vh"
       flexDir={{base: "column-reverse", lg: "row"}}
     >
       <Flex
@@ -49,6 +48,7 @@ const TutorInfo = () => {
               color="white"
               bg="blueGreen"
               mr={4}
+              flexFlow={{base: "wrap"}}
             >
               <IconContext.Provider
                 value={{

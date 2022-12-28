@@ -2,13 +2,24 @@
  * @author Bugra Karaaslan, 500830631, This is the tutorCard component.
  * On this page you can get detailed information about a tutor you are interested in.
  */
-import { Flex, Text, TableContainer, Table, Tr, Td } from "@chakra-ui/react";
+import {
+  Flex,
+  Text,
+  TableContainer,
+  Table,
+  Tbody,
+  Tr,
+  Td,
+  Box,
+} from "@chakra-ui/react";
 import * as icon from "react-icons/ai";
 import { IconContext } from "react-icons";
 import Image from "next/image";
 
 // components
 import { SubmitButton } from "../shared/Buttons";
+import { useState } from "react";
+import { colors } from "../../theme/colors";
 
 interface ComponentProps {
   firstName: string;
@@ -21,6 +32,7 @@ interface ComponentProps {
 
 export function TutorCard() {
   const lessons = ["English", "Maths", "Programming", "French", "Photoshop"];
+  const [isVerified, setVerified] = useState(true);
 
   return (
     <Flex
@@ -32,13 +44,31 @@ export function TutorCard() {
       flexDir="column"
       align="center"
     >
-      <Image
-        src="/images/default-profile-image.png"
-        alt="Profile image"
-        width={220}
-        height={195}
-        style={{borderRadius: "30px", marginTop: "50px"}}
-      />
+      <Box>
+        <Image
+          src="/images/default-profile-image.png"
+          alt="Profile image"
+          width={220}
+          height={195}
+          quality={100}
+          style={{ borderRadius: "30px", marginTop: "50px" }}
+        />
+        <IconContext.Provider
+          value={{
+            style: {
+              color: `${colors.blueGreen}`,
+              top: "-5%",
+              left: "80%",
+              zIndex: 2,
+              marginTop: "-20px",
+              position: "relative",
+            },
+          }}
+        >
+          <icon.AiFillCheckCircle size={40} />
+        </IconContext.Provider>
+      </Box>
+
       <Text as="h2" mt={2} fontWeight={600}>
         Isabella
       </Text>
@@ -75,18 +105,20 @@ export function TutorCard() {
 
       <TableContainer>
         <Table variant="unstyled">
-          <Tr>
-            <Td>Hourly rate:</Td>
-            <Td isNumeric>$25</Td>
-          </Tr>
-          <Tr>
-            <Td>Response time:</Td>
-            <Td isNumeric>24h</Td>
-          </Tr>
-          <Tr>
-            <Td>Number of students:</Td>
-            <Td isNumeric>8</Td>
-          </Tr>
+          <Tbody>
+            <Tr>
+              <Td>Hourly rate:</Td>
+              <Td isNumeric>$25</Td>
+            </Tr>
+            <Tr>
+              <Td>Response time:</Td>
+              <Td isNumeric>24h</Td>
+            </Tr>
+            <Tr>
+              <Td>Number of students:</Td>
+              <Td isNumeric>8</Td>
+            </Tr>
+          </Tbody>
         </Table>
       </TableContainer>
 

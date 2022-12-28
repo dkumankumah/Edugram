@@ -38,7 +38,7 @@ router.post('/', async (req, res, next) => {
 });
 
 //Gets a specific tutor
-router.get('/:tutorId', verifyToken, async (req, res) => {
+router.get('/:tutorId', async (req, res) => {
   try {
     const tutor = await Tutor.findById(req.params.tutorId);
     res.send(tutor);
