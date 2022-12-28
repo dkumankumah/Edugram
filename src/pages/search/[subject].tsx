@@ -21,6 +21,7 @@ import {
     useRadioGroup, GridItem
 } from "@chakra-ui/react";
 import { TutorModel } from "../../models/TutorModel";
+import Router, { useRouter } from "next/router";
 
 interface PageProps {
     tutors: TutorModel[]
@@ -28,6 +29,11 @@ interface PageProps {
 }
 
 export default function Overview ({ tutors, subject }: PageProps) {
+    const router = useRouter();
+
+    const redirectToTutorPage = (id: string) => {
+        router.push(`http://localhost:3000/tutor/`+id)
+    }
 
     const options = ['Price', 'Response time', 'Name']
 
@@ -113,7 +119,7 @@ export default function Overview ({ tutors, subject }: PageProps) {
                                     bg="#FFFFFF"
                                     borderRadius='20'
                                     data-cy="card"
-                                    onClick={() => alert("Tutor " + tutor.firstName + " met id " + tutor._id) + " is geselecteerd"}>
+                                    onClick={() => redirectToTutorPage(tutor._id)}>
                                     <Box
                                         height= "40%">
                                         <Image
