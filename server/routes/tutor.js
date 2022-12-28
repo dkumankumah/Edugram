@@ -84,7 +84,7 @@ router.put('/:tutorId', verifyToken, async (req, res, next) => {
 });
 
 //Update a specific tutor
-router.patch('/:tutorId', async (req, res) => {
+router.patch('/:tutorId', verifyToken, async (req, res) => {
   try {
     const updatedTutor = await Tutor.findByIdAndUpdate(req.params.tutorId, req.body, { new: true })
     res.send(updatedTutor);
