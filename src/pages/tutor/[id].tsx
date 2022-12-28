@@ -1,6 +1,6 @@
 /**
  * @author Bugra Karaaslan, 500830631, This is the tutor information page.
- * On this page you can get detailed information about a tutor you are interested in.
+ * On this page an user could get detailed information about a tutor where he or she is interested in.
  */
 import { Flex, Text, Container } from "@chakra-ui/react";
 import * as icon from "react-icons/ai";
@@ -44,17 +44,16 @@ const TutorInfo = ({tutor}: Pageprops) => {
             Lesson location
           </Text>
 
-          <Flex>
+          <Flex flexFlow={{base: "wrap"}} align="center" justify="space-between" minH={{base: 150, lg:0}}>
             <Flex
-              minH="35px"
-              minW="200px"
+              h="35px"
+              w="200px"
               alignItems="center"
               justifyContent="center"
               borderRadius={20}
               color="white"
               bg="blueGreen"
               mr={4}
-              flexFlow={{base: "wrap"}}
             >
               <IconContext.Provider
                 value={{
@@ -68,8 +67,8 @@ const TutorInfo = ({tutor}: Pageprops) => {
             </Flex>
 
             <Flex
-              minH="35px"
-              minW="200px"
+              h="35px"
+              w="200px"
               alignItems="center"
               justifyContent="center"
               borderRadius={20}
@@ -89,8 +88,8 @@ const TutorInfo = ({tutor}: Pageprops) => {
             </Flex>
 
             <Flex
-              minH="35px"
-              minW="200px"
+              h="35px"
+              w="200px"
               alignItems="center"
               justifyContent="center"
               borderRadius={20}

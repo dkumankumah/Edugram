@@ -35,11 +35,11 @@ export function TutorCard({ tutor }: ComponentProps) {
     <Flex
       bg="lightBlue"
       borderRadius={20}
-      h="770px"
-      minW="450px"
+      minW={{base: "350px" ,lg: "450px"}}
       justify="flex-start"
       flexDir="column"
       align="center"
+      p="25px 0px"
     >
       <Box>
         <Image
@@ -79,7 +79,7 @@ export function TutorCard({ tutor }: ComponentProps) {
         </IconContext.Provider>
       </Flex>
 
-      <Flex mt={6} minW={400} maxW={400} h={150} flexFlow="wrap">
+      <Flex mt={6} w={{base: 300,lg: 400}} h={{base: 250, lg:150}} flexFlow="wrap">
         {lessons.map((lesson, index) => {
           return (
             <Flex
