@@ -51,6 +51,9 @@ const TutorSchema = new Schema({
   course: [
     {subject: String, fee: Number}
   ],
+  request: [
+    {id: String, firstName: String, lastName: String, location: String, subject: String, status: String}
+  ]
 });
 
 module.exports = mongoose.model('tutor', TutorSchema);
