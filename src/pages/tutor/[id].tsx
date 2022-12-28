@@ -6,14 +6,20 @@ import { Flex, Text, Container } from "@chakra-ui/react";
 import * as icon from "react-icons/ai";
 import * as iconHi from "react-icons/hi";
 import { IconContext } from "react-icons";
-import {colors} from "../theme/colors"
+import {colors} from "../../theme/colors"
 
 // component imports
-import TutorCard from "../components/tutorCard/tutorCard";
+import TutorCard from "../../components/tutorCard/tutorCard";
+import axios from "axios";
+import { GetStaticPaths } from "next";
+import { Context } from "react";
+import { TutorModel } from "../../models/TutorModel";
 
-interface Pageprops {}
+interface Pageprops {
+  tutor: TutorModel
+}
 
-const TutorInfo = () => {
+const TutorInfo = ({tutor}: Pageprops) => {
   return (
     <Container
       maxW="8xl"
@@ -105,7 +111,7 @@ const TutorInfo = () => {
         </Flex>
 
         <Flex flexDir="column" mt={6}>
-          <Text>About Isabella</Text>
+          <Text>About {tutor.firstName}</Text>
           <Text mt={4}>
             Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
             eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim
@@ -148,10 +154,41 @@ const TutorInfo = () => {
       </Flex>
 
       <Flex w="100%" justify="center" h="100%" mt="100px">
-        <TutorCard/>
+        <TutorCard tutor={tutor} />
       </Flex>
     </Container>
   );
 };
+
+export const getStaticPaths = async () => {
+  const tutorResult = await fetch('http://localhost:8000/tutor').catch(error => {
+    console.log(error);
+    throw new Error('Something went wrong, when fetching data');
+  })
+
+  const data = await tutorResult.json()
+  console.log('data: ' + data)
+
+  const paths = data.map((tutor: any) => {
+    return {
+      params: { id: tutor._id.toString() }
+    }
+  })
+
+  return {
+    paths,
+    fallback: false
+  }
+}
+
+export const getStaticProps = async (context: any) => {
+  const id = context.params.id
+  const res = await fetch(`http://localhost:8000/tutor/`+id)
+  const data = await res.json()
+
+  return {
+    props: { tutor: data }
+  }
+}
 
 export default TutorInfo;

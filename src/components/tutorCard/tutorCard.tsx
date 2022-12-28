@@ -15,22 +15,19 @@ import {
 import * as icon from "react-icons/ai";
 import { IconContext } from "react-icons";
 import Image from "next/image";
+import { TutorModel } from "../../models/TutorModel";
 
 // components
 import { SubmitButton } from "../shared/Buttons";
 import { useState } from "react";
 import { colors } from "../../theme/colors";
 
+
 interface ComponentProps {
-  firstName: string;
-  reviews: string[];
-  tags: string[];
-  hourlyRate: number;
-  responseTime: number;
-  numberOfstudents: number;
+  tutor: TutorModel
 }
 
-export function TutorCard() {
+export function TutorCard({ tutor }: ComponentProps) {
   const lessons = ["English", "Maths", "Programming", "French", "Photoshop"];
   const [isVerified, setVerified] = useState(true);
 
@@ -70,7 +67,7 @@ export function TutorCard() {
       </Box>
 
       <Text as="h2" mt={2} fontWeight={600}>
-        Isabella
+        {tutor.firstName}
       </Text>
 
       <Flex flexDir="row" align="center">
