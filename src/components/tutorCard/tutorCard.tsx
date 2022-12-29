@@ -19,7 +19,7 @@ import { TutorModel } from "../../models/TutorModel";
 
 // components
 import { SubmitButton } from "../shared/Buttons";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { colors } from "../../theme/colors";
 
 
@@ -29,7 +29,11 @@ interface ComponentProps {
 
 export function TutorCard({ tutor }: ComponentProps) {
   const lessons = ["English", "Maths", "Programming", "French", "Photoshop"];
-  const [isVerified, setVerified] = useState(true);
+  const [isVerified, setVerified] = useState(false);
+
+  useEffect (() => {
+    setVerified(tutor.verified!)
+  }, [tutor.verified])
 
   return (
     <Flex
@@ -48,7 +52,7 @@ export function TutorCard({ tutor }: ComponentProps) {
           width={220}
           height={195}
           quality={100}
-          style={{ borderRadius: "30px", marginTop: "50px" }}
+          style={{ borderRadius: "30px", marginTop: "50px", width: "220px", height: "195px" }}
         />
         <IconContext.Provider
           value={{
@@ -59,6 +63,7 @@ export function TutorCard({ tutor }: ComponentProps) {
               zIndex: 2,
               marginTop: "-20px",
               position: "relative",
+              display: isVerified ? "block" : "none"
             },
           }}
         >

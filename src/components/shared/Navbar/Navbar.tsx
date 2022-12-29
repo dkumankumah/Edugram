@@ -7,8 +7,8 @@ import Link from "next/link";
 // component imports
 import { SearchField } from "../SearchField";
 import { ProfileBtn } from "../../ProfileBtn";
-import {useEffect, useState} from "react";
-import {useRouter} from "next/router";
+import { useState } from "react";
+import { useRouter } from "next/router";
 
 interface ComponentProps extends FlexProps {}
 

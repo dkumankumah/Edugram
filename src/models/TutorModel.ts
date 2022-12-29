@@ -1,15 +1,15 @@
-import {UserModel} from "./UserModel";
+import { UserModel } from "./UserModel";
 
 export interface TutorModel extends UserModel {
     course?: Course[];
     review?: Review[];
     responses?: Response[];
-
 }
 
 export interface Course {
-    subject?: string;
+    subject: string;
     fee: number;
+    courseDescription: string
 }
 
 export interface Review {
@@ -26,3 +26,4 @@ export interface Response {
 export interface ResponseTime {
     $timestamp: string;
 }
+

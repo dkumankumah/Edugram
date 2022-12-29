@@ -32,7 +32,7 @@ export default function Overview ({ tutors, subject }: PageProps) {
     const router = useRouter();
 
     const redirectToTutorPage = (id: string) => {
-        router.push(`http://localhost:3000/tutor/`+id)
+        router.push({pathname: `http://localhost:3000/tutor/`+id , query: { subject } })
     }
 
     const options = ['Price', 'Response time', 'Name']
