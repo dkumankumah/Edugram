@@ -83,6 +83,16 @@ router.put('/:tutorId', verifyToken, async (req, res, next) => {
 
 });
 
+//Update a specific tutor
+router.patch('/:tutorId', verifyToken, async (req, res) => {
+  try {
+    const updatedTutor = await Tutor.findByIdAndUpdate(req.params.tutorId, req.body, { new: true })
+    res.send(updatedTutor);
+  } catch (err) {
+    res.json({message: err})
+  }
+});
+
 //Retrieve tutors based on a specific subject
 router.get('/search/:subject', async (req, res) => {
   try {
