@@ -16,6 +16,7 @@ import * as icon from "react-icons/ai";
 import { IconContext } from "react-icons";
 import Image from "next/image";
 import { TutorModel } from "../../models/TutorModel";
+import Router, { useRouter } from "next/router";
 
 // components
 import { SubmitButton } from "../shared/Buttons";
@@ -24,12 +25,16 @@ import { colors } from "../../theme/colors";
 
 
 interface ComponentProps {
-  tutor: TutorModel
+  tutor: TutorModel,
 }
 
 export function TutorCard({ tutor }: ComponentProps) {
   const lessons = ["English", "Maths", "Programming", "French", "Photoshop"];
   const [isVerified, setVerified] = useState(false);
+
+  const router = useRouter()
+  const { query : { subject }, } = router
+
 
   useEffect (() => {
     setVerified(tutor.verified!)
@@ -110,7 +115,14 @@ export function TutorCard({ tutor }: ComponentProps) {
           <Tbody>
             <Tr>
               <Td>Hourly rate:</Td>
-              <Td isNumeric>$25</Td>
+              {
+                tutor.course?.map((course, index) => {
+                  if (course.subject == subject)
+                  return (
+                    <Td key={index} isNumeric>${course.fee}</Td>
+                  )
+                })
+              }
             </Tr>
             <Tr>
               <Td>Response time:</Td>

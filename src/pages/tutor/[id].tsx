@@ -18,10 +18,9 @@ import { TutorModel } from "../../models/TutorModel";
 
 interface Pageprops {
   tutor: TutorModel;
-  lesson: string
 }
 
-const TutorInfo = ({ tutor, lesson }: Pageprops) => {
+const TutorInfo = ({ tutor }: Pageprops) => {
   const locations = [
     {
       locationName: "Online via webcam",
@@ -52,14 +51,15 @@ const TutorInfo = ({ tutor, lesson }: Pageprops) => {
       flexDir={{ base: "column-reverse", lg: "row" }}
     >
       <Flex w="100%" h="100%" flexDir="column" mt="100px" p={2}>
-        <Text as="h1">
-          Lerares Engels met 7 jaar ervaring in het lesgeven aan tieners en
-          volwassenen, biedt lessen en hulp bij huiswerk. Ik werk op een
-          tweetalige en op een internationale school.
-        </Text>
+        {
+          tutor.course?.map((course, index) => {
+            if ( course.subject == subject ) 
+            return (
+              <Text key={index} as="h1">{course.courseDescription}</Text>
+            )
+          })
+        }
         <Flex flexDir="column" mt={8}>
-                  <Text>subject: {subject} </Text>
-
           <Text fontWeight={600} mb={2}>
             Lesson location
           </Text>
@@ -100,7 +100,7 @@ const TutorInfo = ({ tutor, lesson }: Pageprops) => {
 
         <Flex flexDir="column" mt={6}>
           <Text as="h2">About {tutor.firstName}</Text>
-          <Text mt={4}>{tutor.profile.bio}</Text>
+          {!!tutor.profile?.bio && <Text mt={4}>{tutor.profile.bio}</Text>}
         </Flex>
 
         <Flex mt={6} flexDir="column">
@@ -184,14 +184,9 @@ export const getStaticProps = async (context: any) => {
   const res = await fetch(`http://localhost:8000/tutor/` + id);
   const data = await res.json();
 
-  const subject = context.params.subject
-  const resSubject = await fetch('http://localhost:8000/tutor/search/' + subject)
-  const subjectData = await resSubject.json()
-
-
   return {
     props: { 
-      tutor: data,
+      tutor: data
     },
   };
 };
