@@ -49,6 +49,8 @@ const Home = () => {
             <Button bg={"#FFCA48"} maxW={'150'} borderRadius={20} alignSelf='end' onClick={onOpen}> Login </Button>
            <LoginModal isOpen={isOpen} onClose={onClose} closeOnEsc={true} closeOnOverlayClick={true} onclosecomplete={clearCredentials}/>
         </Flex>
+    </>
+    )
 export const getStaticProps = async () => {
   return {
     props: {
