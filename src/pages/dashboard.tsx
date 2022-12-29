@@ -25,7 +25,6 @@ const Dashboard = () => {
     const [isAuth, setIsAuth] = useState(false)
     const [tutor, setTutor] = useState({} as TutorModel)
     const { isOpen, onToggle } = useDisclosure()
-    const [showBox, setShowBox] = useState(false)
     const baseUrl = "http://localhost:8001/tickets"
     const [map, setMap] = useState(new Map());
 
@@ -187,11 +186,7 @@ const Dashboard = () => {
     }
 
     function isValidNumber(): boolean {
-        console.log(tutor.phoneNumber)
-        if(tutor.phoneNumber?.toLocaleString().length == 10) {
-            return true
-        }
-        else return false
+        return tutor.phoneNumber?.toLocaleString().length == 10;
     }
 
     if(isAuth) {
