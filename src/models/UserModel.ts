@@ -9,7 +9,7 @@ export interface UserModel {
     dateOfBirth?: string;
     profile: Profile;
     educationLevel?: string;
-    phoneNumber?: number;
+    phoneNumber?: string;
     verified?: boolean;
     averageResponseTime?: number;
     role: string;

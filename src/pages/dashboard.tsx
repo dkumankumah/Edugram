@@ -3,27 +3,28 @@ import ProfileNavigation from "../components/shared/ProfileNavigation/ProfileNav
 import {
     Box,
     Card,
-    CardBody, CardFooter,
+    CardBody,
     CardHeader,
     Avatar,
     SimpleGrid,
     Icon,
     Image,
     Divider,
-    Text, Flex, Grid, GridItem, Heading, Button
+    Text, Flex, Button, Collapse, useDisclosure
 } from "@chakra-ui/react";
 import AdminContainer from "../components/admin/container/adminContainer";
-import {isAdmin} from "./api/api.storage";
+import {decodeJWT, getToken, isAdmin, isTutor} from "./api/api.storage";
 import Chart from "chart.js/auto";
 import {Bar} from 'react-chartjs-2'
 import {CategoryScale} from 'chart.js';
-import {CloseIcon} from "@chakra-ui/icons";
-import studentList from "../../public/data/students.json";
+import {ArrowUpDownIcon, CheckCircleIcon, CheckIcon, CloseIcon} from "@chakra-ui/icons";
+import {TutorModel} from "../models/TutorModel";
 Chart.register(CategoryScale);
 
 const Dashboard = () => {
     const [isAuth, setIsAuth] = useState(false)
-    const [showBox, setShowBox] = useState(false)
+    const [tutor, setTutor] = useState({} as TutorModel)
+    const { isOpen, onToggle } = useDisclosure()
     const baseUrl = "http://localhost:8001/tickets"
     const [map, setMap] = useState(new Map());
 
@@ -73,8 +74,26 @@ const Dashboard = () => {
                 console.log('MAP: ', myMap);
             });
         }
+        if(isTutor()) {
+            getTutor(decodeJWT().id)
+        }
 
     }, []);
+
+    const getTutor = (id: string) => {
+        fetch('http://localhost:8000/tutor/' + id, {
+            method: 'GET',
+            headers: {
+                "Content-Type": "application/json",
+                'Access-Control-Allow-Origin': 'http://localhost:8000',
+                'Authorization': 'Bearer ' + getToken()
+            },
+            redirect: 'follow'
+        }).then(response => response.json()).then(result =>
+            setTutor(result)
+
+        )
+    }
 
     const options1 = {
 
@@ -132,8 +151,42 @@ const Dashboard = () => {
         ],
     };
 
-    function handleAccept() {
-        setShowBox(!showBox)
+    function handleAccept(input : string, id: string): void {
+        tutor.request?.map((request)=>{
+            if(request.id === id) {
+                request.status = input
+            }
+        })
+
+        fetch('http://localhost:8000/tutor/' + tutor._id, {
+            method: 'PATCH',
+            headers: {
+                "Content-Type": "application/json",
+                'Access-Control-Allow-Origin': 'http://localhost:8000',
+                'Authorization': 'Bearer ' + getToken()
+            },
+            body: JSON.stringify({request: tutor.request }),
+        }).then(response => response.json()).then(result =>
+            setTutor(result)
+
+        )
+    }
+
+    function getAge(birthdate?: string) : number {
+        const currentDate = new Date()
+        const formattedDateString = birthdate?.substr(6, 4) + '-' + birthdate?.substr(3, 2) + '-' + birthdate?.substr(0, 2)
+        const date = new Date(formattedDateString)
+        const difference = currentDate.getTime() - date.getTime()
+
+        return Math.floor(difference / (1000 * 60 * 60 * 24 * 365))
+    }
+
+    function isVerified(): boolean {
+        return tutor.verified as boolean
+    }
+
+    function isValidNumber(): boolean {
+        return tutor.phoneNumber?.toLocaleString().length == 10;
     }
 
     if(isAuth) {
@@ -176,14 +229,14 @@ const Dashboard = () => {
                                 textAlign='center'
                                 fontSize={'larger'}
                                 fontWeight='bold'>
-                                Daniel Kumankumah (33)
+                                {tutor.firstName} {tutor.lastName} ({getAge(tutor.dateOfBirth)})
                             </Text>
                             <Text
                                 textAlign='center'
                                 fontSize={'large'}
                                 fontWeight='bold'
                                 color='grey'>
-                                Amsterdam
+                                {tutor.address?.city}
                             </Text>
                             <Divider
                                 mt={3}
@@ -196,10 +249,18 @@ const Dashboard = () => {
                                     fontSize={'large'}>
                                     Profile verified
                                 </Text>
-                                <Icon as={CloseIcon}
+                                <Icon
+                                    display={!isVerified() ? 'block' : 'none'}
+                                    as={CloseIcon}
                                       boxSize={4}
                                       alignSelf={'center'}
                                       color='red.500'/>
+                                <Icon
+                                    display={isVerified() ? 'block' : 'none'}
+                                    as={CheckCircleIcon}
+                                      boxSize={5}
+                                      alignSelf={'center'}
+                                      color='green.500'/>
                             </SimpleGrid>
                             <Text
                                 fontSize={'medium'}
@@ -207,6 +268,7 @@ const Dashboard = () => {
                                 E-mail
                             </Text>
                             <Text
+                                color={isValidNumber() ? 'green' : 'red'}
                                 fontSize={'medium'}>
                                 Mobile number
                             </Text>
@@ -224,94 +286,167 @@ const Dashboard = () => {
                                 <Text
                                     fontSize={'large'}
                                     fontWeight='bold'>
-                                    (2)
+                                    ({tutor.review?.length})
                                 </Text>
                             </SimpleGrid>
 
                         </CardBody>
                     </Card>
                 </Box>
-                <Box
-                    flex={3}
-                    pl={2}>
-                    <Card
-                        boxShadow={'xl'}
-                        borderRadius={20}
-                        p={2}>
-                        <CardHeader>
-                            <Text as = "h2"
-                                  mt={5}
-                                // fontSize={'larger'}
-                                  fontWeight='bold'>
-                                My lesson requests
-                            </Text>
-                            <Divider
-                                mt={10}
-                            />
-                        </CardHeader>
-                        <CardBody>
-                            {studentList?.map((student) => {
-                                return (
-                                    <Flex key={student.id} alignItems="center">
-                                        <Flex   flex='1' flexDirection="row" justifyContent={"space-between"} gap='4' alignItems='center' flexWrap='wrap'>
+                <Box flex={3}>
+                    <Box
+                        flex={3}
+                        pl={2}>
+                        <Card
+                            boxShadow={'xl'}
+                            borderRadius={20}
+                            p={2}>
+                            <CardHeader>
+                                <Text as = "h2"
+                                      mt={5}
+                                      fontWeight='bold'>
+                                    My lesson requests
+                                </Text>
+                                <Divider
+                                    mt={10}
+                                />
+                            </CardHeader>
+                            <CardBody>
+                                {tutor.request?.map((request) => {
+                                    if(request.status === "pending") {
+                                        return (
+                                            <Card
+                                                key={request.id}
+                                                mt={4}
+                                                p={2}>
+                                                <CardBody>
+                                                    <Flex key={request.id} alignItems="center">
+                                                        <Flex   flex='1' flexDirection="row" justifyContent={"space-between"} gap='4' alignItems='center' flexWrap='wrap'>
 
-                                            <Flex alignItems={"center"} >
-                                                <Avatar name={student.name + " " + student.lastName} />
-                                                <Text
-                                                    ml={2}
-                                                    fontWeight={'bold'}
-                                                    fontSize={'large'}>{student.name + " " + student.lastName}</Text>
-                                            </Flex>
-                                            <Flex>
-                                                <Box
-                                                    alignSelf={'baseline'}
-                                                >
-                                                    <Text>
-                                                        Subject: Wiskunde - On Location
-                                                    </Text>
-                                                </Box>
+                                                            <Flex alignItems={"center"} >
+                                                                <Avatar name={request.firstName + " " + request.lastName} />
+                                                                <Text
+                                                                    ml={2}
+                                                                    fontWeight={'bold'}
+                                                                    fontSize={'large'}>{request.firstName + " " + request.lastName}</Text>
+                                                            </Flex>
+                                                            <Flex>
+                                                                <Box
+                                                                    alignSelf={'baseline'}
+                                                                >
+                                                                    <Text>
+                                                                        Subject: {request.subject} - {request.location}
+                                                                    </Text>
+                                                                </Box>
 
-                                            </Flex>
-                                            <Flex display={!showBox ? 'block' : 'none'}>
-                                                <Button
-                                                    alignSelf={'baseline'}
-                                                    size='sm'
-                                                    colorScheme='teal' mr={2}
-                                                    onClick={handleAccept}>
-                                                    Accept
-                                                </Button>
-                                                <Button
-                                                    alignSelf={'baseline'}
-                                                    size='sm'
-                                                    colorScheme='red' mr={2}>
-                                                    Reject
-                                                </Button>
-                                            </Flex>
-                                            <Divider
-                                                mt={5}
-                                                mb={5}
-                                            />
+                                                            </Flex>
+                                                            <Flex>
+                                                                <Button
+                                                                    alignSelf={'baseline'}
+                                                                    size='sm'
+                                                                    colorScheme='teal' mr={2}
+                                                                    onClick={()=> handleAccept("accepted", request.id)}>
+                                                                    Accept
+                                                                </Button>
+                                                                <Button
+                                                                    alignSelf={'baseline'}
+                                                                    size='sm'
+                                                                    colorScheme='red' mr={2}
+                                                                    onClick={()=> handleAccept("rejected", request.id)}>
+                                                                Reject
+                                                                </Button>
+                                                            </Flex>
+                                                        </Flex>
+                                                    </Flex>
+                                                </CardBody>
 
-                                        </Flex>
-                                    </Flex>
-                                );
-                            })}
+                                            </Card>
 
-                        </CardBody>
-                    </Card>
+                                        );
+                                    }
+
+                                })}
+
+                            </CardBody>
+                        </Card>
+                    </Box>
+                    <Box
+                        flex={3}
+                        pl={2}>
+                        <Card
+                            boxShadow={'xl'}
+                            borderRadius={20}
+                            p={2}>
+                            <CardHeader
+                                cursor='pointer'
+                                onClick={onToggle}>
+                                <Flex flex='1' flexDirection="row" justifyContent={"space-between"} gap='4' alignItems='center' flexWrap='wrap'>
+                                    <Text as = "h2"
+                                          mt={5}
+                                          fontWeight='bold'>
+                                        Accepted requests
+                                    </Text>
+                                    <Icon
+                                        as={ArrowUpDownIcon}
+                                        border='2px' borderColor='gray.200'
+                                        p={1}
+                                        boxSize={7}
+                                        onClick={onToggle}/>
+                                </Flex>
+
+                                <Divider
+                                    mt={10}
+                                />
+                            </CardHeader>
+                            <Collapse in={isOpen} animateOpacity>
+                                <CardBody>
+                                {tutor.request?.map((request) => {
+                                    if(request.status === "accepted") {
+                                        return (
+                                            <Card
+                                                key={request.id}
+                                                pt={2}
+                                                mt={4}>
+                                                <CardBody>
+                                                    <Flex key={request.id} alignItems="center">
+                                                        <Flex   flex='1' flexDirection="row" justifyContent={"space-between"} gap='4' alignItems='center' flexWrap='wrap'>
+
+                                                            <Flex alignItems={"center"} >
+                                                                <Avatar name={request.firstName + " " + request.lastName} />
+                                                                <Text
+                                                                    ml={2}
+                                                                    fontWeight={'bold'}
+                                                                    fontSize={'large'}>{request.firstName + " " + request.lastName}</Text>
+                                                            </Flex>
+                                                            <Flex>
+                                                                <Box
+                                                                    alignSelf={'baseline'}>
+                                                                    <Text>
+                                                                        Subject: {request.subject} - {request.location}
+                                                                    </Text>
+                                                                </Box>
+
+                                                            </Flex>
+                                                            <Icon
+                                                                as={CheckIcon}
+                                                                boxSize={6}
+                                                                color='green'/>
+                                                        </Flex>
+                                                    </Flex>
+                                                </CardBody>
+                                            </Card>
+                                        );
+                                    }
+                                })}
+                            </CardBody>
+                            </Collapse>
+                        </Card>
+                    </Box>
                 </Box>
+
             </Box>
         </Box>
     )
 }
-
-// A way to fetch data from API or Local Json
-export const getStaticProps = async () => {
-    return {
-        props: {
-            studentList,
-        },
-    };
-};
 
 export default Dashboard
