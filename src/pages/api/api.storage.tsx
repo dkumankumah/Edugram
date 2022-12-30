@@ -16,17 +16,16 @@ export function logout() {
     window.location.href = '/'
 }
 
-export function decodeJWT() {
-    let jwt = localStorage.getItem('token')
+export function decodeJWT(jwt: string) {
 
     if (jwt){
         let jwtData = jwt.split('.')[1]
         let decodedJwtJsonData = window.atob(jwtData)
         let decodedJwtData = JSON.parse(decodedJwtJsonData)
 
-        console.log('jwtData: ' + jwtData)
-        console.log('decodedJwtJsonData: ' + decodedJwtJsonData)
-        console.log('decodedJwtData: ' + decodedJwtData)
+        // console.log('jwtData: ' + jwtData)
+        // console.log('decodedJwtJsonData: ' + decodedJwtJsonData)
+        // console.log('decodedJwtData: ' + decodedJwtData)
 
         return decodedJwtData
     }
@@ -35,16 +34,16 @@ export function decodeJWT() {
 
 }
 
-export function isAdmin(): boolean {
-    let isAdmin = decodeJWT().role
+export function isAdmin(jwt: string): boolean {
+    let isAdmin = decodeJWT(jwt)
     return isAdmin === 'admin'
 }
-export function isStudent(): boolean {
-    let isStudent = decodeJWT().role
+export function isStudent(jwt: string): boolean {
+    let isStudent = decodeJWT(jwt).role
     return isStudent === 'student'
 }
 
-export function isTutor(): boolean {
-    let isTutor = decodeJWT().role
+export function isTutor(jwt: string): boolean {
+    let isTutor = decodeJWT(jwt).role
     return isTutor === 'tutor'
 }
