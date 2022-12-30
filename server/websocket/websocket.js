@@ -1,6 +1,7 @@
 const mongoose = require('mongoose');
 const Chat = require('../../server/models/chat');
 const Message = require('../../server/models/message');
+let Tickets = require('../../server/models/ticketsModal');
 const io = require('socket.io')(3001)
 require("dotenv").config({path: require('find-config')('.env')});
 const username = process.env.DATABASE_CONNECTION_USERNAME;
@@ -33,4 +34,19 @@ io.on('connection', (socket) => {
     })
     console.log("test")
   })
+
+  //This Renders at the start of visiting the page
+  Tickets.find({}).then(result => {
+    socket.emit('data', result)
+  });
+
+  const changeStream = Tickets.watch();
+  changeStream.on('change', (change) => {
+    console.log('Change detected in the tickets collection:', change);
+
+    // Fetch the updated data from the database
+    Tickets.find().then(result => {
+      socket.emit('update-tickets', result)
+    });
+  });
 });

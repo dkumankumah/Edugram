@@ -17,7 +17,7 @@ import {
 import {SubmitButton} from "../components/shared/Buttons";
 import {DashboardCard} from "../components/shared/DashboardCard";
 import {InputField} from "../components/shared/InputField/InputField";
-import {getToken, isTutor} from "./api/api.storage";
+import {getToken, isAdmin, isTutor} from "./api/api.storage";
 import {TutorModel} from "../models/TutorModel";
 import {useRouter} from "next/router";
 import {GetServerSideProps} from "next";
@@ -43,6 +43,8 @@ export const Profile = ({data, accessToken}: PageProps) => {
     useEffect(() => {
         console.log(data)
         console.log(isTutor(accessToken))
+        console.log(isAdmin(accessToken))
+
         // setTutor(data)
     }, [])
 

@@ -35,7 +35,7 @@ export function decodeJWT(jwt: string) {
 }
 
 export function isAdmin(jwt: string): boolean {
-    let isAdmin = decodeJWT(jwt)
+    let isAdmin = decodeJWT(jwt).role
     return isAdmin === 'admin'
 }
 export function isStudent(jwt: string): boolean {

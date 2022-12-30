@@ -11,9 +11,9 @@ export default function courses () {
     const router = useRouter()
 
 
-    useEffect(() => {
-        isAuthenticated() && isTutor() ? getTutor(decodeJWT().id) : router.push('/')
-    }, [])
+    // useEffect(() => {
+    //     isAuthenticated() && isTutor() ? getTutor(decodeJWT().id) : router.push('/')
+    // }, [])
 
     const getTutor = (id: string) => {
         fetch('http://localhost:8000/tutor/' + id, {

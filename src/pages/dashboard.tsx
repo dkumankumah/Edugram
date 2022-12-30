@@ -19,18 +19,25 @@ import {Bar} from 'react-chartjs-2'
 import {CategoryScale} from 'chart.js';
 import {ArrowUpDownIcon, CheckCircleIcon, CheckIcon, CloseIcon} from "@chakra-ui/icons";
 import {TutorModel} from "../models/TutorModel";
+import {GetServerSideProps} from "next";
 Chart.register(CategoryScale);
 
-const Dashboard = () => {
+interface PageProps {
+    accessToken: string,
+    tutorData: TutorModel,
+}
+
+
+const Dashboard = ({tutorData, accessToken}: PageProps) => {
     const [isAuth, setIsAuth] = useState(false)
-    const [tutor, setTutor] = useState({} as TutorModel)
+    const [tutor, setTutor] = useState(tutorData as TutorModel)
     const { isOpen, onToggle } = useDisclosure()
     const baseUrl = "http://localhost:8001/tickets"
     const [map, setMap] = useState(new Map());
 
     useEffect(() => {
-        setIsAuth(isAdmin())
-        if(isAdmin()) {
+        setIsAuth(isAdmin(accessToken))
+        if(isAuth) {
             let myMap = new Map();
             let ticket: string;
             const elementCounts: any = {};
@@ -74,26 +81,8 @@ const Dashboard = () => {
                 console.log('MAP: ', myMap);
             });
         }
-        if(isTutor()) {
-            getTutor(decodeJWT().id)
-        }
 
     }, []);
-
-    const getTutor = (id: string) => {
-        fetch('http://localhost:8000/tutor/' + id, {
-            method: 'GET',
-            headers: {
-                "Content-Type": "application/json",
-                'Access-Control-Allow-Origin': 'http://localhost:8000',
-                'Authorization': 'Bearer ' + getToken()
-            },
-            redirect: 'follow'
-        }).then(response => response.json()).then(result =>
-            setTutor(result)
-
-        )
-    }
 
     const options1 = {
 
@@ -201,10 +190,10 @@ const Dashboard = () => {
                     borderRadius='10'>
                     <CardBody>
                         {/*<Text as='b'>Daily Tickets</Text>*/}
-                        <Bar
-                            options={options1}
-                            data={data}
-                        />
+                        {/*<Bar*/}
+                        {/*    // options={options1}*/}
+                        {/*    // data={data}*/}
+                        {/*/>*/}
                     </CardBody>
                 </Card>
             </AdminContainer>
@@ -447,6 +436,26 @@ const Dashboard = () => {
             </Box>
         </Box>
     )
+}
+
+export const getServerSideProps: GetServerSideProps = async (ctx) => {
+    const accessToken = JSON.stringify(ctx.req.cookies.access_token)
+    const response = await fetch('http://localhost:8000/tutor/details', {
+        method: "GET",
+        credentials: "include",
+        mode: 'cors',
+        headers: {
+            'Content-Type': 'application/json',
+            Cookie: accessToken
+        }
+    });
+
+    const tutorData = await response.json()
+    console.log(tutorData)
+
+    return {
+        props: {tutorData, accessToken},
+    };
 }
 
 export default Dashboard

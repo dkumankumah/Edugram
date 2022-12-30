@@ -50,8 +50,13 @@ router.get('/details', checkCookie, async (req, res, next) => {
       } catch (err) {
         return res.send({message: err})
       }
-    } else {
+    }
+    else if (req.role === 'admin') {
+      next()
+    }
+    else {
       //Try to redirect to unauthenticated route or something
+      res.status(403).send({message: "unautenticated"})
       console.log('unauthenticated')
       // return next('/unauthenticated')
     }

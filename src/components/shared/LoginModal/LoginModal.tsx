@@ -58,11 +58,8 @@ export function LoginModal({
                     setError(data.error)
                 }
                 if (data.message) {
-                    //set token
                     setSuccess(data.message)
-                    // addToken('haha')
-                    // localStorage.setItem('token', data.token)
-                    window.location.href = '/invoices'
+                    window.location.href = '/dashboard'
                 }
 
             }).catch((err) => {
