@@ -19,6 +19,15 @@ io.on('connection', (socket) => {
   socket.on('disconnect', () => {
     console.log('user disconnected');
   });
+
+  // socket.on("get-chats", async (student) => {
+  //   console.log(student);
+  //   await Chat.find({student: student}).then(result => {
+  //     socket.emit("user-chats", result)
+  //   });
+  // });
+
+
   socket.on("send-message", async (message, student, tutor, sender) => {
     console.log("Message sent by " + student + " : " + message + " to: " + tutor);
     await Chat.findOneAndUpdate(
@@ -29,10 +38,9 @@ io.on('connection', (socket) => {
   socket.on("join-chat", async (student, tutor) => {
     socket.join(student + tutor);
     io.to(student + tutor).emit("update-chat", await Chat.findOne({tutor: tutor, student: student}));
-    Chat.find({student: student}).then(result => {
-      socket.emit('user-chats', result)
-    })
-    console.log("test")
+    // Chat.find({student: student}).then(result => {
+    //   socket.emit('user-chats', result)
+    // })
   })
 
   //This Renders at the start of visiting the page
