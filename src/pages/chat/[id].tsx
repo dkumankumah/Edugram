@@ -24,8 +24,6 @@ const getMessages = (chat: ChatModel) =>
         )
     })
 
-
-
 export default function ChatApp() {
     const [chat, setChat] = useState();
     console.log("tutor to be emitted: " + chosenChatTutor);
