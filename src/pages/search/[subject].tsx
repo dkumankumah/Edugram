@@ -55,9 +55,6 @@ export default function Overview ({ tutors, subject }: PageProps) {
     const group = getRootProps()
     return (
         <Box>
-            <Flex>
-
-            </Flex>
             <Box
                 justifyContent = "center"
                 px={20}
