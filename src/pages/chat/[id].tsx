@@ -1,5 +1,5 @@
 import {Flex} from "@chakra-ui/layout"
-import ChatSidebar, {chosenChatTutor} from "../../ChatSidebar";
+import ChatSidebar, {chosenChatTutor} from "../ChatSidebar";
 import Topbar from "../../components/chatComponents/Topbar";
 import Bottombar from "../../components/chatComponents/Bottombar";
 import {Text} from "@chakra-ui/react";

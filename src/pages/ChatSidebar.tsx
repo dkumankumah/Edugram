@@ -5,9 +5,9 @@ import {ArrowLeftIcon} from "@chakra-ui/icons"
 import {router} from "next/router";
 import React, {useEffect, useRef, useState} from "react";
 import * as io from "socket.io-client";
-import {ChatModel} from "./models/ChatModel";
+import {ChatModel} from "../models/ChatModel";
 import {useLocation} from "react-router";
-import {decodeJWT} from "./pages/api/api.storage";
+import {decodeJWT} from "./api/api.storage";
 // const Chat = require("../../server/models/chat");
 
 let chosenChatTutor = "";
