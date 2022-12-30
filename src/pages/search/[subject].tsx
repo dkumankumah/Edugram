@@ -21,6 +21,7 @@ import {
     useRadioGroup, GridItem
 } from "@chakra-ui/react";
 import { TutorModel } from "../../models/TutorModel";
+import {GetServerSideProps} from "next";
 
 interface PageProps {
     tutors: TutorModel[]
@@ -239,8 +240,9 @@ export function RadioCard(props: any) {
     )
 }
 
-export async function getServerSideProps ({ params }: any) {
-    const subject = params.subject
+export const getServerSideProps: GetServerSideProps = async (context) => {
+    const subject = context.params?.subject
+
     const res = await fetch('http://localhost:8000/tutor/search/' + subject)
     const tutors = await res.json()
 

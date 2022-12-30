@@ -2,6 +2,7 @@
  The landing and login page
  @author @Danny Nansink, 500821004
  **/
+import React from "react";
 import {
     Box,
     chakra,
@@ -39,18 +40,6 @@ const Home = () => {
   );
 };
 
-    return (
-        <>
-        <Flex flexDir={'column'}>
-            <Heading textAlign={'center'}>The platform</Heading>
-            <Link bg={"lightblue"} p={2} maxW='300' borderRadius={20} textAlign='center' href='/example'>Go to the
-                example page</Link>
-            <Link bg={"lightblue"} p={2} maxW='300' borderRadius={20} textAlign='center' href='/chat/chats'>Sidebar</Link>
-            <Button bg={"#FFCA48"} maxW={'150'} borderRadius={20} alignSelf='end' onClick={onOpen}> Login </Button>
-           <LoginModal isOpen={isOpen} onClose={onClose} closeOnEsc={true} closeOnOverlayClick={true} onclosecomplete={clearCredentials}/>
-        </Flex>
-    </>
-    )
 export const getStaticProps = async () => {
   return {
     props: {
