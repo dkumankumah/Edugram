@@ -44,7 +44,6 @@ export function LoginModal({
             : fetch(
                 'http://localhost:8000/login', {
                     method: 'POST',
-                    credentials: 'include',
                     headers: {
                         'Content-Type': 'application/json',
                         'Access-Control-Allow-Origin': 'http://localhost:8000',
