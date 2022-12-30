@@ -11,7 +11,7 @@ import {
 import {InputField} from "../InputField/InputField";
 import {GoogleBtn} from "../GoogleBtn/index";
 
-export interface ModalProps extends UseModalProps{
+export interface ModalProps extends UseModalProps {
     isOpen: boolean,
     onClose: () => void;
     closeOnEsc: boolean,
@@ -20,14 +20,14 @@ export interface ModalProps extends UseModalProps{
     children?: React.ReactNode,
 }
 
-export function LoginModal( {
-    isOpen,
-    onClose,
-    closeOnEsc,
-    closeOnOverlayClick,
-    onclosecomplete,
-    children
-}: ModalProps) {
+export function LoginModal({
+                               isOpen,
+                               onClose,
+                               closeOnEsc,
+                               closeOnOverlayClick,
+                               onclosecomplete,
+                               children
+                           }: ModalProps) {
     const [email, setEmail] = useState('')
     const [password, setPassword] = useState('');
     const [error, setError] = useState('');
@@ -44,6 +44,7 @@ export function LoginModal( {
             : fetch(
                 'http://localhost:8000/login', {
                     method: 'POST',
+                    credentials: "include",
                     headers: {
                         'Content-Type': 'application/json',
                         'Access-Control-Allow-Origin': 'http://localhost:8000',
@@ -60,8 +61,8 @@ export function LoginModal( {
                     //set token
                     setSuccess(data.message)
                     // addToken('haha')
-                    localStorage.setItem('token', data.token)
-                    window.location.href = '/dashboard'
+                    // localStorage.setItem('token', data.token)
+                    window.location.href = '/invoices'
                 }
 
             }).catch((err) => {
@@ -94,8 +95,8 @@ export function LoginModal( {
                             <AlertIcon/>
                             <AlertDescription data-cy="success-description">{success}</AlertDescription>
                         </Alert> : ''}
-                    <InputField label={'input-email'} 
-                        placeholder="johndoe@gmail.com"
+                    <InputField label={'input-email'}
+                                placeholder="johndoe@gmail.com"
                                 type="email"
                                 textColor={'black'}
                                 variant="outline"
@@ -145,7 +146,8 @@ export function LoginModal( {
                             <Text padding="2" color={'white'} ml={'20px'} mr={'20px'}>Of</Text>
                             <Divider/>
                         </Flex>
-                        <GoogleBtn bg={'white'} borderRadius={30} w='250px' h={'50'} label={'google-button-login'}>Login met Google</GoogleBtn>
+                        <GoogleBtn bg={'white'} borderRadius={30} w='250px' h={'50'} label={'google-button-login'}>Login
+                            met Google</GoogleBtn>
                     </Stack>
                 </ModalFooter>
             </ModalContent>

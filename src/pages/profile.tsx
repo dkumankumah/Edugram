@@ -1,4 +1,4 @@
-import React, {useEffect, useReducer, useState} from "react";
+import React, {useEffect, useState} from "react";
 import ProfileNavigation from "../components/shared/ProfileNavigation/ProfileNavigation";
 import {
     Box,
@@ -6,24 +6,29 @@ import {
     CardBody,
     CardFooter,
     CardHeader,
-    Grid,
     GridItem,
     HStack,
     Image,
     Input,
     Text,
     FormControl,
-    FormHelperText, FormLabel, SimpleGrid, Radio,
+    FormHelperText, FormLabel, SimpleGrid,
 } from "@chakra-ui/react";
 import {SubmitButton} from "../components/shared/Buttons";
 import {DashboardCard} from "../components/shared/DashboardCard";
 import {InputField} from "../components/shared/InputField/InputField";
-import {decodeJWT, getToken, isAuthenticated, isTutor} from "./api/api.storage";
+import {getToken, isTutor} from "./api/api.storage";
 import {TutorModel} from "../models/TutorModel";
 import {useRouter} from "next/router";
-import {RadioCard} from "./search/[subject]";
+import {GetServerSideProps} from "next";
 
-export const Profile = () => {
+
+interface PageProps {
+    accessToken: string,
+    data: string,
+}
+
+export const Profile = ({data, accessToken}: PageProps) => {
     const [firstName, setFirstname] = useState('')
     const [lastName, setLastname] = useState('')
     const [phoneNumber, setPhonenumber] = useState('')
@@ -36,23 +41,10 @@ export const Profile = () => {
     const router = useRouter()
 
     useEffect(() => {
-        isAuthenticated() && isTutor() ? getTutor(decodeJWT().id) : router.push('/')
+        console.log(data)
+        console.log(isTutor(accessToken))
+        // setTutor(data)
     }, [])
-
-    const getTutor = (id: string) => {
-        fetch('http://localhost:8000/tutor/' + id, {
-            method: 'GET',
-            headers: {
-                "Content-Type": "application/json",
-                'Access-Control-Allow-Origin': 'http://localhost:8000',
-                'Authorization': 'Bearer ' + getToken()
-            },
-            redirect: 'follow'
-        }).then(response => response.json()).then(result =>
-            setTutor(result)
-
-        )
-    }
 
     const handleProfileChanges = () => {
         const formattedBirthDate = new Date(birthdate).toLocaleDateString('german', {
@@ -165,7 +157,8 @@ export const Profile = () => {
                                        placeholder={tutor.email ? tutor.email : 'Email unknown'}
                                        value={tutor.email}/>
                                 <FormLabel fontSize={'xs'}>Phonenumber</FormLabel>
-                                <Input data-cy='phoneNumber' mb={2} variant='filled' fontSize={'sm'} type={'number'} maxLength={10}
+                                <Input data-cy='phoneNumber' mb={2} variant='filled' fontSize={'sm'} type={'number'}
+                                       maxLength={10}
                                        placeholder={tutor.phoneNumber ? tutor.phoneNumber.toString() : 'Number unknown'}
                                        value={phoneNumber} onChange={(e) => {
                                     setPhonenumber(e.target.value)
@@ -205,7 +198,8 @@ export const Profile = () => {
                         />}/></GridItem>
                 <GridItem colSpan={1}>
                     <DashboardCard buttonWidth={'200px'} height={'280px'} label={'delete-account'}
-                                   buttonText={'Delete my account'} headerName={'Delete My Account'} onClick={handleConfirmAction}
+                                   buttonText={'Delete my account'} headerName={'Delete My Account'}
+                                   onClick={handleConfirmAction}
                                    cardWidth={'300px'} optionalBodyOne={
                         <HStack bg={'#107385'} maxW={'70%'} textAlign={'center'} marginLeft={'40px'} marginTop={'20px'}
                                 borderRadius={'10px'}>
@@ -256,6 +250,24 @@ export const Profile = () => {
 
     )
 }
+export const getServerSideProps: GetServerSideProps = async (ctx) => {
+    const accessToken = JSON.stringify(ctx.req.cookies.access_token)
+    const response = await fetch('http://localhost:8000/tutor/details', {
+        method: "GET",
+        credentials: "include",
+        mode: 'cors',
+        headers: {
+            'Content-Type': 'application/json',
+            Cookie: accessToken
+        }
+    });
 
+    const data = await response.json()
+    console.log(data)
+
+    return {
+        props: {data, accessToken},
+    };
+}
 
 export default Profile

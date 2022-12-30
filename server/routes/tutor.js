@@ -1,12 +1,12 @@
 const express = require('express')
 const router = express.Router()
 const Tutor = require('../models/Tutor')
+const Student = require('../models/Student')
 const bcrypt = require('bcrypt')
-const {verifyToken} = require("../middleware/authentication");
-const {JsonWebTokenError} = require("jsonwebtoken");
+const {checkCookie} = require("../middleware/authentication");
 
 // Get all tutors
-router.get('/', async (req, res) => {
+router.get('/', checkCookie, async (req, res, next) => {
   try {
     const tutors = await Tutor.find()
     res.json(tutors);
@@ -27,28 +27,48 @@ router.post('/', async (req, res, next) => {
     password: hashedPassword,
     role: role
   });
-
   try {
     const savedTutor = tutor.save();
     res.status(201).json(savedTutor)
   } catch (err) {
     res.status(400).json({message: err})
   }
-
 });
 
+router.get('/details', checkCookie, async (req, res, next) => {
+    if (req.role === 'tutor') {
+      try {
+        const tutor = await Tutor.findById(req.id);
+        return res.json(tutor);
+      } catch (err) {
+        return res.send({message: err})
+      }
+    } else if (req.role === 'student') {
+      try {
+        const student = await Student.findById(req.id);
+        return res.json(student);
+      } catch (err) {
+        return res.send({message: err})
+      }
+    } else {
+      //Try to redirect to unauthenticated route or something
+      console.log('unauthenticated')
+      // return next('/unauthenticated')
+    }
+  }
+);
+
 //Gets a specific tutor
-router.get('/:tutorId', verifyToken, async (req, res) => {
+router.get('/:tutorId', async (req, res) => {
   try {
     const tutor = await Tutor.findById(req.params.tutorId);
     res.send(tutor);
   } catch (err) {
     res.json({message: err})
   }
-
 });
 
-router.delete('/:tutorId', verifyToken, async (req, res) => {
+router.delete('/:tutorId', async (req, res) => {
   try {
     const updateTutor = await Tutor.deleteOne(
       {_id: req.params.tutorId},
@@ -60,7 +80,7 @@ router.delete('/:tutorId', verifyToken, async (req, res) => {
 })
 
 //Update a specific tutor
-router.put('/:tutorId', verifyToken, async (req, res, next) => {
+router.put('/:tutorId', async (req, res, next) => {
 
   if (req.body.profile) {
     try {
@@ -81,6 +101,16 @@ router.put('/:tutorId', verifyToken, async (req, res, next) => {
     }
   }
 
+});
+
+//Update a specific tutor
+router.patch('/:tutorId', async (req, res) => {
+  try {
+    const updatedTutor = await Tutor.findByIdAndUpdate(req.params.tutorId, req.body, { new: true })
+    res.send(updatedTutor);
+  } catch (err) {
+    res.json({message: err})
+  }
 });
 
 //Retrieve tutors based on a specific subject
