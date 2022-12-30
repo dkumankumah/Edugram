@@ -44,6 +44,7 @@ export function LoginModal({
             : fetch(
                 'http://localhost:8000/login', {
                     method: 'POST',
+                    credentials: "include",
                     headers: {
                         'Content-Type': 'application/json',
                         'Access-Control-Allow-Origin': 'http://localhost:8000',
@@ -60,7 +61,7 @@ export function LoginModal({
                     //set token
                     setSuccess(data.message)
                     // addToken('haha')
-                    localStorage.setItem('token', data.token)
+                    // localStorage.setItem('token', data.token)
                     window.location.href = '/invoices'
                 }
 
