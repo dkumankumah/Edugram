@@ -1,7 +1,7 @@
 import React, {useState} from "react";
 import {Button, FormControl, Input} from "@chakra-ui/react";
 import * as io from "socket.io-client";
-import {chosenChatTutor} from "../../ChatSidebar";
+import {chosenChatTutor} from "../../pages/ChatSidebar";
 
 const socket = io.connect("ws://localhost:3001", { transports: ['websocket', 'polling', 'flashsocket'] });
 

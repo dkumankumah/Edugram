@@ -3,10 +3,11 @@ import {Avatar, Button, IconButton, Link, Text} from "@chakra-ui/react";
 import {ArrowLeftIcon} from "@chakra-ui/icons"
 // @ts-ignore
 import {router} from "next/router";
-import React, {useEffect, useState} from "react";
+import React, {useEffect, useRef, useState} from "react";
 import * as io from "socket.io-client";
-import {ChatModel} from "./models/ChatModel";
+import {ChatModel} from "../models/ChatModel";
 import {useLocation} from "react-router";
+import {decodeJWT} from "./api/api.storage";
 // const Chat = require("../../server/models/chat");
 
 let chosenChatTutor = "";
@@ -34,38 +35,28 @@ const showChats = (data: ChatModel[]) =>
     })
 
 
-
 const socket = io.connect("ws://localhost:3001", { transports: ['websocket', 'polling', 'flashsocket'] });
 
 
 export default function ChatSidebar() {
-    const tempArray: ChatModel[] = [];
     const temp: ChatModel[] = [];
+    const socketRef = useRef(socket);
 
-    // const location = useLocation();
-
-
-    const [chatList, setChatlist] = useState(temp);
+    const [chatList, setChatlist] = useState([]);
     useEffect(() => {
-        console.log(location.pathname);
+        // socket.emit('get-chats', decodeJWT().id);
         socket.on("user-chats", (data) => {
+            const tempArray: ChatModel[] = [];
             data.forEach(function (value: ChatModel) {
                 if (value.tutor != null) {
                     console.log(value)
-                    let temp;
-                    let _id = value._id;
-                    let messages = value.messages;
-                    let student = value.student;
-                    let tutor = value.tutor;
-                    // temp = new ChatModel({_id, messages, student, tutor})
                     tempArray.push(value)
                 }
-
             });
             console.log("This is tempArray: " + tempArray)
             setChatlist(tempArray);
         });
-    }, [socket]);
+    },[]);
     return (
         <Flex
             w="300px"
