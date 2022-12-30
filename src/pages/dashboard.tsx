@@ -190,10 +190,10 @@ const Dashboard = ({tutorData, accessToken}: PageProps) => {
                     borderRadius='10'>
                     <CardBody>
                         {/*<Text as='b'>Daily Tickets</Text>*/}
-                        {/*<Bar*/}
-                        {/*    // options={options1}*/}
-                        {/*    // data={data}*/}
-                        {/*/>*/}
+                        <Bar
+                            options={options1}
+                            data={data}
+                        />
                     </CardBody>
                 </Card>
             </AdminContainer>

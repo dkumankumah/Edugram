@@ -20,12 +20,12 @@ io.on('connection', (socket) => {
     console.log('user disconnected');
   });
 
-  // socket.on("get-chats", async (student) => {
-  //   console.log(student);
-  //   await Chat.find({student: student}).then(result => {
-  //     socket.emit("user-chats", result)
-  //   });
-  // });
+  socket.on("get-chats", async (student) => {
+    console.log(student);
+    await Chat.find({student: student}).then(result => {
+      socket.emit("user-chats", result)
+    });
+  });
 
 
   socket.on("send-message", async (message, student, tutor, sender) => {
