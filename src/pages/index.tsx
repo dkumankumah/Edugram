@@ -3,6 +3,27 @@
  @author @Danny Nansink, 500821004
  **/
 import React from "react";
+import {
+    Box,
+    chakra,
+    Container,
+    SimpleGrid,
+    VisuallyHidden,
+    IconButton,
+    useColorModeValue,
+    Button, Divider,
+    Flex,
+    Heading,
+    Link,
+    Modal, ModalBody,
+    ModalCloseButton, ModalContent, ModalFooter,
+    ModalHeader,
+    ModalOverlay, Stack, Text, Image, FormHelperText, FormControl, FormErrorMessage,
+    useDisclosure, VStack, InputRightElement, InputGroup, Alert, AlertDescription, AlertTitle, AlertIcon,
+} from '@chakra-ui/react'
+import React, {useState} from "react";
+import {Router, useRouter} from "next/router";
+import ChatSidebar from "../ChatSidebar"
 
 // component imports
 import Layout from "../components/frontpageLayout";
