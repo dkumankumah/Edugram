@@ -13,8 +13,21 @@ mongoose.connect(uri, {useNewUrlParser: true, useUnifiedTopology: true}).then(()
 }).catch(err => console.log(err))
 io.on('connection', (socket) => {
   console.log('a user connected');
-  Chat.find().then(result => {
-    socket.emit('user-chats', result)
+  Chat.find({student: "test6"}).then(result => {
+    if (result.length !== 0) {
+      console.log("Chats gevonden voor student test6: " + result)
+      socket.emit('user-chats', result)
+    }
+    else if (result.length === 0) {
+      console.log("geen chats voor test6 als student. Nu als tutor checken.")
+      Chat.find({tutor: "test6"}).then(result => {
+        if (result.length !== 0) {
+          socket.emit('user-chats', result)
+        } else if (result.length === 0) {
+          console.log("Ook geen chats voor test6 als tutor.")
+        }
+      })
+    }
   })
   socket.on('disconnect', () => {
     console.log('user disconnected');
