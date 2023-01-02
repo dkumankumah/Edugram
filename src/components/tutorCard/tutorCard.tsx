@@ -49,6 +49,7 @@ export function TutorCard({ tutor }: ComponentProps) {
       flexDir="column"
       align="center"
       p="25px 0px"
+      maxH={770}
     >
       <Box>
         <Image

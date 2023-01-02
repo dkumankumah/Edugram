@@ -13,7 +13,7 @@ import Router, { useRouter } from "next/router";
 import TutorCard from "../../components/tutorCard/tutorCard";
 import axios from "axios";
 import { GetStaticPaths } from "next";
-import { Context, useEffect } from "react";
+import { Context, useEffect, useState } from "react";
 import { TutorModel } from "../../models/TutorModel";
 
 interface Pageprops {
@@ -21,80 +21,140 @@ interface Pageprops {
 }
 
 const TutorInfo = ({ tutor }: Pageprops) => {
-  const locations = [
-    {
-      locationName: "Online via webcam",
-      icon: <icon.AiOutlineCamera/>,
-    },
-    {
-      locationName: "At your Home",
-      icon: <icon.AiFillHome/>,
-    },
-    {
-      locationName: "Library",
-      icon: <iconHi.HiLibrary/>,
-    },
-  ];
+  const [locationChoiceOnline, setLocationChoiceOnline] = useState(false);
+  const [locationChoiceHome, setLocationChoiceHome] = useState(false);
+  const [locationChoiceLibrary, setLocationAtLibrary] = useState(false);
 
-  const router = useRouter()
-  const { query : { subject }, } = router
+  const lessonLocatonOnline = "online via webcam";
+  const lessonLocationHome = "at your home";
+  const lessonLocationLibrary = "library";
 
-  useEffect (() => {
-    console.log("subject: " + subject)
-  })
+  const checkLessonLocations = () => {
+    {
+      tutor.profile?.lessonLocation?.map((lesson) => {
+        if (
+          lesson.locationName == lessonLocationHome.toLowerCase() &&
+          lesson.chosen == true
+        ) {
+          setLocationChoiceHome(true);
+        }
+        if (
+          lesson.locationName == lessonLocatonOnline.toLowerCase() &&
+          lesson.chosen == true
+        ) {
+          setLocationChoiceOnline(true);
+        }
+        if (
+          lesson.locationName == lessonLocationLibrary.toLowerCase() &&
+          lesson.chosen == true
+        ) {
+          setLocationAtLibrary(true);
+        }
+      });
+    }
+  };
+
+  const router = useRouter();
+  const {
+    query: { subject },
+  } = router;
+
+  useEffect(() => {
+    checkLessonLocations();
+  });
 
   return (
     <Container
       maxW="8xl"
       display="flex"
-      p={0}
+      minH="100vh"
       flexDir={{ base: "column-reverse", lg: "row" }}
     >
       <Flex w="100%" h="100%" flexDir="column" mt="100px" p={2}>
-        {
-          tutor.course?.map((course, index) => {
-            if ( course.subject == subject ) 
+        {tutor.course?.map((course, index) => {
+          if (course.subject == subject)
             return (
-              <Text key={index} as="h1">{course.courseDescription}</Text>
-            )
-          })
-        }
+              <Text key={index} as="h1">
+                {course.courseDescription}
+              </Text>
+            );
+        })}
         <Flex flexDir="column" mt={8}>
           <Text fontWeight={600} mb={2}>
             Lesson location
           </Text>
 
           <Flex
-            flexFlow={{ base: "wrap", md: "row"}}
+            flexFlow={{ base: "wrap", md: "row" }}
             align="center"
             justify="space-between"
             minH={{ base: 150, lg: 0 }}
           >
-            {locations.map((location, index) => {
-              return (
-                <Flex
-                  key={index}
-                  h="35px"
-                  w="200px"
-                  alignItems="center"
-                  justifyContent="center"
-                  borderRadius={20}
-                  color="white"
-                  bg="blueGreen"
-                  mr={4}
-                >
-                  <IconContext.Provider
-                    value={{
-                      style: { marginRight: "0.5rem" },
-                      className: "global-class-name",
-                    }}
-                  >
-                    {location.icon}
-                  </IconContext.Provider>
-                  {location.locationName}
-                </Flex>
-              );
-            })}
+            <Flex
+              h="35px"
+              w="200px"
+              alignItems="center"
+              justifyContent="center"
+              borderRadius={20}
+              color="white"
+              bg="blueGreen"
+              mr={4}
+              display={locationChoiceOnline ? "flex" : "none"}
+            >
+              <IconContext.Provider
+                value={{
+                  style: { marginRight: "0.5rem" },
+                  className: "global-class-name",
+                }}
+              >
+                <icon.AiOutlineCamera />
+              </IconContext.Provider>
+              Online via Webcam
+            </Flex>
+
+            <Flex
+              h="35px"
+              w="200px"
+              alignItems="center"
+              justifyContent="center"
+              borderRadius={20}
+              color="white"
+              bg="blueGreen"
+              mr={4}
+              display={locationChoiceHome ? "flex" : "none"}
+            >
+              <IconContext.Provider
+                value={{
+                  style: { marginRight: "0.5rem" },
+                  className: "global-class-name",
+                }}
+              >
+                <icon.AiFillHome />,
+              </IconContext.Provider>
+              At your Home
+            </Flex>
+
+            <Flex
+              h="35px"
+              w="200px"
+              alignItems="center"
+              justifyContent="center"
+              borderRadius={20}
+              color="white"
+              bg="blueGreen"
+              mr={4}
+              display={locationChoiceLibrary ? "flex" : "none"}
+            >
+              <IconContext.Provider
+                value={{
+                  style: { marginRight: "0.5rem" },
+                  className: "global-class-name",
+                }}
+              >
+                <iconHi.HiLibrary/>
+              </IconContext.Provider>
+              Library
+            </Flex>
           </Flex>
         </Flex>
 
@@ -165,7 +225,6 @@ export const getStaticPaths = async () => {
   );
 
   const data = await tutorResult.json();
-  console.log("data: " + data);
 
   const paths = data.map((tutor: any) => {
     return {
@@ -181,12 +240,12 @@ export const getStaticPaths = async () => {
 
 export const getStaticProps = async (context: any) => {
   const id = context.params.id;
-  const res = await fetch(`http://localhost:8000/tutor/` + id);
-  const data = await res.json();
+  const data = await fetch(`http://localhost:8000/tutor/` + id).then(response => response.json()
+  ).catch(error => console.log("Some problem(s) encountered when fetching data, " + error))
 
   return {
-    props: { 
-      tutor: data
+    props: {
+      tutor: data,
     },
   };
 };
