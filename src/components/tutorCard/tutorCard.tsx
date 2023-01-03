@@ -3,26 +3,25 @@
  * On this page you can get detailed information about a tutor you are interested in.
  */
 import {
-  Flex,
-  Text,
-  TableContainer,
-  Table,
-  Tbody,
   Tr,
   Td,
   Box,
+  Flex,
+  Text,
+  Table,
+  Tbody,
+  TableContainer,
 } from "@chakra-ui/react";
 import * as icon from "react-icons/ai";
 import { IconContext } from "react-icons";
 import Image from "next/image";
 import { TutorModel } from "../../models/TutorModel";
-import Router, { useRouter } from "next/router";
-
-// components
-import { SubmitButton } from "../shared/Buttons";
+import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import { colors } from "../../theme/colors";
 
+// components
+import { SubmitButton } from "../shared/Buttons";
 
 interface ComponentProps {
   tutor: TutorModel,
@@ -35,10 +34,15 @@ export function TutorCard({ tutor }: ComponentProps) {
   const router = useRouter()
   const { query : { subject }, } = router
 
+  const checkIfTutorIsVerfied = () => {
+    if (tutor.profile.isVerified == true) {
+      setVerified(true)
+    }
+  }
 
   useEffect (() => {
-    setVerified(tutor.verified!)
-  }, [tutor.verified])
+    checkIfTutorIsVerfied()
+  })
 
   return (
     <Flex

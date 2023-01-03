@@ -27,6 +27,7 @@ export interface Profile {
     bio?: string;
     image?: string;
     lessonLocation?: LessonLocation[]
+    isVerified?: boolean
 }
 
 export interface Notification {
