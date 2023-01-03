@@ -35,7 +35,7 @@ export function TutorCard({ tutor }: ComponentProps) {
   const { query : { subject }, } = router
 
   const checkIfTutorIsVerfied = () => {
-    if (tutor.profile.isVerified == true) {
+    if (tutor.profile?.isVerified == true) {
       setVerified(true)
     }
   }
