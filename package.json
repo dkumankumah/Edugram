@@ -4,6 +4,8 @@
   "description": "Tutor app",
   "main": "next.config.js",
   "dependencies": {
+    "@chakra-ui/icon": "^3.0.13",
+    "@chakra-ui/icons": "^2.0.13",
     "@chakra-ui/react": "^2.4.1",
     "@emotion/react": "^11.10.5",
     "@emotion/styled": "^11.10.5",
@@ -40,6 +42,7 @@
     "callsites": "^3.1.0",
     "caniuse-lite": "^1.0.30001431",
     "chalk": "^4.1.2",
+    "chart.js": "^4.1.0",
     "client-only": "^0.0.1",
     "color-convert": "^2.0.1",
     "color-name": "^1.1.4",
@@ -97,6 +100,7 @@
     "esutils": "^2.0.3",
     "etag": "^1.8.1",
     "express": "^4.18.2",
+    "express-healthcheck": "^0.1.0",
     "express-validator": "^6.14.2",
     "fast-deep-equal": "^3.1.3",
     "fast-glob": "^3.2.12",
@@ -238,6 +242,7 @@
     "range-parser": "^1.2.1",
     "raw-body": "^2.5.1",
     "react": "^18.2.0",
+    "react-chartjs-2": "^5.0.1",
     "react-clientside-effect": "^1.2.6",
     "react-dom": "^18.2.0",
     "react-fast-compare": "^3.2.0",
@@ -269,6 +274,8 @@
     "shebang-regex": "^3.0.0",
     "side-channel": "^1.0.4",
     "slash": "^3.0.0",
+    "socket.io": "^4.5.4",
+    "socket.io-client": "^4.5.4",
     "source-map": "^0.5.7",
     "source-map-js": "^1.0.2",
     "start-server-and-test": "^1.14.0",
@@ -320,7 +327,9 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "cypress:open": "cypress open"
+    "cypress": "cypress run --config-file cypress.config.ts",
+    "cypress:open": "cypress open",
+    "start-websocket": "node server/websocket/websocket.js"
   },
   "repository": {
     "type": "git",

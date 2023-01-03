@@ -1,5 +1,5 @@
 /**
- * @author Bugra Karaaslan, 500830631, This is an search field component.
+ * @author Bugra Karaaslan, 500830631, This is a search field component.
  */
 import {
   InputGroup,
@@ -10,15 +10,22 @@ import {
 } from "@chakra-ui/react";
 import * as Icon from "react-icons/ai";
 import { IconContext } from "react-icons";
+import {useRouter} from "next/router";
 
 interface ComponentProps extends InputProps {
-  placeholder: string;
-  label: string;
   id?: string;
+  data: string;
 }
 
-export function SearchField({ placeholder, label, id, ...props }: ComponentProps) {
-  return (
+export function SearchField({ data, id, ...props }: ComponentProps) {
+    const router = useRouter();
+    function handleClick () {
+        router.push({
+            pathname: `/search/${data}`
+        })
+    }
+
+    return (
     <InputGroup maxW={{sm: "260px", md:"290px"}}>
       <Input
         aria-label=""
@@ -30,11 +37,12 @@ export function SearchField({ placeholder, label, id, ...props }: ComponentProps
         {...props}
         fontSize="xs"
         h="45px"
-        placeholder={placeholder}
-        label={label}
+        placeholder={"what do you want to learn?"}
+        label={"SearchField, what do you want to learn"}
       ></Input>
       <InputRightElement>
         <IconButton
+            onClick={handleClick}
           aria-label="Search database"
           bg="yellow"
           mr={2}
@@ -42,6 +50,7 @@ export function SearchField({ placeholder, label, id, ...props }: ComponentProps
           size='sm'
           borderRadius={30}
           _hover={{ bg: 'lightBlue',}}
+            id="iconButton"
           icon={<IconContext.Provider value={{ style: { color: '#FFF' }, className: "global-class-name", }} >
             <Icon.AiOutlineSearch/>
           </IconContext.Provider>}
