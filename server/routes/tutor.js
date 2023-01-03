@@ -35,51 +35,35 @@ router.get(
   }
 );
 
-router.post('/tutorRegister',function(req,res){
-  var firstname = req.body.firstName;
-  var lastname = req.body.lastName;
-  var email = req.body.email;
-  var password = req.body.password;
-  console.log("Firstname = "+firstname+", LastName is "+lastname, 'email is: ', email, 'password is: ', password);
-  res.end("yes");
-});
-
 // Adds a new tutor
-router.post( "/tutor", [
-  body('firstName').trim().escape().notEmpty().withMessage("First name can not be empty"),
-  body('lastName').trim().escape().notEmpty().withMessage("Last name can not be empty"),
-  body('email').trim().escape().notEmpty().withMessage("Email can not be empty")
-    .isEmail().normalizeEmail().withMessage("Email is not valid"),
-  body('password').trim().escape().notEmpty().withMessage("password can not be empty")
-    .isLength({min: 8}).withMessage("password must have at least 8 characters"),
-], async (req, res) => {
-    const hashedPassword = await bcrypt.hash(req.body.password, 10);
+// router.post( "/tutor", async (req, res) => {
+//     const hashedPassword = await bcrypt.hash(req.body.password, 10);
 
-    const tutor = new Tutor({
-      firstName: req.body.firstName,
-      lastName: req.body.lastName,
-      email: req.body.email,
-      password: hashedPassword,
-      role: req.body.role,
-    });
+//     const tutor = new Tutor({
+//       firstName: req.body.firstName,
+//       lastName: req.body.lastName,
+//       email: req.body.email,
+//       password: hashedPassword,
+//       role: req.body.role,
+//     });
 
-    try {
-      const errors = validationResult(req);
-      if (!errors.isEmpty()) {
-        errors.array().forEach(error => {
-          console.log(error)
-        })
-      }
+//     try {
+//       const errors = validationResult(req);
+//       if (!errors.isEmpty()) {
+//         errors.array().forEach(error => {
+//           console.log(error)
+//         })
+//       }
 
-      const savedTutor = tutor.save();
-      res.status(201).json(savedTutor);
-    } catch (err) {
-      res.status(400).json({ message: err });
-    }
-  }
-);
+//       const savedTutor = tutor.save();
+//       res.status(201).json(savedTutor);
+//     } catch (err) {
+//       res.status(400).json({ message: err });
+//     }
+//   }
+// );
 
-router.post('/', async (req, res, next) => {
+router.post('/', userValidation, async (req, res, next) => {
   const role = 'tutor';
   const hashedPassword = await bcrypt.hash(req.body.password, 10);
 
@@ -92,8 +76,17 @@ router.post('/', async (req, res, next) => {
   });
 
   try {
-    const savedTutor = tutor.save();
-    res.status(201).json(savedTutor)
+    const errors = validationResult(req);
+      if (!errors.isEmpty()) {
+        errors.array().forEach(error => {
+          console.log(error)
+          res.status(404).json({message: error})
+        })
+      } else {
+        tutor.save();
+        res.status(201).json({messsage: tutor})
+      }
+
   } catch (err) {
     res.status(400).json({message: err})
   }
