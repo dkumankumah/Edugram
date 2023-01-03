@@ -63,8 +63,7 @@ router.get(
 //   }
 // );
 
-router.post('/', userValidation, async (req, res, next) => {
-  const role = 'tutor';
+router.post('/', userValidation, async (req, res) => {
   const hashedPassword = await bcrypt.hash(req.body.password, 10);
 
   const tutor = new Tutor({
@@ -72,7 +71,7 @@ router.post('/', userValidation, async (req, res, next) => {
     lastName: req.body.lastName,
     email: req.body.email,
     password: hashedPassword,
-    role: role
+    role: req.body.role,
   });
 
   try {
