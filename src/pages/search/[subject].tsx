@@ -39,11 +39,9 @@ export default function Overview ({ tutors, subject }: PageProps) {
                 break;
             case options[1]:
                 tutors.reverse()
-                console.log(value);
                 break;
             case options[2]:
                 sortName()
-                console.log(value);
                 break;
         }
     }

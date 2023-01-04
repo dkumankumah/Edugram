@@ -48,20 +48,28 @@ import {decodeJWT, getToken, isAuthenticated, isTutor} from "./api/api.storage";
 import {useRouter} from "next/router";
 import {GetServerSideProps} from "next";
 import { SubmitButton } from "../components/shared/Buttons";
+import {SubjectModel} from "../models/SubjectModel";
+import {Subject} from "rxjs";
 
 
 interface PageProps {
     accessToken: string,
     tutorData: TutorModel,
+    subjects: SubjectModel[]
 }
 
-export default function courses ({tutorData, accessToken}: PageProps) {
+export default function courses ({tutorData, accessToken, subjects}: PageProps) {
     const [tutor, setTutor] = useState(tutorData as TutorModel)
     const router = useRouter()
     const [isEditing, setIsEditing] = useState(false)
     const [subject, setSubject] = useState({} as Course)
     const [value, setValue] = useState(subject.subject);
+    const [selectedValue, setSelectedValue] = useState("");
+    const [isLag, setIsLag] = useState(false);
+    const [feeValue, setFeeValue] = useState(20)
     const { isOpen, onOpen, onClose } = useDisclosure()
+    const [isInvalidArea, setIsInvalidArea] = useState(true);
+    const [isInvalidOption, setIsInvalidOption] = useState(true);
 
     const handleChangeEvent = (event:any) => {
         setValue(event.target.value);
@@ -71,19 +79,69 @@ export default function courses ({tutorData, accessToken}: PageProps) {
         return course.subject
     })
 
+    const isInvalid = () => {
+        return isInvalidOption || isInvalidArea;
+    }
+
     const handleEdit = () => {
         setValue("")
         setIsEditing(!isEditing)
     }
 
+    // const handleOption = () => {
+    //     // console.log("CHECK VALUE " + selectedValue)
+    //     // setIsLag((event.target.value !== ""))
+    //     // setSelectedValue(event.target.value);
+    //     // console.log("CHECK VALUE = " + selectedValue)
+    //     // console.log("isLag value = " + isLag)
+    //     // console.log("taget value = " + event.target.value)
+    //     if(selectedValue !== ""){
+    //         setIsInvalidOption(false)
+    //     }
+    // }
+
+    const handleAddDescription = (event: any) => {
+        const { value } = event.target;
+        setValue(value);
+        setIsInvalidArea(!(value.length > 15));
+    };
+
+    const handleClose = () => {
+        setSelectedValue('');
+        setIsInvalidOption(true);
+        setIsInvalidArea(true);
+        onClose()
+    };
+
     const handleSubmit = () => {
-        setIsEditing(!isEditing)
-        if (typeof value === "string") {
-            subject.courseDescription = value;
+        if(isEditing) {
+            setIsEditing(!isEditing)
+            if (typeof value === "string") {
+                subject.courseDescription = value;
+            }
+            setSubject(subject)
+            setValue("")
+        } else {
+            const newCourse = {subject: selectedValue, fee: feeValue, courseDescription: value!}
+            tutor.course?.push(newCourse)
         }
-        setSubject(subject)
-        setValue("")
+
+        fetch('http://localhost:8000/tutor/' + tutor._id, {
+            method: 'PATCH',
+            headers: {
+                "Content-Type": "application/json",
+                'Access-Control-Allow-Origin': 'http://localhost:8000',
+                'Authorization': 'Bearer ' + getToken()
+            },
+            body: JSON.stringify({course: tutor.course }),
+        }).then(response => response.json()).then(result =>
+            setTutor(result)
+
+        )
         console.log(tutor.course)
+        setIsInvalidArea(true);
+        setIsInvalidOption(true);
+        onClose()
     }
 
     const handleClick = (value: String) => {
@@ -96,6 +154,7 @@ export default function courses ({tutorData, accessToken}: PageProps) {
 
     const { getRootProps, getRadioProps } = useRadioGroup({
         name: 'subject',
+        // defaultValue: options.p,
         onChange: handleClick,
     })
     const group = getRootProps()
@@ -177,49 +236,6 @@ export default function courses ({tutorData, accessToken}: PageProps) {
                                         mt={3}
                                         fontSize={'larger'}
                                         fontWeight='bold'>
-                                        Subjects you tutor
-                                    </Text>
-                                    <Icon
-                                     as={PlusSquareIcon}
-                                     alignSelf="center"
-                                     color='blueGreen'
-                                     boxSize={6}/>
-                                </Flex>
-                                <Divider
-                                    mt={3}
-                                />
-                            </CardHeader>
-                            <CardBody>
-                                <HStack spacing={4}>
-                                    {subject.subject}
-                                    <Tag
-                                        size={'lg'}
-                                        key={'lg'}
-                                        borderRadius='full'
-                                        variant='solid'
-                                        bg='blueGreen'
-                                    >
-                                        <TagLabel>Green</TagLabel>
-                                        <TagCloseButton />
-                                    </Tag>
-                                </HStack>
-                            </CardBody>
-                        </Card>
-                        <Card
-                            mb={5}
-                            borderRadius={20} >
-                            <CardHeader>
-                                <Flex
-                                    flex='1'
-                                    flexDirection="row"
-                                    justifyContent={"space-between"}
-                                    gap='4'
-                                    flexWrap='wrap'>
-                                    <Text
-                                        color='blueGreen'
-                                        mt={3}
-                                        fontSize={'larger'}
-                                        fontWeight='bold'>
                                         Short Add Description
                                     </Text>
                                     <Icon
@@ -258,6 +274,37 @@ export default function courses ({tutorData, accessToken}: PageProps) {
                                         </SubmitButton>
                                     </Flex>
                                 </Box>
+                            </CardBody>
+                        </Card>
+                        <Card
+                            mb={5}
+                            borderRadius={20} >
+                            <CardHeader>
+                                <Flex
+                                    flex='1'
+                                    flexDirection="row"
+                                    justifyContent={"space-between"}
+                                    gap='4'
+                                    flexWrap='wrap'>
+                                    <Text
+                                        color='blueGreen'
+                                        mt={3}
+                                        fontSize={'larger'}
+                                        fontWeight='bold'>
+                                        About You!
+                                    </Text>
+                                    <Icon
+                                        as={PlusSquareIcon}
+                                        alignSelf="center"
+                                        color='blueGreen'
+                                        boxSize={6}/>
+                                </Flex>
+                                <Divider
+                                    mt={3}
+                                />
+                            </CardHeader>
+                            <CardBody>
+
                             </CardBody>
                         </Card>
                         <Card
@@ -352,7 +399,7 @@ export default function courses ({tutorData, accessToken}: PageProps) {
                 placement='left'
                 size={'md'}
                 // initialFocusRef={firstField}
-                onClose={onClose}
+                onClose={handleClose}
             >
                 <DrawerOverlay />
                 <DrawerContent>
@@ -362,7 +409,7 @@ export default function courses ({tutorData, accessToken}: PageProps) {
                         color='blueGreen'
                         fontSize={'md'}
                     >
-                        Adding new course to profile
+                        Adding new course to your profile
                     </DrawerHeader>
 
                     <DrawerBody>
@@ -373,10 +420,25 @@ export default function courses ({tutorData, accessToken}: PageProps) {
                                     htmlFor='subject'
                                     color='blueGreen'>
                                     Select Subject</FormLabel>
-                                <Select id='subject' defaultValue='segun' fontSize={'sm'}
+                                <Select id='subject'
+                                        placeholder='Select option'
+                                        isInvalid={isInvalidOption}
+                                        value={selectedValue}
+                                        onChange={(e) => {
+                                            setSelectedValue(e.target.value)
+                                            if(e.target.value !== ""){
+                                                setIsInvalidOption(!isInvalidOption)
+                                            } else setIsInvalidOption(true)
+                                        }}
+                                        fontSize={'sm'}
                                 >
-                                    <option value='segun'>Segun Adebayo</option>
-                                    <option value='kola'>Kola Tioluwani</option>
+                                    {subjects.map(s => {
+                                        if(!options?.includes(s.title)){
+                                            return(
+                                                <option key={s.title} value={s.title}>{s.title}</option>
+                                            )
+                                        }
+                                    })}
                                 </Select>
                             </Box>
                             <Box>
@@ -385,7 +447,9 @@ export default function courses ({tutorData, accessToken}: PageProps) {
                                     color='blueGreen'
                                     htmlFor='desc'>Description</FormLabel>
                                 <Textarea id='desc'
+                                          isInvalid={isInvalidArea}
                                           fontSize={'sm'}
+                                          onChange={handleAddDescription}
                                 />
                             </Box>
                             <Box>
@@ -397,7 +461,9 @@ export default function courses ({tutorData, accessToken}: PageProps) {
                                 <InputGroup>
                                     <InputLeftAddon fontSize={'sm'}>€</InputLeftAddon>
                                     <NumberInput defaultValue={20} min={10} max={99} fontSize={'xs'}>
-                                        <NumberInputField fontSize={'sm'}/>
+                                        <NumberInputField value={feeValue} fontSize={'sm'} onChange={(event) => {
+                                            setFeeValue(event.target.value as unknown as number);
+                                        }}/>
                                         <NumberInputStepper>
                                             <NumberIncrementStepper />
                                             <NumberDecrementStepper />
@@ -409,10 +475,12 @@ export default function courses ({tutorData, accessToken}: PageProps) {
                     </DrawerBody>
 
                     <DrawerFooter borderTopWidth='1px'>
-                        <Button variant='outline' mr={3} onClick={onClose}>
+                        <Button variant='outline' fontSize={'xs'} mr={3} onClick={handleClose}>
                             Cancel
                         </Button>
                         <SubmitButton
+                            onClick={handleSubmit}
+                            isDisabled={isInvalid()}
                             label={'add-course'}
                         >Add Course</SubmitButton>
                     </DrawerFooter>
@@ -433,12 +501,12 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
             Cookie: accessToken
         }
     });
+    const res = await fetch('http://localhost:8000/subject/' )
+    const subjects = await res.json()
 
     const tutorData = await response.json()
-    console.log(tutorData)
-
     return {
-        props: {tutorData, accessToken},
+        props: {tutorData, accessToken, subjects},
     };
 }
 
