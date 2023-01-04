@@ -1,8 +1,14 @@
 /**
  * @author Bugra Karaaslan, 500830631, This is a register form.
  */
-import { Flex, Text, FormErrorMessage, FormControl, Alert } from "@chakra-ui/react";
-import axios from 'axios';
+import {
+  Flex,
+  Text,
+  FormErrorMessage,
+  FormControl,
+  Alert,
+} from "@chakra-ui/react";
+import axios from "axios";
 
 // component imports
 import { InputField } from "../components/shared/InputField/InputField";
@@ -12,11 +18,7 @@ import { PasswordInput } from "../components/shared/PasswordInput";
 import React, { useState } from "react";
 import { useRouter } from "next/router";
 
-interface ComponentProps {
-  errors?: Array<{msg: string}>
-}
-
-export function RegisterFormTutor({errors}: ComponentProps) {
+export function RegisterFormTutor() {
   const [role, setRole] = useState("student");
   const [tutorClicked, setTutorClicked] = useState(false);
   const [studentClicked, setStudentClicked] = useState(true);
@@ -24,7 +26,7 @@ export function RegisterFormTutor({errors}: ComponentProps) {
   const [validLastName, setvalidLastName] = useState(false);
   const [validEmail, setvalidEmail] = useState(false);
   const [ValidPassword, setvalidPassword] = useState(false);
-  const [tutor, setTutor] = useState({
+  const [user, setUser] = useState({
     firstName: "",
     lastName: "",
     email: "",
@@ -32,29 +34,61 @@ export function RegisterFormTutor({errors}: ComponentProps) {
     role: role,
   });
   const router = useRouter();
-  
-  // const [errors, setErrors] = useState(null)
 
   const createTutor = async (event: React.FormEvent) => {
     event.preventDefault();
-    let newTutor = tutor;
-    console.log(newTutor);
 
-    if (tutor.firstName === "") {
-      setvalidFirstName(true);
-    }
-    if (tutor.lastName === "") {
-      setvalidLastName(true);
-    }
-    if (tutor.email === "") {
-      setvalidEmail(true);
-    }
-    if (tutor.password === "") {
-      setvalidPassword(true);
-    }
-    axios.post("http://localhost:8000/tutor", newTutor)
-    // router.push("http://localhost:3000/overview")
+    try {
+      let tutor = user;
+      console.log(tutor);
 
+      if (tutor.firstName === "") {
+        setvalidFirstName(true);
+      }
+      if (tutor.lastName === "") {
+        setvalidLastName(true);
+      }
+      if (tutor.email === "") {
+        setvalidEmail(true);
+      }
+      if (tutor.password === "") {
+        setvalidPassword(true);
+      } else {
+        axios.post("http://localhost:8000/tutor", tutor);
+        // router.push("http://localhost:3000/search/overview");
+        console.log("Tutor created");
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const createStudent = async (event: React.FormEvent) => {
+    event.preventDefault();
+
+    try {
+      let student = user;
+      console.log(student);
+
+      if (student.firstName === "") {
+        setvalidFirstName(true);
+      }
+      if (student.lastName === "") {
+        setvalidLastName(true);
+      }
+      if (student.email === "") {
+        setvalidEmail(true);
+      }
+      if (student.password === "") {
+        setvalidPassword(true);
+      } else {
+        axios.post("http://localhost:8000/student", student);
+        // router.push("http://localhost:3000/search/overview");
+        console.log("Student created");
+      }
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   const getTutorForm = () => {
@@ -72,7 +106,7 @@ export function RegisterFormTutor({errors}: ComponentProps) {
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = event.target;
 
-    setTutor((prevInput) => {
+    setUser((prevInput) => {
       return {
         ...prevInput,
         [name]: value.trim(),
@@ -81,12 +115,6 @@ export function RegisterFormTutor({errors}: ComponentProps) {
   };
 
   return (
-    <>
-    {errors?.map((error) => (
-      <Alert status="error" key={error.msg}>
-        {error.msg}
-      </Alert>
-    ))}
     <Flex
       minW={{ sm: "330px", lg: "500px" }}
       height="750px"
@@ -121,25 +149,23 @@ export function RegisterFormTutor({errors}: ComponentProps) {
           fontWeight="600"
         >
           Tutor
-        </Flex> 
+        </Flex>
       </Flex>
       <Text color="eduWhite" mt={10} as="h1" fontSize={{ sm: "md", lg: "lg" }}>
         Create your {role} account
       </Text>
 
- 
-        <InputField
-          label="first name"
-          mt={10}
-          isRequired
-          name="firstName"
-          onChange={handleChange}
-          value={tutor.firstName}
-          placeholder="First name"
-          id="firstName"
-          isInvalid={validFirstName}
-        />
-
+      <InputField
+        label="first name"
+        mt={10}
+        isRequired
+        name="firstName"
+        onChange={handleChange}
+        value={user.firstName}
+        placeholder="First name"
+        id="firstName"
+        isInvalid={validFirstName}
+      />
 
       <InputField
         label="last name"
@@ -147,7 +173,7 @@ export function RegisterFormTutor({errors}: ComponentProps) {
         mt={9}
         name="lastName"
         onChange={handleChange}
-        value={tutor.lastName}
+        value={user.lastName}
         placeholder="Last name"
         id="lastName"
         isInvalid={validLastName}
@@ -159,7 +185,7 @@ export function RegisterFormTutor({errors}: ComponentProps) {
         mt={8}
         name="email"
         onChange={handleChange}
-        value={tutor.email}
+        value={user.email}
         type="email"
         placeholder="Email"
         id="email"
@@ -178,7 +204,7 @@ export function RegisterFormTutor({errors}: ComponentProps) {
         mt={8}
         name="password"
         onChange={handleChange}
-        value={tutor.password}
+        value={user.password}
         placeholder="Password"
         id="password"
         isInvalid={ValidPassword}
@@ -189,7 +215,7 @@ export function RegisterFormTutor({errors}: ComponentProps) {
         mt={12}
         id="submitButton"
         mb={4}
-        onClick={createTutor}
+        onClick={tutorClicked ? createTutor : createStudent}
       >
         Create
       </SubmitButton>
@@ -204,7 +230,5 @@ export function RegisterFormTutor({errors}: ComponentProps) {
         Sign up with Google
       </GoogleBtn>
     </Flex>
-    </>
   );
-  
 }
