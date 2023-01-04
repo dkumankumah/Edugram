@@ -8,43 +8,61 @@ import * as io from "socket.io-client";
 import {ChatModel} from "../models/ChatModel";
 import {useLocation} from "react-router";
 import {decodeJWT} from "./api/api.storage";
+import {TutorModel} from "../models/TutorModel";
+import {GetServerSideProps} from "next";
 // const Chat = require("../../server/models/chat");
 
-let chosenChatTutor = "";
+interface PageProps {
+    accessToken: string,
+    tutorData: TutorModel,
+}
+
+let chosenUserId = "";
 
 function setId(id: string) {
-    chosenChatTutor = id;
+    chosenUserId = id;
 }
 
-function chosenChat(tutor: string) {
-    console.log("_id in chosenChat: " + tutor);
-    chosenChatTutor = tutor;
-    router.push(`/chat/${tutor}`);
+function chosenChat(chat: string) {
+    console.log("_id in chosenChat: " + chat);
+    chosenUserId = chat;
+    router.push(`/chat/${chat}`);
 }
 
-const showChats = (data: ChatModel[]) =>
+const showChats = (data: ChatModel[], {tutorData, accessToken}: PageProps) =>
     data?.map(chat => {
         console.log("data in showChats: " + data);
-        return (
-            <Flex key={chat._id} p={3} align="center" _hover={{bg: "gray.100", cursor: "pointer"}}
-                  onClick={ () => chosenChat(chat.tutor)}>
-                <Avatar src="" marginEnd={3}/>
-                <Text>{chat.tutor}</Text>
-            </Flex>
-        )
+        console.log("Dit is de rol: " + decodeJWT(accessToken).role);
+        if (decodeJWT(accessToken).role === "student") {
+            return (
+                <Flex key={chat._id} p={3} align="center" _hover={{bg: "gray.100", cursor: "pointer"}}
+                      onClick={() => chosenChat(chat.tutor)}>
+                    <Avatar src="" marginEnd={3}/>
+                    <Text>{chat.tutor}</Text>
+                </Flex>
+            )
+        } else if (decodeJWT(accessToken).role === "tutor") {
+            return (
+                <Flex key={chat._id} p={3} align="center" _hover={{bg: "gray.100", cursor: "pointer"}}
+                      onClick={() => chosenChat(chat.student)}>
+                    <Avatar src="" marginEnd={3}/>
+                    <Text>{chat.student}</Text>
+                </Flex>
+            )
+        }
+
     })
 
 
 const socket = io.connect("ws://localhost:3001", { transports: ['websocket', 'polling', 'flashsocket'] });
 
-
-export default function ChatSidebar() {
+export default function ChatSidebar({tutorData, accessToken}: PageProps) {
     const temp: ChatModel[] = [];
     const socketRef = useRef(socket);
 
     const [chatList, setChatlist] = useState([]);
     useEffect(() => {
-        // socket.emit('get-chats', decodeJWT().id);
+        socket.emit('get-chats', decodeJWT(accessToken).id);
         socket.on("user-chats", (data) => {
             const tempArray: ChatModel[] = [];
             data.forEach(function (value: ChatModel) {
@@ -56,7 +74,7 @@ export default function ChatSidebar() {
             console.log("This is tempArray: " + tempArray)
             setChatlist(tempArray);
         });
-    },[]);
+    },[socket]);
     return (
         <Flex
             w="300px"
@@ -80,9 +98,29 @@ export default function ChatSidebar() {
             <Flex overflowX="hidden" overflowY="scroll" direction="column"
                   sx={{'::-webkit-scrollbar': {display: 'none'}}}>
             </Flex>
-            {showChats(chatList)}
+            {showChats(chatList, {tutorData, accessToken})}
         </Flex>
     )
 }
 
-export {chosenChatTutor};
+const getServerSideProps: GetServerSideProps = async (ctx) => {
+    const accessToken = JSON.stringify(ctx.req.cookies.access_token)
+    const response = await fetch('http://localhost:8000/tutor/details', {
+        method: "GET",
+        credentials: "include",
+        mode: 'cors',
+        headers: {
+            'Content-Type': 'application/json',
+            Cookie: accessToken
+        }
+    });
+
+    const data = await response.json()
+    console.log(data)
+
+    return {
+        props: {data, accessToken},
+    };
+}
+
+export {chosenUserId};

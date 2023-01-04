@@ -2,6 +2,7 @@ const mongoose = require('mongoose');
 const Chat = require('../../server/models/chat');
 const Message = require('../../server/models/message');
 let Tickets = require('../../server/models/ticketsModal');
+const {checkCookieForChat} = require("../middleware/authentication");
 const io = require('socket.io')(3001)
 require("dotenv").config({path: require('find-config')('.env')});
 const username = process.env.DATABASE_CONNECTION_USERNAME;
@@ -11,32 +12,29 @@ const uri = `mongodb+srv://${username}:${password}@cluster0.wscvjuf.mongodb.net/
 mongoose.connect(uri, {useNewUrlParser: true, useUnifiedTopology: true}).then(() => {
   console.log('connected')
 }).catch(err => console.log(err))
+
 io.on('connection', (socket) => {
   console.log('a user connected');
-  Chat.find({student: "test6"}).then(result => {
-    if (result.length !== 0) {
-      console.log("Chats gevonden voor student test6: " + result)
-      socket.emit('user-chats', result)
-    }
-    else if (result.length === 0) {
-      console.log("geen chats voor test6 als student. Nu als tutor checken.")
-      Chat.find({tutor: "test6"}).then(result => {
-        if (result.length !== 0) {
-          socket.emit('user-chats', result)
-        } else if (result.length === 0) {
-          console.log("Ook geen chats voor test6 als tutor.")
-        }
-      })
-    }
-  })
+
   socket.on('disconnect', () => {
+    socket.removeAllListeners();
     console.log('user disconnected');
   });
 
-  socket.on("get-chats", async (student) => {
-    console.log(student);
-    await Chat.find({student: student}).then(result => {
+  socket.on("get-chats", async (user) => {
+    console.log("Chats gevraagd voor: " + user);
+    checkCookieForChat(socket);
+    if (socket.request.role === "tutor") {
+      await Chat.find({tutor: user}).then(result => {
+        socket.emit("user-chats", result)
+        console.log("Gevonden chats voor tutor " + user + ": " + result);
+      });
+    }
+
+    if (socket.request.role === "student")
+    await Chat.find({student: user}).then(result => {
       socket.emit("user-chats", result)
+      console.log("Gevonden chats voor student " + user + ": " + result);
     });
   });
 

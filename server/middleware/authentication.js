@@ -27,4 +27,31 @@ module.exports.checkCookie = (req, res, next) => {
 }
 
 
+module.exports.checkCookieForChat = (socket) => {
+  // console.log("Dit is cookie: " + socket.request.headers.cookie)
+  const authcookie = socket.request.headers.cookie.split("=")[1]
+  if (!authcookie) {
+    return res.status(403).send({error: 'Cookie does not exist'});
+  }
+
+  if (!jwt) {
+    return res.status(403).send({error: 'Token does not exist'});
+  }
+
+  jwt.verify(authcookie, process.env.ACCES_TOKEN_SECRET, (err, data) => {
+    if (err) {
+      res.status(403).send({error: 'Malformed token detected'})
+    } else if (data) {
+      socket.request.id = data.id
+      socket.request.role = data.role
+      console.log("Role: " + socket.request.role)
+      // next()
+    } else {
+      res.send({message: 'something else in check jwt'})
+    }
+  })
+
+}
+
+
 
