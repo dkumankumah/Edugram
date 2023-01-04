@@ -34,8 +34,11 @@ app.use(cors({origin: "http://localhost:3000", credentials: true}))
   app.use(bodyParser.json())
 
 //Import routes
-  const tutorRouter = require('./routes/tutor')
-  app.use('/tutor', allowedMethods, tutorRouter);
+const tutorRouter = require('./routes/tutor')
+app.use('/tutor', allowedMethods, tutorRouter);
+
+const subjectRouter = require('./routes/subject')
+app.use('/subject', allowedMethods, subjectRouter);
 
 
 //Routes
