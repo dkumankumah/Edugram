@@ -1,7 +1,7 @@
 /**
  * @author Bugra Karaaslan, 500830631, This is a register form.
  */
-import { Flex, Text, FormErrorMessage, FormControl } from "@chakra-ui/react";
+import { Flex, Text, FormErrorMessage, FormControl, Alert } from "@chakra-ui/react";
 import axios from 'axios';
 
 // component imports
@@ -12,7 +12,11 @@ import { PasswordInput } from "../components/shared/PasswordInput";
 import React, { useState } from "react";
 import { useRouter } from "next/router";
 
-export function RegisterFormTutor() {
+interface ComponentProps {
+  errors?: Array<{msg: string}>
+}
+
+export function RegisterFormTutor({errors}: ComponentProps) {
   const [role, setRole] = useState("student");
   const [tutorClicked, setTutorClicked] = useState(false);
   const [studentClicked, setStudentClicked] = useState(true);
@@ -29,7 +33,7 @@ export function RegisterFormTutor() {
   });
   const router = useRouter();
   
-  const [errors, setErrors] = useState(null)
+  // const [errors, setErrors] = useState(null)
 
   const createTutor = async (event: React.FormEvent) => {
     event.preventDefault();
@@ -50,23 +54,6 @@ export function RegisterFormTutor() {
     }
     axios.post("http://localhost:8000/tutor", newTutor)
     // router.push("http://localhost:3000/overview")
-
-    // fetch("http://localhost:8000/tutor", {
-    //   method: 'POST',
-    //   body: JSON.stringify( { firstName: newTutor.firstName, lastName: newTutor.lastName, email: newTutor.email, password: newTutor.password, role: newTutor.role}),
-    // })
-    //   .then((response) => response.json())
-    //   .then((result) => {
-    //     if (result.errors) {
-    //       setErrors(result.errors);
-    //       console.log(errors)
-    //     } else {
-    //       console.log('successfull')
-    //     }
-    //   })
-    //   .catch((error) => {
-    //     console.error(error);
-    //   });
 
   };
 
@@ -94,6 +81,12 @@ export function RegisterFormTutor() {
   };
 
   return (
+    <>
+    {errors?.map((error) => (
+      <Alert status="error" key={error.msg}>
+        {error.msg}
+      </Alert>
+    ))}
     <Flex
       minW={{ sm: "330px", lg: "500px" }}
       height="750px"
@@ -105,7 +98,7 @@ export function RegisterFormTutor() {
     >
       <Flex bg="yellow" minW="230px" minH="45px" borderRadius={20} mt={10}>
         <Flex
-          bg={studentClicked ? "lightblue" : "transparent"}
+          bg={studentClicked ? "transparant" : "lightblue"}
           minW="115px"
           onClick={getStudentForm}
           borderRadius={20}
@@ -118,7 +111,7 @@ export function RegisterFormTutor() {
           Student
         </Flex>
         <Flex
-          bg={tutorClicked ? "lightblue" : "transparent"}
+          bg={tutorClicked ? "transparant" : "lightblue"}
           minW="115px"
           onClick={getTutorForm}
           borderRadius={20}
@@ -128,7 +121,7 @@ export function RegisterFormTutor() {
           fontWeight="600"
         >
           Tutor
-        </Flex>
+        </Flex> 
       </Flex>
       <Text color="eduWhite" mt={10} as="h1" fontSize={{ sm: "md", lg: "lg" }}>
         Create your {role} account
@@ -211,5 +204,7 @@ export function RegisterFormTutor() {
         Sign up with Google
       </GoogleBtn>
     </Flex>
+    </>
   );
+  
 }

@@ -1,5 +1,5 @@
 /**
- * @author Bugra Karaaslan, 500830631, connection to MongoDB
+ * @author Bugra Karaaslan, 500830631, connection and routes to MongoDB
  * @author Daniel Kumankumah, 500811456, Routes from MongoDB
  * To run the server write command 'node server' in the terminal.
  */
@@ -25,7 +25,6 @@ mongoose.connect(uri, { useNewUrlParser: true, useUnifiedTopology: true})
     .then((result) => console.log('connected to db'))
     .catch((err) =>  console.log(err));
 
-
 //Middlewares
 app.use(cors());
 app.use(bodyParser.json())
@@ -34,12 +33,13 @@ app.use(bodyParser.json())
 const tutorRouter = require('./routes/tutor')
 app.use('/tutor', tutorRouter);
 
+const studentRouter = require('./routes/studentRoute')
+app.use('/student', studentRouter)
 
 //Routes
 app.get('/', (req, res) => {
     res.send('we are on home')
 })
-
 
 app.post('/login', (req, res, next) => {
   const email = req.body.email;

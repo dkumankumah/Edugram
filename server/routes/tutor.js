@@ -1,6 +1,6 @@
 const express = require("express");
 const router = express.Router();
-const Tutor = require("../models/Tutor");
+const Tutor = require("../models/tutorModal");
 const bcrypt = require("bcrypt");
 const { check, validationResult, body } = require("express-validator");
 const {verifyToken} = require("../middleware/authentication");
@@ -10,16 +10,16 @@ const userValidation = [
   check("firstName")
     .exists()
     .notEmpty()
-    .withMessage("Firstname ican not be empty")
+    .withMessage("Firstname can not be empty")
     .trim()
     .escape(),
   check("lastName").exists().notEmpty().trim().escape().bail(),
   check("email")
     .exists()
     .notEmpty()
-    .withMessage("Email can not be emptt")
+    .withMessage("Email can not be empty")
     .isEmail()
-    .withMessage("Email")
+    .withMessage("Email is not valid")
     .trim()
     .escape(),
   check("password")
@@ -46,7 +46,7 @@ router.get('/', async (req, res) => {
   }
 });
 
-router.post("/", userValidation, async (req, res) => {
+router.post("/", userValidation, async (req, res, next) => {
   const hashedPassword = await bcrypt.hash(req.body.password, 10);
 
   const tutor = new Tutor({
@@ -62,8 +62,8 @@ router.post("/", userValidation, async (req, res) => {
     if (!errors.isEmpty()) {
       errors.array().forEach((error) => {
         console.log(error);
-        res.status(404).json({ message: error });
       });
+      res.status(404).json({ message: errors });
     } else {
       tutor.save();
       res.status(201).json({ messsage: tutor });
