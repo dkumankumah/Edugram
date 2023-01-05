@@ -10,9 +10,11 @@ import { RegisterFormTutor } from "../components/RegisterFormtutor";
 interface PageProps {
   title?: String;
   description?: String;
+
+  errors?: Array<{msg: string}>
 }
 
-export default function Register({ title, description }: PageProps) {
+export default function Register({ title, description, errors }: PageProps) {
   return (
     <Flex
       minH="100vh"
@@ -46,7 +48,7 @@ export default function Register({ title, description }: PageProps) {
               )}
             </Flex>
           </Flex>
-          <RegisterFormTutor />
+          <RegisterFormTutor errors={errors} />
         </Flex>
       </Flex>
     </Flex>
