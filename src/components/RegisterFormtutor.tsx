@@ -55,7 +55,7 @@ export function RegisterFormTutor() {
         setvalidPassword(true);
       } else {
         axios.post("http://localhost:8000/tutor", tutor);
-        // router.push("http://localhost:3000/search/overview");
+        router.push("http://localhost:3000/register");
         console.log("Tutor created");
       }
     } catch (error) {
