@@ -93,7 +93,6 @@ export default function courses ({tutorData, accessToken, subjects}: PageProps) 
     //         setIsInvalidOption(false)
     //     }
     // }
-
     const handleAddDescription = (event: any) => {
         const { value } = event.target;
         setValue(value);
