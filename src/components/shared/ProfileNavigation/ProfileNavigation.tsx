@@ -13,7 +13,7 @@ const ProfileNavigation = () => {
                 <ProfileLinkNavigation path={'dashboard'}/>
                 <ProfileLinkNavigation path={'profile'}/>
                 <ProfileLinkNavigation path={'courses'}/>
-                <ProfileLinkNavigation path={'messages'}/>
+                <ProfileLinkNavigation path={'/chat/chats'}/>
                 <ProfileLinkNavigation path={'invoices'}/>
             </HStack>
         </Box>
