@@ -21,7 +21,6 @@ import {
     useRadioGroup, GridItem
 } from "@chakra-ui/react";
 import { TutorModel } from "../../models/TutorModel";
-import {GetServerSideProps} from "next";
 
 interface PageProps {
     tutors: TutorModel[]
@@ -39,9 +38,11 @@ export default function Overview ({ tutors, subject }: PageProps) {
                 break;
             case options[1]:
                 tutors.reverse()
+                console.log(value);
                 break;
             case options[2]:
                 sortName()
+                console.log(value);
                 break;
         }
     }
@@ -54,6 +55,9 @@ export default function Overview ({ tutors, subject }: PageProps) {
     const group = getRootProps()
     return (
         <Box>
+            <Flex>
+
+            </Flex>
             <Box
                 justifyContent = "center"
                 px={20}
@@ -81,8 +85,7 @@ export default function Overview ({ tutors, subject }: PageProps) {
                             })}
 
                         </HStack>
-                        <Text as = "h1"
-                              data-cy="tutorheader"> {tutors.length} Tutors found for {subject}</Text>
+                        <Text as = "h1"> {tutors.length} Tutors found for {subject}</Text>
                     </GridItem>
                     <GridItem  order={-3} >
                     </GridItem>
@@ -137,7 +140,7 @@ export default function Overview ({ tutors, subject }: PageProps) {
                                     <CardHeader>
                                         <HStack justifyContent="center">
                                             <Image src="/Vector.png"
-                                                 alt={`star rating`}/>
+                                                   alt={`star rating`}/>
                                             <Text>Reviews</Text>
                                         </HStack>
                                     </CardHeader>
@@ -204,7 +207,7 @@ export default function Overview ({ tutors, subject }: PageProps) {
     }
 }
 
-export function RadioCard(props: any) {
+function RadioCard(props: any) {
     const { getInputProps, getCheckboxProps } = useRadio(props)
 
     const input = getInputProps()
@@ -235,9 +238,8 @@ export function RadioCard(props: any) {
     )
 }
 
-export const getServerSideProps: GetServerSideProps = async (context) => {
-    const subject = context.params?.subject
-
+export async function getServerSideProps ({ params }: any) {
+    const subject = params.subject
     const res = await fetch('http://localhost:8000/tutor/search/' + subject)
     const tutors = await res.json()
 

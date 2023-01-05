@@ -25,7 +25,13 @@ const tutorSchema = extend(UserSchema, {
   profile: {
     type: TutorProfile,
     required: false
-  }
+  },
+  course: [
+    {subject: String, fee: Number}
+  ],
+  request: [
+    {id: String, firstName: String, lastName: String, location: String, subject: String, status: String}
+  ]
 })
 
 const Tutor = mongoose.model("Tutor", tutorSchema);
