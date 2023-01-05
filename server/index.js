@@ -13,8 +13,8 @@ const password = process.env.DATABASE_CONNECTION_PASSWORD;
 const jwt = require('jsonwebtoken')
 const cors = require('cors');
 const bodyParser = require('body-parser')
-const Student = require("./models/Student");
-const Tutor = require("./models/Tutor");
+const Student = require("./models/studentModal");
+const Tutor = require("./models/tutorModal");
 const Admin = require("./models/Admin");
 const bcrypt = require('bcrypt')
 const {allowedMethods} = require("./middleware/requestMethod");
@@ -26,7 +26,6 @@ const uri = `mongodb+srv://${username}:${password}@cluster0.wscvjuf.mongodb.net/
 mongoose.connect(uri, {useNewUrlParser: true, useUnifiedTopology: true})
   .then((result) => console.log('connected to db'))
   .catch((err) => console.log(err));
-
 
 //Middlewares
 app.use(cookieParser())
@@ -40,17 +39,17 @@ app.use('/tutor', allowedMethods, tutorRouter);
 const subjectRouter = require('./routes/subject')
 app.use('/subject', allowedMethods, subjectRouter);
 
+const studentRouter = require('./routes/studentRoute')
+app.use('/student', studentRouter)
 
 //Routes
   app.get('/', (req, res) => {
     res.send('we are on home')
   })
 
-
-  app.post('/login', (req, res, next) => {
-    const email = req.body.email;
-    const password = req.body.password;
-
+app.post('/login', (req, res, next) => {
+  const email = req.body.email;
+  const password = req.body.password;
     Student.find({email: email},
       function (error, data) {
         data.length === 1 ? checkPassword(data, password, res, next) : Tutor.find({email: email},
