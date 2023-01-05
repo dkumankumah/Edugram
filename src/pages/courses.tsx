@@ -19,10 +19,7 @@ import {
     FormControl,
     FormLabel,
     FormHelperText,
-    Input,
     Textarea,
-    Alert,
-    useBoolean,
     Drawer,
     DrawerContent,
     DrawerOverlay,
@@ -40,7 +37,7 @@ import {
     NumberIncrementStepper, NumberDecrementStepper, InputLeftAddon, InputGroup
 } from "@chakra-ui/react";
 import ProfileNavigation from "../components/shared/ProfileNavigation/ProfileNavigation";
-import {AddIcon, CheckCircleIcon, CloseIcon, EditIcon, PlusSquareIcon} from "@chakra-ui/icons";
+import {AddIcon, EditIcon, PlusSquareIcon} from "@chakra-ui/icons";
 import React, {useEffect, useState} from "react";
 import {TutorModel} from "../models/TutorModel";
 import {Course} from "../models/CourseModel";
@@ -49,8 +46,6 @@ import {useRouter} from "next/router";
 import {GetServerSideProps} from "next";
 import { SubmitButton } from "../components/shared/Buttons";
 import {SubjectModel} from "../models/SubjectModel";
-import {Subject} from "rxjs";
-
 
 interface PageProps {
     accessToken: string,
@@ -65,7 +60,6 @@ export default function courses ({tutorData, accessToken, subjects}: PageProps) 
     const [subject, setSubject] = useState({} as Course)
     const [value, setValue] = useState(subject.subject);
     const [selectedValue, setSelectedValue] = useState("");
-    const [isLag, setIsLag] = useState(false);
     const [feeValue, setFeeValue] = useState(20)
     const { isOpen, onOpen, onClose } = useDisclosure()
     const [isInvalidArea, setIsInvalidArea] = useState(true);
