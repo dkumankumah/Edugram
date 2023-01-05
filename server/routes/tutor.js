@@ -1,5 +1,7 @@
-const express = require("express");
-const router = express.Router();
+const express = require('express')
+const router = express.Router()
+const Student = require('../models/studentModal')
+const {checkCookie} = require("../middleware/authentication");
 const Tutor = require("../models/tutorModal");
 const bcrypt = require("bcrypt");
 const { check, validationResult, body } = require("express-validator");
@@ -37,7 +39,7 @@ const userValidation = [
 ];
 
 // Get all tutors
-router.get('/', async (req, res) => {
+router.get('/', checkCookie, async (req, res, next) => {
   try {
     const tutors = await Tutor.find()
     res.json(tutors);
@@ -56,7 +58,6 @@ router.post("/", userValidation, async (req, res, next) => {
     password: hashedPassword,
     role: req.body.role,
   });
-
   try {
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
@@ -73,18 +74,45 @@ router.post("/", userValidation, async (req, res, next) => {
   }
 });
 
+router.get('/details', checkCookie, async (req, res, next) => {
+    if (req.role === 'tutor') {
+      try {
+        const tutor = await Tutor.findById(req.id);
+        return res.json(tutor);
+      } catch (err) {
+        return res.send({message: err})
+      }
+    } else if (req.role === 'student') {
+      try {
+        const student = await Student.findById(req.id);
+        return res.json(student);
+      } catch (err) {
+        return res.send({message: err})
+      }
+    }
+    else if (req.role === 'admin') {
+      next()
+    }
+    else {
+      //Try to redirect to unauthenticated route or something
+      res.status(403).send({message: "unautenticated"})
+      console.log('unauthenticated')
+      // return next('/unauthenticated')
+    }
+  }
+);
+
 //Gets a specific tutor
-router.get('/:tutorId', verifyToken, async (req, res) => {
+router.get('/:tutorId', async (req, res) => {
   try {
     const tutor = await Tutor.findById(req.params.tutorId);
     res.send(tutor);
   } catch (err) {
     res.json({message: err})
   }
-
 });
 
-router.delete('/:tutorId', verifyToken, async (req, res) => {
+router.delete('/:tutorId', async (req, res) => {
   try {
     const updateTutor = await Tutor.deleteOne(
       {_id: req.params.tutorId},
@@ -96,7 +124,7 @@ router.delete('/:tutorId', verifyToken, async (req, res) => {
 })
 
 //Update a specific tutor
-router.put('/:tutorId', verifyToken, async (req, res, next) => {
+router.put('/:tutorId', async (req, res, next) => {
 
   if (req.body.profile) {
     try {
@@ -117,6 +145,16 @@ router.put('/:tutorId', verifyToken, async (req, res, next) => {
     }
   }
 
+});
+
+//Update a specific tutor
+router.patch('/:tutorId', async (req, res) => {
+  try {
+    const updatedTutor = await Tutor.findByIdAndUpdate(req.params.tutorId, req.body, { new: true })
+    res.send(updatedTutor);
+  } catch (err) {
+    res.json({message: err})
+  }
 });
 
 //Retrieve tutors based on a specific subject
