@@ -45,7 +45,6 @@ export default function ChatApp({tutorData, accessToken}: PageProps) {
         socket.on("update-chat", (chat) => {
             
             setChat(chat);
-            console.log("SIIIUUUU")
         });
     }, []);
 
