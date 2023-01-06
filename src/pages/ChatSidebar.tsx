@@ -24,15 +24,13 @@ function setId(id: string) {
 }
 
 function chosenChat(chat: string) {
-    console.log("_id in chosenChat: " + chat);
+    console.log("chosen chat to be emitted: " + chosenUserId);
     chosenUserId = chat;
     router.push(`/chat/${chat}`);
 }
 
 const showChats = (data: ChatModel[], {tutorData, accessToken}: PageProps) =>
     data?.map(chat => {
-        console.log("data in showChats: " + data);
-        console.log("Dit is de rol: " + decodeJWT(accessToken).role);
         if (decodeJWT(accessToken).role === "student") {
             return (
                 <Flex key={chat._id} p={3} align="center" _hover={{bg: "gray.100", cursor: "pointer"}}
@@ -50,7 +48,6 @@ const showChats = (data: ChatModel[], {tutorData, accessToken}: PageProps) =>
                 </Flex>
             )
         }
-
     })
 
 
@@ -74,7 +71,7 @@ export default function ChatSidebar({tutorData, accessToken}: PageProps) {
             console.log("This is tempArray: " + tempArray)
             setChatlist(tempArray);
         });
-    },[socket]);
+    },[chosenUserId]);
     return (
         <Flex
             w="300px"
