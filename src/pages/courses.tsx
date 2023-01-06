@@ -57,16 +57,20 @@ export default function courses ({tutorData, accessToken, subjects}: PageProps) 
     const [tutor, setTutor] = useState(tutorData as TutorModel)
     const router = useRouter()
     const [isEditing, setIsEditing] = useState(false)
+    const [courseSelected, setCourseSelected] = useState(false)
     const [subject, setSubject] = useState({} as Course)
     const [value, setValue] = useState(subject.subject);
     const [selectedValue, setSelectedValue] = useState("");
     const [feeValue, setFeeValue] = useState(20)
     const { isOpen, onOpen, onClose } = useDisclosure()
     const [isInvalidArea, setIsInvalidArea] = useState(true);
+    const [isInvalidTextArea, setIsInvalidTextArea] = useState(true);
+
     const [isInvalidOption, setIsInvalidOption] = useState(true);
 
     const handleChangeEvent = (event:any) => {
         setValue(event.target.value);
+        setIsInvalidTextArea(!(event.target.value.length > 15));
     };
 
     const options = tutor.course?.map(course => {
@@ -143,6 +147,7 @@ export default function courses ({tutorData, accessToken, subjects}: PageProps) 
                 setSubject(course)
             }
         })
+        setCourseSelected(true)
     }
 
     const { getRootProps, getRadioProps } = useRadioGroup({
@@ -199,22 +204,25 @@ export default function courses ({tutorData, accessToken, subjects}: PageProps) 
 
                             </CardBody>
                         </Card>
-                        <VStack {...group}
-                        align="left">
-                            {options?.map((value) => {
-                                const radio = getRadioProps({ value })
-                                return (
-                                    <RadioCard key={value} {...radio}>
-                                        {value}
-                                    </RadioCard>
-                                )
-                            })}
-                        </VStack>
-
+                        <Box
+                            height="400px" overflowY="scroll">
+                            <VStack {...group}
+                                    align="left">
+                                {options?.map((value) => {
+                                    const radio = getRadioProps({ value })
+                                    return (
+                                        <RadioCard key={value} {...radio}>
+                                            {value}
+                                        </RadioCard>
+                                    )
+                                })}
+                            </VStack>
+                        </Box>
                     </Box>
                     <Box flex={5}
                          mr={3}>
                         <Card
+                            display={!courseSelected ? 'block' : 'none'}
                             mb={5}
                             borderRadius={20} >
                             <CardHeader>
@@ -229,7 +237,44 @@ export default function courses ({tutorData, accessToken, subjects}: PageProps) 
                                         mt={3}
                                         fontSize={'larger'}
                                         fontWeight='bold'>
-                                        Short Add Description
+                                        Instruction
+                                    </Text>
+                                </Flex>
+                                <Divider
+                                    mt={3}
+                                />
+                            </CardHeader>
+                            <CardBody>
+                                <Text
+                                    fontSize={'sm'}>
+                                    On the left you can add a new subject you would like to tutor.
+                                    Choose a subject from the dropdown and add a short description to convince students
+                                    to choose you.
+                                </Text>
+                                <Text
+                                    fontSize={'sm'}
+                                mt={2}>
+                                    If wish to adjust the course description or your fee click on the subject and make your changes!
+                                </Text>
+                            </CardBody>
+                        </Card>
+                        <Card
+                            mb={5}
+                            borderRadius={20}
+                            display={courseSelected ? 'block' : 'none'}>
+                            <CardHeader>
+                                <Flex
+                                    flex='1'
+                                    flexDirection="row"
+                                    justifyContent={"space-between"}
+                                    gap='4'
+                                    flexWrap='wrap'>
+                                    <Text
+                                        color='blueGreen'
+                                        mt={3}
+                                        fontSize={'larger'}
+                                        fontWeight='bold'>
+                                        Add Short Description
                                     </Text>
                                     <Icon
                                         as={EditIcon}
@@ -253,14 +298,19 @@ export default function courses ({tutorData, accessToken, subjects}: PageProps) 
                                     <FormControl
                                         pt={2}>
                                         <Textarea
+                                            isInvalid={isInvalidTextArea}
                                             fontSize={'sm'}
                                             value={value}
                                             onChange={handleChangeEvent}
                                         />
-                                        <FormHelperText>Keep it brief but catching for a higher clickrate.</FormHelperText>
+                                        <FormHelperText
+                                            fontSize={15}>Keep it brief but catching for a higher clickrate.</FormHelperText>
+                                        <FormHelperText
+                                            fontSize={15}>Minimum character length is 20</FormHelperText>
                                     </FormControl>
                                     <Flex justifyContent={'end'}>
                                         <SubmitButton
+                                            isDisabled={isInvalidTextArea}
                                             label={'save-description'}
                                             onClick={handleSubmit}>
                                             Save Changes
@@ -270,37 +320,7 @@ export default function courses ({tutorData, accessToken, subjects}: PageProps) 
                             </CardBody>
                         </Card>
                         <Card
-                            mb={5}
-                            borderRadius={20} >
-                            <CardHeader>
-                                <Flex
-                                    flex='1'
-                                    flexDirection="row"
-                                    justifyContent={"space-between"}
-                                    gap='4'
-                                    flexWrap='wrap'>
-                                    <Text
-                                        color='blueGreen'
-                                        mt={3}
-                                        fontSize={'larger'}
-                                        fontWeight='bold'>
-                                        About You!
-                                    </Text>
-                                    <Icon
-                                        as={PlusSquareIcon}
-                                        alignSelf="center"
-                                        color='blueGreen'
-                                        boxSize={6}/>
-                                </Flex>
-                                <Divider
-                                    mt={3}
-                                />
-                            </CardHeader>
-                            <CardBody>
-
-                            </CardBody>
-                        </Card>
-                        <Card
+                            display={courseSelected ? 'block' : 'none'}
                             borderRadius={20} >
                             <CardHeader>
                                 <Flex
@@ -368,7 +388,8 @@ export default function courses ({tutorData, accessToken, subjects}: PageProps) 
                                     mt={3}
                                 />
                             </CardHeader>
-                            <CardBody>
+                            <CardBody
+                                display={courseSelected ? 'block' : 'none'}>
                                 <SimpleGrid columns={2} spacing={12}>
                                     <Text
                                         fontSize={'medium'}
@@ -435,18 +456,22 @@ export default function courses ({tutorData, accessToken, subjects}: PageProps) 
                                 </Select>
                             </Box>
                             <Box>
-                                <FormLabel
-                                    fontSize={'sm'}
-                                    color='blueGreen'
-                                    htmlFor='desc'>Description</FormLabel>
-                                <Textarea id='desc'
-                                          isInvalid={isInvalidArea}
-                                          fontSize={'sm'}
-                                          onChange={handleAddDescription}
-                                />
+                                <FormControl
+                                    pt={2}>
+                                    <FormLabel
+                                        fontSize={'sm'}
+                                        color='blueGreen'
+                                        htmlFor='desc'>Description</FormLabel>
+                                    <Textarea id='desc'
+                                              isInvalid={isInvalidArea}
+                                              fontSize={'sm'}
+                                              onChange={handleAddDescription}
+                                    />
+                                    <FormHelperText
+                                        fontSize={15}>Minimum character length is 20</FormHelperText>
+                                </FormControl>
                             </Box>
                             <Box>
-
                                 <FormLabel
                                     fontSize={'sm'}
                                     color='blueGreen'

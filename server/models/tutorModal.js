@@ -27,7 +27,7 @@ const tutorSchema = extend(UserSchema, {
     required: false
   },
   course: [
-    {subject: String, fee: Number}
+    {subject: String, fee: Number, courseDescription: String}
   ],
   request: [
     {id: String, firstName: String, lastName: String, location: String, subject: String, status: String}
