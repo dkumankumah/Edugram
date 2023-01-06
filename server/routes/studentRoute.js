@@ -51,7 +51,8 @@ router.post("/", userValidation, async (req, res, next) => {
       errors.array().forEach((error) => {
         console.log(error);
       });
-      res.status(404).json({ message: errors });
+      // res.status(400).json({ message: errors });
+      res.status(400).json({errors: errors.array()})
     } else {
       student.save();
       res.status(201).json({ messsage: student });

@@ -7,6 +7,8 @@ import {
   FormErrorMessage,
   FormControl,
   Alert,
+  AlertTitle,
+  AlertDescription,
 } from "@chakra-ui/react";
 import axios from "axios";
 
@@ -34,61 +36,75 @@ export function RegisterFormTutor() {
     role: role,
   });
   const router = useRouter();
+  let numberOfError = 0;
 
   const createTutor = async (event: React.FormEvent) => {
     event.preventDefault();
+    let tutor = user;
+    console.log(tutor);
+    
+    if (tutor.firstName === "") {
+      setvalidFirstName(true);
+      numberOfError++
+    }
+    if (tutor.lastName === "") {
+      setvalidLastName(true);
+      numberOfError++
+    }
+    if (tutor.email === "") {
+      setvalidEmail(true);
+      numberOfError++
+    }
+    if (tutor.password === "") {
+      setvalidPassword(true);
+      numberOfError++
+    } 
 
-    try {
-      let tutor = user;
-      console.log(tutor);
-
-      if (tutor.firstName === "") {
-        setvalidFirstName(true);
-      }
-      if (tutor.lastName === "") {
-        setvalidLastName(true);
-      }
-      if (tutor.email === "") {
-        setvalidEmail(true);
-      }
-      if (tutor.password === "") {
-        setvalidPassword(true);
-      } else {
+    if (numberOfError == 0) {
+      try {
         axios.post("http://localhost:8000/tutor", tutor);
-        router.push("http://localhost:3000/register");
-        console.log("Tutor created");
+          // router.push("http://localhost:3000/search/overview");
+          console.log("tutor created");
+        
+      } catch (error) {
+        console.log("error");
       }
-    } catch (error) {
-      console.log(error);
     }
   };
 
   const createStudent = async (event: React.FormEvent) => {
     event.preventDefault();
+    let student = user;
+    console.log(student);
 
-    try {
-      let student = user;
-      console.log(student);
-
-      if (student.firstName === "") {
-        setvalidFirstName(true);
-      }
-      if (student.lastName === "") {
-        setvalidLastName(true);
-      }
-      if (student.email === "") {
-        setvalidEmail(true);
-      }
-      if (student.password === "") {
-        setvalidPassword(true);
-      } else {
-        axios.post("http://localhost:8000/student", student);
-        // router.push("http://localhost:3000/search/overview");
-        console.log("Student created");
-      }
-    } catch (error) {
-      console.log(error);
+    if (student.firstName === "") {
+      setvalidFirstName(true);
+      numberOfError++
     }
+    if (student.lastName === "") {
+      setvalidLastName(true);
+      numberOfError++
+    }
+    if (student.email === "") {
+      setvalidEmail(true);
+      numberOfError++
+    }
+    if (student.password === "") {
+      setvalidPassword(true);
+      numberOfError++
+    } 
+
+    if (numberOfError == 0) {
+      try {
+        axios.post("http://localhost:8000/student", student);
+          // router.push("http://localhost:3000/search/overview");
+          console.log("Student created");
+        
+      } catch (error) {
+        console.log("error");
+      }
+    }
+
   };
 
   const getTutorForm = () => {
@@ -115,6 +131,11 @@ export function RegisterFormTutor() {
   };
 
   return (
+
+    <Flex flexDir="column">
+    <Alert mb={10} status="error">
+      <AlertTitle>This is a test error!</AlertTitle>
+    </Alert>
     <Flex
       minW={{ sm: "330px", lg: "500px" }}
       height="750px"
@@ -151,6 +172,7 @@ export function RegisterFormTutor() {
           Tutor
         </Flex>
       </Flex>
+
       <Text color="eduWhite" mt={10} as="h1" fontSize={{ sm: "md", lg: "lg" }}>
         Create your {role} account
       </Text>
@@ -230,5 +252,7 @@ export function RegisterFormTutor() {
         Sign up with Google
       </GoogleBtn>
     </Flex>
+    </Flex>
+    
   );
 }
