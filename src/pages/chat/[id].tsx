@@ -18,13 +18,12 @@ interface PageProps {
     tutorData: TutorModel,
 }
 
-const getMessages = (chat: ChatModel, {tutorData, accessToken}: PageProps) =>
+const getMessages = (chat: ChatModel, { accessToken}: PageProps) =>
     chat?.messages.map(msg => {
         //test1 needs to be replaced with logged in user or student if tutor is logged in
         const sender = msg.sender === decodeJWT(accessToken).id;
         console.log("chat: " + chat);
         console.log("msg: " + msg.sender);
-        const array = new Uint32Array(10);
         return (
             <Flex key = {Math.random()} alignSelf={sender ? "flex-end" : "flex-start"} bg={sender ? "green.100" : "#BBDEFB"} w="fit-content" minWidth="100px" borderRadius="lg" p={3} m={1}>
                 <Text>{msg.message}</Text>
@@ -41,11 +40,15 @@ export default function ChatApp({tutorData, accessToken}: PageProps) {
     } else if (decodeJWT(accessToken).role === "tutor") {
         socket.emit('join-chat', chosenUserId, decodeJWT(accessToken).id);
     }
+
     useEffect(() => {
         socket.on("update-chat", (chat) => {
+            
             setChat(chat);
+            console.log("SIIIUUUU")
         });
-    }, [socket]);
+    }, []);
+
     return (
         <Flex
             h="100vh"
@@ -64,6 +67,7 @@ export default function ChatApp({tutorData, accessToken}: PageProps) {
                       sx={{'::-webkit-scrollbar': {display: 'none'}}}>
                 </Flex>
                 {getMessages(chat!, {tutorData, accessToken})}
+
                 <Bottombar accessToken={accessToken} tutorData={tutorData}/>
             </Flex>
         </Flex>

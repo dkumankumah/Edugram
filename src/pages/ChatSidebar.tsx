@@ -60,7 +60,9 @@ export default function ChatSidebar({tutorData, accessToken}: PageProps) {
     const temp: ChatModel[] = [];
     const socketRef = useRef(socket);
 
-    const [chatList, setChatlist] = useState([]);
+    const [chatList, setChatlist] = useState<ChatModel[]>([]);
+   
+
     useEffect(() => {
         socket.emit('get-chats', decodeJWT(accessToken).id);
         socket.on("user-chats", (data) => {
@@ -73,8 +75,10 @@ export default function ChatSidebar({tutorData, accessToken}: PageProps) {
             });
             console.log("This is tempArray: " + tempArray)
             setChatlist(tempArray);
+            
         });
-    },[socket]);
+    },[accessToken]);
+    
     return (
         <Flex
             w="300px"
