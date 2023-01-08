@@ -9,6 +9,7 @@ import {
   Alert,
   AlertTitle,
   AlertDescription,
+  useToast,
 } from "@chakra-ui/react";
 import axios from "axios";
 
@@ -17,7 +18,7 @@ import { InputField } from "../components/shared/InputField/InputField";
 import { SubmitButton } from "../components/shared/Buttons/SubmitButton";
 import { GoogleBtn } from "../components/shared/GoogleBtn";
 import { PasswordInput } from "../components/shared/PasswordInput";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useRouter } from "next/router";
 
 export function RegisterFormTutor() {
@@ -37,6 +38,7 @@ export function RegisterFormTutor() {
   });
   const router = useRouter();
   let numberOfError = 0;
+  const [errors, setErrors] = useState<any[]>([]);
 
   const createTutor = async (event: React.FormEvent) => {
     event.preventDefault();
@@ -72,6 +74,10 @@ export function RegisterFormTutor() {
     }
   };
 
+  /**
+   * 
+   * @param event 
+   */
   const createStudent = async (event: React.FormEvent) => {
     event.preventDefault();
     let student = user;
@@ -95,10 +101,30 @@ export function RegisterFormTutor() {
     } 
 
     if (numberOfError == 0) {
+     
       try {
-        axios.post("http://localhost:8000/student", student);
-          // router.push("http://localhost:3000/search/overview");
+       
+        axios.post("http://localhost:8000/student", student).then((res) => {
+          console.log(res)
           console.log("Student created");
+        }).catch((error) => {
+          if (error.response) {
+            console.log("er is een errrr: " + JSON.stringify(error.response))
+            console.log(error.response)
+            setErrors(error.response)
+            let message = JSON.stringify(error.response).split('[]',)[1]
+            toast({
+              title: 'Warning',
+              description: JSON.stringify(error.response.data.map((err:any) => {
+                return err.msg.map(err.mgs.split('')[0])
+              })),
+              status: 'warning',
+              duration: 19000,
+              isClosable: true,
+            })
+          }
+        });
+          
         
       } catch (error) {
         console.log("error");
@@ -129,13 +155,11 @@ export function RegisterFormTutor() {
       };
     });
   };
-
+  const toast = useToast()
+  
   return (
 
     <Flex flexDir="column">
-    <Alert mb={10} status="error">
-      <AlertTitle>This is a test error!</AlertTitle>
-    </Alert>
     <Flex
       minW={{ sm: "330px", lg: "500px" }}
       height="750px"
@@ -145,6 +169,7 @@ export function RegisterFormTutor() {
       flexDir="column"
       ml={{ sm: "0px", md: "40px" }}
     >
+  
       <Flex bg="yellow" minW="230px" minH="45px" borderRadius={20} mt={10}>
         <Flex
           bg={studentClicked ? "transparant" : "lightblue"}
