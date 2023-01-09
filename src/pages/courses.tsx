@@ -159,7 +159,7 @@ export default function courses ({tutorData, accessToken, subjects}: PageProps) 
     return (
         <>
             <Box>
-                <ProfileNavigation/>
+                <ProfileNavigation role={'tutor'}/>
                 <Box p={5} display={{ lg: 'flex' }}>
                     <Box
                         flex={1}

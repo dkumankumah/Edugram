@@ -12,7 +12,7 @@ import {
     Input,
     Text,
     FormControl,
-    FormHelperText, FormLabel, SimpleGrid,
+    FormHelperText, FormLabel, SimpleGrid, useToast,
 } from "@chakra-ui/react";
 import {SubmitButton} from "../components/shared/Buttons";
 import {DashboardCard} from "../components/shared/DashboardCard";
@@ -21,74 +21,91 @@ import {getToken, isAdmin, isTutor} from "./api/api.storage";
 import {TutorModel} from "../models/TutorModel";
 import {useRouter} from "next/router";
 import {GetServerSideProps} from "next";
-
+import {wait} from "next/dist/build/output/log";
 
 interface PageProps {
     accessToken: string,
-    data: string,
+    data: TutorModel,
+}
+
+const INITIAL_STATE_PROFILE = {
+    profileFirstName: "",
+    profileLastName: "",
+    profileDateOfBirth: "",
+    profileGender: "",
+    profilePhonenumber: "",
+};
+
+const INITIAL_STATE_ADDRESS = {
+    addressStreetName: "",
+    addressPostalCode: "",
 }
 
 export const Profile = ({data, accessToken}: PageProps) => {
-    const [firstName, setFirstname] = useState('')
-    const [lastName, setLastname] = useState('')
-    const [phoneNumber, setPhonenumber] = useState('')
-    const [gender, setGender] = useState('')
-    const [birthdate, setBirthdate] = useState('')
-    const [postalCode, setPostalCode] = useState('')
-    const [streetName, setStreetName] = useState('')
-    const [tutor, setTutor] = useState({} as TutorModel)
-    const isError = firstName === ''
+    const [tutor, setTutor] = useState(data as TutorModel)
+    const [user, setUser] = useState(INITIAL_STATE_PROFILE)
+    const [address, setAddress] = useState(INITIAL_STATE_ADDRESS)
     const router = useRouter()
+    const toast = useToast()
 
     useEffect(() => {
         console.log(data)
         console.log(isTutor(accessToken))
         console.log(isAdmin(accessToken))
-
         // setTutor(data)
     }, [])
 
+
+    const handleInput = (e: any) => {
+        setUser({...user, [e.target.name]: e.target.value});
+
+    };
+
+
+    const handleInputAddress = (e: any) => {
+        setAddress({...address, [e.target.name]: e.target.value})
+    };
+
     const handleProfileChanges = () => {
-        const formattedBirthDate = new Date(birthdate).toLocaleDateString('german', {
-            year: 'numeric',
-            month: 'numeric',
-            day: 'numeric'
-        })
-        console.log(formattedBirthDate)
-        const profile = {
-            firstName,
-            lastName, formattedBirthDate, gender, phoneNumber
-        }
         fetch('http://localhost:8000/tutor/' + tutor._id, {
             method: 'PUT',
-            body: JSON.stringify({profile: profile}),
+            body: JSON.stringify({user: user}),
             headers: {
                 "Content-Type": "application/json",
                 'Access-Control-Allow-Origin': 'http://localhost:8000',
-                'Authorization': 'Bearer ' + getToken()
+                Cookie: accessToken
             },
-        }).then(response => response.json()).then(result =>
-            console.log(result)
-        )
-        alert(JSON.stringify(profile))
+            credentials: "include",
+            mode: 'cors',
+        }).then(() => {
+                toast({description: 'Succesfuly changed profile', status: "success", position: "top-right", duration: 2000})
+            }
+        ).then(() => {
+            wait(2000)
+            window.location.reload()
+        }).catch((err) => {
+            console.log(err.response)
+        })
     }
 
     const handleLivingPlaceChanges = () => {
-        const livingPlace = {
-            streetName, postalCode
-        }
-        fetch('http://localhost:8000/tutor/' + tutor._id, {
+        fetch('http://localhost:8000/tutor/address' + tutor._id, {
             method: 'PUT',
-            body: JSON.stringify({livingPlace: livingPlace}),
+            body: JSON.stringify({user: address}),
             headers: {
                 "Content-Type": "application/json",
                 'Access-Control-Allow-Origin': 'http://localhost:8000',
-                'Authorization': 'Bearer ' + getToken()
+                Cookie: accessToken
             },
-        }).then(response => response.json()).then(result =>
-            console.log(result)
-        )
-        alert(JSON.stringify(livingPlace))
+            credentials: "include",
+            mode: 'cors',
+        }).then(response => {
+            console.log(response)
+            window.location.reload()
+        }).catch(err => {
+            console.log(err)
+        })
+        alert(JSON.stringify(address))
     }
 
     const handleConfirmAction = () => {
@@ -98,7 +115,7 @@ export const Profile = ({data, accessToken}: PageProps) => {
             headers: {
                 "Content-Type": "application/json",
                 'Access-Control-Allow-Origin': 'http://localhost:8000',
-                'Authorization': 'Bearer ' + getToken()
+                Cookie: accessToken
             }
         }).then(response => response.json()).then(() =>
             alert('Thanks for using Edugram!')
@@ -127,44 +144,52 @@ export const Profile = ({data, accessToken}: PageProps) => {
                         <CardBody>
                             <FormControl>
                                 <FormLabel fontSize={'xs'}>Firstname</FormLabel>
-                                <Input data-cy='firstName' mb={2} variant='filled' fontSize={'sm'}
+                                <Input data-cy='firstName' mb={2} variant='filled' fontSize={'sm'} name="profileFirstName"
                                        placeholder={tutor.firstName ? tutor.firstName : 'First name unknown'}
-                                       value={firstName}
+                                       value={user.profileFirstName}
                                        onChange={(e) => {
-                                           setFirstname(e.target.value)
-                                       }}/>
+                                           handleInput(e)
+                                       }
+                                       }/>
                                 <FormLabel fontSize={'xs'}>Lastname</FormLabel>
-                                <Input data-cy='lastName' mb={2} variant='filled' fontSize={'sm'}
+                                <Input data-cy='lastName' mb={2} variant='filled' fontSize={'sm'} name="profileLastName"
                                        placeholder={tutor.lastName ? tutor.lastName : 'Last name unknown'}
-                                       value={lastName}
+                                       value={user.profileLastName}
                                        onChange={(e) => {
-                                           setLastname(e.target.value)
-                                       }}/>
+                                           handleInput(e)
+                                       }
+                                       }/>
                                 <FormLabel fontSize={'xs'}>Birthdate</FormLabel>
                                 <Input data-cy='birthDate' mb={2} variant='filled' fontSize={'sm'} type={'date'}
+                                       name="profileDateOfBirth"
                                        placeholder={tutor.dateOfBirth ? tutor.dateOfBirth : 'Birthdate unknown'}
-                                       value={birthdate} onChange={(e) => {
-                                    setBirthdate(e.target.value)
-                                }}/>
+                                       value={user.profileDateOfBirth} onChange={(e) => {
+                                    handleInput(e)
+                                }
+                                }/>
                                 <FormHelperText fontSize={'xs'} textAlign={'center'} mb={2} marginTop={'-5px'}>Current
                                     birthdate is: {tutor.dateOfBirth ? tutor.dateOfBirth : 'Unknown'}</FormHelperText>
                                 <FormLabel fontSize={'xs'}>Gender</FormLabel>
-                                <Input mb={2} variant='filled' fontSize={'sm'}
-                                       placeholder={tutor.gender ? tutor.gender : 'Gender unknown'} value={gender}
+                                <Input mb={2} variant='filled' fontSize={'sm'} name="profileGender"
+                                       placeholder={tutor.gender ? tutor.gender : 'Gender unknown'} value={user.profileGender}
                                        onChange={(e) => {
-                                           setGender(e.target.value)
-                                       }}/>
+                                           handleInput(e)
+                                       }
+                                       }/>
                                 <FormLabel fontSize={'xs'}>Email</FormLabel>
                                 <Input data-cy='email' mb={2} variant='filled' fontSize={'sm'} isReadOnly={true}
+                                       name="profileEmail"
                                        placeholder={tutor.email ? tutor.email : 'Email unknown'}
                                        value={tutor.email}/>
                                 <FormLabel fontSize={'xs'}>Phonenumber</FormLabel>
                                 <Input data-cy='phoneNumber' mb={2} variant='filled' fontSize={'sm'} type={'number'}
+                                       name="profilePhoneNumber"
                                        maxLength={10}
                                        placeholder={tutor.phoneNumber ? tutor.phoneNumber.toString() : 'Number unknown'}
-                                       value={phoneNumber} onChange={(e) => {
-                                    setPhonenumber(e.target.value)
-                                }}/>
+                                       value={user.profilePhonenumber} onChange={(e) => {
+                                    handleInput(e)
+                                }
+                                }/>
                             </FormControl>
 
                         </CardBody>
@@ -213,29 +238,32 @@ export const Profile = ({data, accessToken}: PageProps) => {
                                    label={'save-changes-adress'} buttonText={'Save changes'}
                                    headerName={'Adress + icon'} cardWidth={'300px'} onClick={handleLivingPlaceChanges}
                                    optionalBodyOne={<>
-                                       <FormLabel margin={'0px'} fontSize={'xs'}>Streetname</FormLabel>
-                                       <InputField placeholder={tutor.address ? tutor.address.toString() : 'Unknown'}
-                                                   mb={1}
-                                                   variant={'unstyled'} border={'1px solid #e2e8f0'} bg={'#e2e8f0'}
-                                                   height={'var(--chakra-sizes-10)'}
-                                                   color={'black'} outline={'2px solid transparent'}
-                                                   fontSize={'xs'} textIndent={'20px'}
-                                                   borderRadius={'var(--chakra-radii-md)'}
-                                                   label={'inputfield-address'} value={streetName} onChange={(e) => {
-                                           setStreetName(e.target.value)
-                                       }}/>
+                                       <FormLabel margin={'0px'} fontSize={'xs'}>Streetname + number</FormLabel>
+                                       <InputField
+                                           placeholder={tutor.address ? tutor.address.street.toString() + ' ' + tutor.address.houseNumber.toString() : 'Unknown'}
+                                           mb={1}
+                                           variant={'unstyled'} border={'1px solid #e2e8f0'} bg={'#e2e8f0'}
+                                           height={'var(--chakra-sizes-10)'} name={'addressStreetName'}
+                                           color={'black'} outline={'2px solid transparent'}
+                                           fontSize={'xs'} textIndent={'20px'}
+                                           borderRadius={'var(--chakra-radii-md)'}
+                                           label={'inputfield-address'} value={address.addressStreetName}
+                                           onChange={(e) => {
+                                               handleInputAddress(e)
+                                           }
+                                           }/>
                                    </>
                                    }
                                    optionalBodyTwo={
                                        <><FormLabel margin={'0px'} fontSize={'xs'}>Postcal code</FormLabel><InputField
-                                           placeholder={tutor.address ? tutor.address.toString() : 'Unknown'}
+                                           placeholder={tutor.address ? tutor.address.postalCode.toString() : 'Unknown'}
                                            variant={'unstyled'} border={'1px solid #e2e8f0'} bg={'#e2e8f0'}
-                                           height={'var(--chakra-sizes-10)'}
+                                           height={'var(--chakra-sizes-10)'} name={'addressPostalCode'}
                                            color={'black'} outline={'2px solid transparent'}
                                            fontSize={'xs'} textIndent={'20px'}
                                            borderRadius={'var(--chakra-radii-md)'}
-                                           label={'inputfield-address'} value={postalCode} onChange={(e) => {
-                                           setPostalCode(e.target.value)
+                                           label={'inputfield-address'} value={address.addressPostalCode} onChange={(e) => {
+                                           handleInputAddress(e)
                                        }}/></>}/>
                 </GridItem>
                 <GridItem colSpan={1}>

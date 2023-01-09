@@ -89,11 +89,9 @@ router.get('/details', checkCookie, async (req, res, next) => {
       } catch (err) {
         return res.send({message: err})
       }
-    }
-    else if (req.role === 'admin') {
+    } else if (req.role === 'admin') {
       next()
-    }
-    else {
+    } else {
       //Try to redirect to unauthenticated route or something
       res.status(403).send({message: "unautenticated"})
       console.log('unauthenticated')
@@ -124,28 +122,70 @@ router.delete('/:tutorId', async (req, res) => {
 })
 
 //Update a specific tutor
-router.put('/:tutorId', async (req, res, next) => {
+router.put('/:tutorId', checkCookie, async (req, res, next) => {
+  const profile = req.body.user
+  const updates = Object.keys(profile);
+  const allowedUpdatesForProfile = ["profileFirstName", "profileLastName", "profileDateOfBirth", "profileGender", "profilePhoneNumber"];
+  const allowedUpdatesForAddress = ["addressStreetname", "addressPostalCode"];
+  const isValidProfileOperation = updates.every((update) =>
+    allowedUpdatesForProfile.includes(update)
+  );
+  const isValidAddressOperation = updates.every((update) =>
+    allowedUpdatesForAddress.includes(update)
+  );
 
-  if (req.body.profile) {
-    try {
-      const updateTutor = await Tutor.updateOne(
-        {_id: req.params.tutorId},
-        {
-          $set: {
-            firstName: req.body.profile.firstName,
-            lastName: req.body.profile.lastName,
-            dateOfBirth: req.body.profile.formattedBirthDate,
-            gender: req.body.profile.gender,
-            phoneNumber: req.body.profile.phoneNumber,
-          }
-        });
-      res.json(updateTutor);
-    } catch (err) {
-      res.json({message: err})
-    }
+  if (isValidProfileOperation) {
+    // return res.status(400).send({error: "Invalid fields found!"})
+    console.log('valid profile');
   }
 
-});
+  // if (isValidAddressOperation) {
+  //   // return res.status(400).send({error: "Invalid fields found!"})
+  //   console.log('valid address');
+  // }
+
+  //Delete the empty values if sent to backend
+  Object.keys(req.body.user).forEach(key => {
+    if (req.body.user[key] === '') {
+      delete req.body.user[key];
+    }
+  });
+
+  //First check if dateOfBirth has been entered and thus is not an empty string
+  //Reformat date because ours is superior and makes more sense
+  if (profile.dateOfBirth) {
+    profile.dateOfBirth = new Date(profile.dateOfBirth).toLocaleDateString('german', {
+      year: 'numeric',
+      month: 'numeric',
+      day: 'numeric'
+    })
+  }
+
+  console.log(req.body)
+
+  //No user in object means we dont have to check anyways
+  //Check if only the aforementioned fields are being used
+
+  // if (!req.body.user) {
+  //   console.log('u dumb')
+  //   res.status(400).send({error: 'Something went wrong when making the request!'})
+  // } else {
+  //   try {
+  //     console.log('yes')
+  //     const updateTutor = await Tutor.updateOne(
+  //       {_id: req.params.tutorId},
+  //       {
+  //         $set: profile
+  //       });
+  //     res.json({message: updateTutor});
+  //   } catch (err) {
+  //     res.json({error: err})
+  //   }
+  // }
+})
+
+
+
 
 //Update a specific tutor
 router.patch('/:tutorId', async (req, res) => {
