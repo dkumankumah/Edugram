@@ -24,15 +24,13 @@ function setId(id: string) {
 }
 
 function chosenChat(chat: string) {
-    console.log("_id in chosenChat: " + chat);
+    console.log("chosen chat to be emitted: " + chosenUserId);
     chosenUserId = chat;
     router.push(`/chat/${chat}`);
 }
 
-const showChats = (data: ChatModel[], {tutorData, accessToken}: PageProps) =>
+const showChats = (data: ChatModel[], accessToken: string) =>
     data?.map(chat => {
-        console.log("data in showChats: " + data);
-        console.log("Dit is de rol: " + decodeJWT(accessToken).role);
         if (decodeJWT(accessToken).role === "student") {
             return (
                 <Flex key={chat._id} p={3} align="center" _hover={{bg: "gray.100", cursor: "pointer"}}
@@ -50,7 +48,6 @@ const showChats = (data: ChatModel[], {tutorData, accessToken}: PageProps) =>
                 </Flex>
             )
         }
-
     })
 
 
@@ -62,6 +59,8 @@ export default function ChatSidebar({tutorData, accessToken}: PageProps) {
 
     const [chatList, setChatlist] = useState([]);
     useEffect(() => {
+        console.log("Access token: " + accessToken);
+        console.log("decode jwt: " + decodeJWT(accessToken).id);
         socket.emit('get-chats', decodeJWT(accessToken).id);
         socket.on("user-chats", (data) => {
             const tempArray: ChatModel[] = [];
@@ -74,7 +73,7 @@ export default function ChatSidebar({tutorData, accessToken}: PageProps) {
             console.log("This is tempArray: " + tempArray)
             setChatlist(tempArray);
         });
-    },[socket]);
+    },[chosenUserId]);
     return (
         <Flex
             w="300px"
@@ -90,7 +89,7 @@ export default function ChatSidebar({tutorData, accessToken}: PageProps) {
             >
                 <Flex align="center">
                     <Avatar src="" margin={3}/>
-                    <Text>Alperen Kavakli</Text>
+                    <Text>{decodeJWT(accessToken).firstName} {decodeJWT(accessToken).lastName}</Text>
                 </Flex>
                 <IconButton size="sm" isRound icon={<ArrowLeftIcon/>} aria-label="Close"/>
             </Flex>
@@ -98,7 +97,7 @@ export default function ChatSidebar({tutorData, accessToken}: PageProps) {
             <Flex overflowX="hidden" overflowY="scroll" direction="column"
                   sx={{'::-webkit-scrollbar': {display: 'none'}}}>
             </Flex>
-            {showChats(chatList, {tutorData, accessToken})}
+            {showChats(chatList, accessToken)}
         </Flex>
     )
 }

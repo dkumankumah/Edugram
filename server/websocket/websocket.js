@@ -32,10 +32,10 @@ io.on('connection', (socket) => {
     }
 
     if (socket.request.role === "student")
-    await Chat.find({student: user}).then(result => {
-      socket.emit("user-chats", result)
-      console.log("Gevonden chats voor student " + user + ": " + result);
-    });
+      await Chat.find({student: user}).then(result => {
+        socket.emit("user-chats", result)
+        console.log("Gevonden chats voor student " + user + ": " + result);
+      });
   });
 
 
@@ -45,13 +45,11 @@ io.on('connection', (socket) => {
       {tutor: tutor, student: student},
       {$push: {messages: new Message({message: message, sender: sender})}},
     );
+    io.to(student + tutor).emit("update-chat", await Chat.findOne({tutor: tutor, student: student}));
   });
   socket.on("join-chat", async (student, tutor) => {
     socket.join(student + tutor);
     io.to(student + tutor).emit("update-chat", await Chat.findOne({tutor: tutor, student: student}));
-    // Chat.find({student: student}).then(result => {
-    //   socket.emit('user-chats', result)
-    // })
   })
 
   //This Renders at the start of visiting the page
