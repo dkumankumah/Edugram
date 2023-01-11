@@ -124,25 +124,16 @@ router.delete('/:tutorId', async (req, res) => {
 //Update a specific tutor
 router.put('/:tutorId', checkCookie, async (req, res, next) => {
   const profile = req.body.user
+  console.log(profile)
   const updates = Object.keys(profile);
-  const allowedUpdatesForProfile = ["profileFirstName", "profileLastName", "profileDateOfBirth", "profileGender", "profilePhoneNumber"];
-  const allowedUpdatesForAddress = ["addressStreetname", "addressPostalCode"];
+  const allowedUpdatesForProfile = ["firstName", "lastName", "dateOfBirth", "gender", "phoneNumber"];
+  const allowedUpdatesForAddress = ["street", "postalCode"];
   const isValidProfileOperation = updates.every((update) =>
     allowedUpdatesForProfile.includes(update)
   );
   const isValidAddressOperation = updates.every((update) =>
     allowedUpdatesForAddress.includes(update)
   );
-
-  if (isValidProfileOperation) {
-    // return res.status(400).send({error: "Invalid fields found!"})
-    console.log('valid profile');
-  }
-
-  // if (isValidAddressOperation) {
-  //   // return res.status(400).send({error: "Invalid fields found!"})
-  //   console.log('valid address');
-  // }
 
   //Delete the empty values if sent to backend
   Object.keys(req.body.user).forEach(key => {
@@ -161,27 +152,38 @@ router.put('/:tutorId', checkCookie, async (req, res, next) => {
     })
   }
 
-  console.log(req.body)
-
-  //No user in object means we dont have to check anyways
   //Check if only the aforementioned fields are being used
+  if (isValidProfileOperation) {
+    try {
+      const updateTutor = await Tutor.updateOne(
+        {_id: req.params.tutorId},
+        {
+          $set: profile
+        });
+      res.json({message: updateTutor});
+    } catch (err) {
+      res.json({error: err})
+    }
+  }
 
-  // if (!req.body.user) {
-  //   console.log('u dumb')
-  //   res.status(400).send({error: 'Something went wrong when making the request!'})
-  // } else {
-  //   try {
-  //     console.log('yes')
-  //     const updateTutor = await Tutor.updateOne(
-  //       {_id: req.params.tutorId},
-  //       {
-  //         $set: profile
-  //       });
-  //     res.json({message: updateTutor});
-  //   } catch (err) {
-  //     res.json({error: err})
-  //   }
-  // }
+  if (isValidAddressOperation) {
+    try {
+      const updateTutor = await Tutor.findByIdAndUpdate(
+         req.params.tutorId,
+        {
+          $set: {
+            "address.street": profile.street,
+            "address.postalCode": profile.postalCode,
+          }
+        }, {new:true})
+      console.log(updateTutor)
+      res.json({message: updateTutor});
+    } catch (err) {
+      res.json({error: err})
+    }
+  } else {
+    console.log('nah man')
+  }
 })
 
 

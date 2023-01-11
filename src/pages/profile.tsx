@@ -12,12 +12,12 @@ import {
     Input,
     Text,
     FormControl,
-    FormHelperText, FormLabel, SimpleGrid, useToast,
+    FormHelperText, FormLabel, SimpleGrid, useToast, Grid,
 } from "@chakra-ui/react";
 import {SubmitButton} from "../components/shared/Buttons";
 import {DashboardCard} from "../components/shared/DashboardCard";
 import {InputField} from "../components/shared/InputField/InputField";
-import {getToken, isAdmin, isTutor} from "./api/api.storage";
+import {isAdmin, isTutor} from "./api/api.storage";
 import {TutorModel} from "../models/TutorModel";
 import {useRouter} from "next/router";
 import {GetServerSideProps} from "next";
@@ -29,16 +29,16 @@ interface PageProps {
 }
 
 const INITIAL_STATE_PROFILE = {
-    profileFirstName: "",
-    profileLastName: "",
-    profileDateOfBirth: "",
-    profileGender: "",
-    profilePhonenumber: "",
+    firstName: "",
+    lastName: "",
+    dateOfBirth: "",
+    gender: "",
+    phoneNumber: "",
 };
 
 const INITIAL_STATE_ADDRESS = {
-    addressStreetName: "",
-    addressPostalCode: "",
+    street: "",
+    postalCode: "",
 }
 
 export const Profile = ({data, accessToken}: PageProps) => {
@@ -55,57 +55,89 @@ export const Profile = ({data, accessToken}: PageProps) => {
         // setTutor(data)
     }, [])
 
-
     const handleInput = (e: any) => {
         setUser({...user, [e.target.name]: e.target.value});
 
     };
-
 
     const handleInputAddress = (e: any) => {
         setAddress({...address, [e.target.name]: e.target.value})
     };
 
     const handleProfileChanges = () => {
-        fetch('http://localhost:8000/tutor/' + tutor._id, {
-            method: 'PUT',
-            body: JSON.stringify({user: user}),
-            headers: {
-                "Content-Type": "application/json",
-                'Access-Control-Allow-Origin': 'http://localhost:8000',
-                Cookie: accessToken
-            },
-            credentials: "include",
-            mode: 'cors',
-        }).then(() => {
-                toast({description: 'Succesfuly changed profile', status: "success", position: "top-right", duration: 2000})
-            }
-        ).then(() => {
-            wait(2000)
-            window.location.reload()
-        }).catch((err) => {
-            console.log(err.response)
-        })
+
+        user.firstName === '' && user.lastName === '' && user.gender === '' && user.phoneNumber === '' && user.dateOfBirth === '' ?
+
+            toast({
+                description: 'Profile fields should be different',
+                status: "warning",
+                position: "top-right",
+                duration: 5000,
+                isClosable: true
+            }) :
+
+            fetch('http://localhost:8000/tutor/' + tutor._id, {
+                method: 'PUT',
+                body: JSON.stringify({user: user}),
+                headers: {
+                    "Content-Type": "application/json",
+                    'Access-Control-Allow-Origin': 'http://localhost:8000',
+                    Cookie: accessToken
+                },
+                credentials: "include",
+                mode: 'cors',
+            }).then(() => {
+                    toast({
+                        description: 'Succesfuly changed profile',
+                        status: "success",
+                        position: "top-right",
+                        duration: 3000
+                    })
+                }
+            ).then(() => {
+                wait(2000)
+                window.location.reload()
+            }).catch((err) => {
+                console.log(err.response)
+            })
     }
 
     const handleLivingPlaceChanges = () => {
-        fetch('http://localhost:8000/tutor/address' + tutor._id, {
-            method: 'PUT',
-            body: JSON.stringify({user: address}),
-            headers: {
-                "Content-Type": "application/json",
-                'Access-Control-Allow-Origin': 'http://localhost:8000',
-                Cookie: accessToken
-            },
-            credentials: "include",
-            mode: 'cors',
-        }).then(response => {
-            console.log(response)
-            window.location.reload()
-        }).catch(err => {
-            console.log(err)
-        })
-        alert(JSON.stringify(address))
+
+        address.street === '' && address.postalCode === '' ?
+            toast({
+                description: 'Address fields should be different',
+                status: "warning",
+                position: "top-right",
+                duration: 5000,
+                isClosable: true
+            }) :
+
+            fetch('http://localhost:8000/tutor/' + tutor._id, {
+                method: 'PUT',
+                body: JSON.stringify({user: address}),
+                headers: {
+                    "Content-Type": "application/json",
+                    'Access-Control-Allow-Origin': 'http://localhost:8000',
+                    Cookie: accessToken
+                },
+                credentials: "include",
+                mode: 'cors',
+            }).then(response => {
+                toast({
+                    description: 'Succesfuly changed address',
+                    status: "success",
+                    position: "top-right",
+                    duration: 3000
+                })
+
+                console.log(response)
+            }).then(() => {
+                window.location.reload()
+            }).catch(err => {
+                console.log(err)
+            })
+
     }
 
     const handleConfirmAction = () => {
@@ -126,14 +158,9 @@ export const Profile = ({data, accessToken}: PageProps) => {
 
     return (
         <Box>
-            <ProfileNavigation/>
-            <SimpleGrid padding={'20px'}
-                        columns={{sm: 2, md: 3}}
-                        h='200px'
-                        templateRows='repeat(1, 1fr)'
-                        templateColumns='repeat(4, 1fr)'
-                        gap={10}>
-                <GridItem rowSpan={2} colSpan={1}>
+            <ProfileNavigation role={tutor.role}/>
+            <Box  display={{md:'flex'}}>
+                <Box w={{xl: '300px', md:'600px'}} padding={'10px'}>
                     <Card boxShadow={'xl'} borderRadius={20} bg={'white'}>
                         <CardHeader>
                             <Image margin={'auto'}
@@ -144,49 +171,51 @@ export const Profile = ({data, accessToken}: PageProps) => {
                         <CardBody>
                             <FormControl>
                                 <FormLabel fontSize={'xs'}>Firstname</FormLabel>
-                                <Input data-cy='firstName' mb={2} variant='filled' fontSize={'sm'} name="profileFirstName"
+                                <Input data-cy='firstName' mb={2} variant='filled' fontSize={'sm'} name="firstName"
                                        placeholder={tutor.firstName ? tutor.firstName : 'First name unknown'}
-                                       value={user.profileFirstName}
+                                       value={user.firstName}
                                        onChange={(e) => {
                                            handleInput(e)
                                        }
                                        }/>
                                 <FormLabel fontSize={'xs'}>Lastname</FormLabel>
-                                <Input data-cy='lastName' mb={2} variant='filled' fontSize={'sm'} name="profileLastName"
+                                <Input data-cy='lastName' mb={2} variant='filled' fontSize={'sm'} name="lastName"
                                        placeholder={tutor.lastName ? tutor.lastName : 'Last name unknown'}
-                                       value={user.profileLastName}
+                                       value={user.lastName}
                                        onChange={(e) => {
                                            handleInput(e)
                                        }
                                        }/>
                                 <FormLabel fontSize={'xs'}>Birthdate</FormLabel>
                                 <Input data-cy='birthDate' mb={2} variant='filled' fontSize={'sm'} type={'date'}
-                                       name="profileDateOfBirth"
+                                       name="dateOfBirth"
                                        placeholder={tutor.dateOfBirth ? tutor.dateOfBirth : 'Birthdate unknown'}
-                                       value={user.profileDateOfBirth} onChange={(e) => {
+                                       value={user.dateOfBirth} onChange={(e) => {
                                     handleInput(e)
                                 }
                                 }/>
                                 <FormHelperText fontSize={'xs'} textAlign={'center'} mb={2} marginTop={'-5px'}>Current
-                                    birthdate is: {tutor.dateOfBirth ? tutor.dateOfBirth : 'Unknown'}</FormHelperText>
+                                    birthdate
+                                    is: {tutor.dateOfBirth ? tutor.dateOfBirth : 'Unknown'}</FormHelperText>
                                 <FormLabel fontSize={'xs'}>Gender</FormLabel>
-                                <Input mb={2} variant='filled' fontSize={'sm'} name="profileGender"
-                                       placeholder={tutor.gender ? tutor.gender : 'Gender unknown'} value={user.profileGender}
+                                <Input mb={2} variant='filled' fontSize={'sm'} name="gender"
+                                       placeholder={tutor.gender ? tutor.gender : 'Gender unknown'}
+                                       value={user.gender}
                                        onChange={(e) => {
                                            handleInput(e)
                                        }
                                        }/>
                                 <FormLabel fontSize={'xs'}>Email</FormLabel>
                                 <Input data-cy='email' mb={2} variant='filled' fontSize={'sm'} isReadOnly={true}
-                                       name="profileEmail"
+                                       name="email"
                                        placeholder={tutor.email ? tutor.email : 'Email unknown'}
                                        value={tutor.email}/>
                                 <FormLabel fontSize={'xs'}>Phonenumber</FormLabel>
                                 <Input data-cy='phoneNumber' mb={2} variant='filled' fontSize={'sm'} type={'number'}
-                                       name="profilePhoneNumber"
+                                       name="phoneNumber"
                                        maxLength={10}
                                        placeholder={tutor.phoneNumber ? tutor.phoneNumber.toString() : 'Number unknown'}
-                                       value={user.profilePhonenumber} onChange={(e) => {
+                                       value={user.phoneNumber} onChange={(e) => {
                                     handleInput(e)
                                 }
                                 }/>
@@ -198,85 +227,119 @@ export const Profile = ({data, accessToken}: PageProps) => {
                                 Changes</SubmitButton>
                         </CardFooter>
                     </Card>
-                </GridItem>
-                <GridItem colSpan={1} gap={1}>
-                    <DashboardCard buttonWidth={'100px'} height={'280px'} label={'upload-identity'}
-                                   buttonText={'Upload'} headerName={'Identity'}
-                                   cardWidth={'300px'}
-                                   optionalBodyOne={
-                                       <Box bg={'#edf2f7'} height={'120px'} borderRadius={'20px'} width={'200px'}>
-                                           <Image margin={'auto'}
-                                                  maxH={'120px'}
-                                                  src="images/img_identity.png"
-                                                  alt="Placeholder for image of Identity"
-                                           />
-                                       </Box>
-                                   }
-                    />
-                </GridItem>
-                <GridItem colSpan={1}>
-                    <DashboardCard buttonWidth={'150px'} height={'280px'} label={'upload-degree'}
-                                   buttonText={'Upload'} headerName={'My Diploma'}
-                                   cardWidth={'300px'} optionalBodyOne={
-                        <Image
-                            maxH={'120px'}
-                            src="images/img_degree.png"
-                            alt="Placeholder for image of Degree"
-                        />}/></GridItem>
-                <GridItem colSpan={1}>
-                    <DashboardCard buttonWidth={'200px'} height={'280px'} label={'delete-account'}
-                                   buttonText={'Delete my account'} headerName={'Delete My Account'}
-                                   onClick={handleConfirmAction}
-                                   cardWidth={'300px'} optionalBodyOne={
-                        <HStack bg={'#107385'} maxW={'70%'} textAlign={'center'} marginLeft={'40px'} marginTop={'20px'}
-                                borderRadius={'10px'}>
-                            <Text padding={'5px'} color={'#FFFFFF'}>Deleting cannot be undone!</Text>
-                        </HStack>
-                    }/></GridItem>
-                <GridItem colSpan={1}>
-                    <DashboardCard buttonWidth={'150px'} height={'280px'} paddingTop={'15px'}
-                                   label={'save-changes-adress'} buttonText={'Save changes'}
-                                   headerName={'Adress + icon'} cardWidth={'300px'} onClick={handleLivingPlaceChanges}
-                                   optionalBodyOne={<>
-                                       <FormLabel margin={'0px'} fontSize={'xs'}>Streetname + number</FormLabel>
-                                       <InputField
-                                           placeholder={tutor.address ? tutor.address.street.toString() + ' ' + tutor.address.houseNumber.toString() : 'Unknown'}
-                                           mb={1}
-                                           variant={'unstyled'} border={'1px solid #e2e8f0'} bg={'#e2e8f0'}
-                                           height={'var(--chakra-sizes-10)'} name={'addressStreetName'}
-                                           color={'black'} outline={'2px solid transparent'}
-                                           fontSize={'xs'} textIndent={'20px'}
-                                           borderRadius={'var(--chakra-radii-md)'}
-                                           label={'inputfield-address'} value={address.addressStreetName}
-                                           onChange={(e) => {
-                                               handleInputAddress(e)
+                </Box>
+                <Box maxW={'100%'} minW={'320px'} w={'100%'} ml={{md:'10px'}} padding={'10px'}>
+                    <SimpleGrid minChildWidth='300px' spacing='40px' justifyItems={'center'}>
+                        <Box  height='300px' maxW={'320px'}>
+                            <DashboardCard buttonWidth={'100px'} height={'280px'} label={'upload-identity'}
+                                           buttonText={'Upload'} headerName={'Identity'}
+                                           cardWidth={'320px'}
+                                           optionalBodyOne={
+                                               <Box bg={'#edf2f7'} height={'120px'} borderRadius={'20px'}
+                                                    width={'200px'}>
+                                                   <Image margin={'auto'}
+                                                          maxH={'120px'}
+                                                          src="images/img_identity.png"
+                                                          alt="Placeholder for image of Identity"
+                                                   />
+                                               </Box>
                                            }
-                                           }/>
-                                   </>
-                                   }
-                                   optionalBodyTwo={
-                                       <><FormLabel margin={'0px'} fontSize={'xs'}>Postcal code</FormLabel><InputField
-                                           placeholder={tutor.address ? tutor.address.postalCode.toString() : 'Unknown'}
-                                           variant={'unstyled'} border={'1px solid #e2e8f0'} bg={'#e2e8f0'}
-                                           height={'var(--chakra-sizes-10)'} name={'addressPostalCode'}
-                                           color={'black'} outline={'2px solid transparent'}
-                                           fontSize={'xs'} textIndent={'20px'}
-                                           borderRadius={'var(--chakra-radii-md)'}
-                                           label={'inputfield-address'} value={address.addressPostalCode} onChange={(e) => {
-                                           handleInputAddress(e)
-                                       }}/></>}/>
-                </GridItem>
-                <GridItem colSpan={1}>
-                    <DashboardCard buttonWidth={'150px'} height={'280px'}
-                                   label={'save-changes-password'} buttonText={'Save changes'}
-                                   headerName={'Change Password'} cardWidth={'300px'}
-                                   optionalBodyOne={<InputField placeholder={'Previous password'}
-                                                                label={'inputfield-previous-password'}/>}
-                                   optionalBodyTwo={<InputField placeholder={'New password'}
-                                                                label={'inputfield-new-password'}/>}
-                    /></GridItem>
-            </SimpleGrid>
+                            />
+                        </Box>
+                        <Box  height='300px' maxW={'320px'}>
+                            <DashboardCard buttonWidth={'150px'} height={'280px'} label={'upload-degree'}
+                                           buttonText={'Upload'} headerName={'My Diploma'}
+                                           cardWidth={'320px'} optionalBodyOne={
+                                <Image
+                                    maxH={'120px'}
+                                    src="images/img_degree.png"
+                                    alt="Placeholder for image of Degree"
+                                />}/>
+                        </Box>
+                        <Box  height='300px' maxW={'320px'}>
+
+                            <DashboardCard buttonWidth={'200px'} height={'280px'} label={'delete-account'}
+                                           buttonText={'Delete my account'} headerName={'Delete My Account'}
+                                           onClick={handleConfirmAction}
+                                           cardWidth={'320px'} optionalBodyOne={
+                                <HStack bg={'#107385'} maxW={'70%'} textAlign={'center'} marginLeft={'40px'}
+                                        marginTop={'20px'}
+                                        borderRadius={'10px'}>
+                                    <Text padding={'5px'} color={'#FFFFFF'}>Deleting cannot be undone!</Text>
+                                </HStack>
+                            }/>
+
+                        </Box>
+                        <Box  height='300px' maxW={'320px'}>
+                            <DashboardCard buttonWidth={'150px'}
+                                           height={'280px'}
+                                           paddingTop={'15px'}
+                                           label={'save-changes-adress'}
+                                           buttonText={'Save changes'}
+                                           headerName={'Adress + icon'}
+                                           cardWidth={'320px'}
+                                           onClick={handleLivingPlaceChanges}
+                                           optionalBodyOne={<>
+                                               <FormLabel margin={'0px'}
+                                                          fontSize={'xs'}>Streetname
+                                                   + number</FormLabel>
+                                               <InputField
+                                                   placeholder={tutor.address ? tutor.address?.street?.toString() : 'Unknown'}
+                                                   mb={1}
+                                                   variant={'unstyled'}
+                                                   border={'1px solid #e2e8f0'}
+                                                   bg={'#e2e8f0'}
+                                                   height={'var(--chakra-sizes-10)'}
+                                                   name={'street'}
+                                                   color={'black'}
+                                                   outline={'2px solid transparent'}
+                                                   fontSize={'xs'}
+                                                   textIndent={'20px'}
+                                                   borderRadius={'var(--chakra-radii-md)'}
+                                                   label={'inputfield-address'}
+                                                   value={address.street}
+                                                   onChange={(e) => {
+                                                       handleInputAddress(e)
+                                                   }
+                                                   }/>
+                                           </>
+                                           }
+                                           optionalBodyTwo={
+                                               <><FormLabel margin={'0px'}
+                                                            fontSize={'xs'}>Postcal
+                                                   code</FormLabel><InputField
+                                                   placeholder={tutor.address ? tutor.address.postalCode?.toString() : 'Unknown'}
+                                                   variant={'unstyled'}
+                                                   border={'1px solid #e2e8f0'}
+                                                   bg={'#e2e8f0'}
+                                                   height={'var(--chakra-sizes-10)'}
+                                                   name={'postalCode'}
+                                                   color={'black'}
+                                                   outline={'2px solid transparent'}
+                                                   fontSize={'xs'}
+                                                   textIndent={'20px'}
+                                                   borderRadius={'var(--chakra-radii-md)'}
+                                                   label={'inputfield-address'}
+                                                   value={address.postalCode}
+                                                   onChange={(e) => {
+                                                       handleInputAddress(e)
+                                                   }}/></>}/></Box>
+                        <Box  height='300px' maxW={'320px'}>
+
+                            <DashboardCard buttonWidth={'150px'} height={'280px'}
+                                           label={'save-changes-password'} buttonText={'Save changes'}
+                                           headerName={'Change Password'} cardWidth={'320px'}
+                                           optionalBodyOne={<InputField placeholder={'Previous password'}
+                                                                        label={'inputfield-previous-password'}/>}
+                                           optionalBodyTwo={<InputField placeholder={'New password'}
+                                                                        label={'inputfield-new-password'}/>}
+                            />
+                        </Box>
+                    </SimpleGrid>
+                </Box>
+            </Box>
         </Box>
+
 
     )
 }

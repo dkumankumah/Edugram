@@ -17,6 +17,7 @@ export interface UserModel {
 }
 
 export interface Address {
+    _id: string;
     city: string;
     houseNumber: string;
     postalCode: string;
