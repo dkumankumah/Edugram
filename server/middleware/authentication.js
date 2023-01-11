@@ -1,6 +1,7 @@
 const express = require('express')
 const router = express.Router()
 const jwt = require('jsonwebtoken')
+const bcrypt = require("bcrypt");
 
 module.exports.checkCookie = (req, res, next) => {
   let authcookie = req.headers.cookie
@@ -60,8 +61,39 @@ module.exports.checkCookieForChat = (socket) => {
       res.send({message: 'something else in check jwt'})
     }
   })
-
 }
 
+module.exports.checkPassword = (data, password, res, next) => {
+  bcrypt.compare(password, data[0].password).then(result => {
+    result ? createCookie(data[0].id, data[0].firstName, data[0].lastName, data[0].role, res, next) : res.status(400).send({
+      error: 'Invalid credentials'
+    })
+  })
+}
 
+const createCookie = (id, firstName, lastName, role, res, next) => {
+  const token = createToken(id, firstName, lastName, role);
+  try {
+    res.cookie("access_token", token, {
+      //HttpOnly = true meaning we cannot access the token via the javascript aka frontend/google chrome console
+      httpOnly: true,
+      //Set timer on 1 hour
+      expires: new Date(Date.now() + 10 * 24 * 60 * 60 * 1000),
+    }).status(200)
+      .json({message: "Logged in successfully"});
+  } catch (e) {
+    throw e
+  }
+  next();
+}
 
+const createToken = (id, firstName, lastName, role) => {
+  return jwt.sign(
+    {
+      id: id,
+      firstName: firstName,
+      lastName: lastName,
+      role: role
+    }, process.env.ACCES_TOKEN_SECRET
+  )
+}

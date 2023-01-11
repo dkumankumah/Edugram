@@ -4,9 +4,10 @@ const Student = require('../models/studentModal')
 const {checkCookie} = require("../middleware/authentication");
 const Tutor = require("../models/tutorModal");
 const bcrypt = require("bcrypt");
-const { check, validationResult, body } = require("express-validator");
+const {check, validationResult, body} = require("express-validator");
 const {verifyToken} = require("../middleware/authentication");
 const {JsonWebTokenError} = require("jsonwebtoken");
+const {checkPassword} = require('../middleware/authentication')
 
 const userValidation = [
   check("firstName")
@@ -30,7 +31,7 @@ const userValidation = [
     .escape()
     .notEmpty()
     .withMessage("Password can not be empty")
-    .isLength({ min: 8 })
+    .isLength({min: 8})
     .withMessage("Password must contain at leat 8 characters")
     .matches("[0-9]")
     .withMessage("Password must contain numbers")
@@ -64,13 +65,13 @@ router.post("/", userValidation, async (req, res, next) => {
       errors.array().forEach((error) => {
         console.log(error);
       });
-      res.status(404).json({ message: errors });
+      res.status(404).json({message: errors});
     } else {
       tutor.save();
-      res.status(201).json({ messsage: tutor });
+      res.status(201).json({messsage: tutor});
     }
   } catch (error) {
-    res.status(400).json({ message: error });
+    res.status(400).json({message: error});
   }
 });
 
@@ -124,7 +125,7 @@ router.delete('/:tutorId', async (req, res) => {
 //Update a specific tutor
 router.put('/:tutorId', checkCookie, async (req, res, next) => {
   const profile = req.body.user
-  console.log(profile)
+  console.log('triggered')
   const updates = Object.keys(profile);
   const allowedUpdatesForProfile = ["firstName", "lastName", "dateOfBirth", "gender", "phoneNumber"];
   const allowedUpdatesForAddress = ["street", "postalCode"];
@@ -169,13 +170,13 @@ router.put('/:tutorId', checkCookie, async (req, res, next) => {
   if (isValidAddressOperation) {
     try {
       const updateTutor = await Tutor.findByIdAndUpdate(
-         req.params.tutorId,
+        req.params.tutorId,
         {
           $set: {
             "address.street": profile.street,
             "address.postalCode": profile.postalCode,
           }
-        }, {new:true})
+        }, {new: true})
       console.log(updateTutor)
       res.json({message: updateTutor});
     } catch (err) {
@@ -186,13 +187,46 @@ router.put('/:tutorId', checkCookie, async (req, res, next) => {
   }
 })
 
+router.put('/password/:tutorId', checkCookie, async (req, res, next) => {
+  console.log(req.body.password)
+  const password = req.body.password.oldPassword
+  const newPassword = await bcrypt.hash(req.body.password.newPassword, 10);
 
+  if (req.body.password.oldPassword && req.body.password.oldPassword){
+    try{
+      Tutor.find({_id: req.params.tutorId},
+        function (error, data) {
+          if (data.length === 1 ){
+            bcrypt.compare(password, data[0].password).then(async result => {
+              if (result) {
+                const updatePassword = await Tutor.findByIdAndUpdate(req.params.tutorId, {
+                  $set: {
+                    password: newPassword
+                  }
+                })
+                res.json(updatePassword);
+              } else {
+                res.status(400).json({error: 'Wrong query!'})
+              }
+            })
+          } else {
+            res.status(400).json({error: 'Wrong password!'})
+          }
+        }
+      )
+    } catch (e) {
+      res.status(400).json({error: e})
+    }
+  } else {
+    res.status(400).json({error: 'Old or new password is empty!'})
+  }
+})
 
 
 //Update a specific tutor
 router.patch('/:tutorId', async (req, res) => {
   try {
-    const updatedTutor = await Tutor.findByIdAndUpdate(req.params.tutorId, req.body, { new: true })
+    const updatedTutor = await Tutor.findByIdAndUpdate(req.params.tutorId, req.body, {new: true})
     res.send(updatedTutor);
   } catch (err) {
     res.json({message: err})

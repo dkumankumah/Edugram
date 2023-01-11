@@ -17,7 +17,6 @@ const Student = require("./models/studentModal");
 const Tutor = require("./models/tutorModal");
 const Admin = require("./models/Admin");
 const bcrypt = require('bcrypt')
-const {allowedMethods} = require("./middleware/requestMethod");
 
 /**
  * URI of the database, The username and password are in the .env file.
@@ -31,6 +30,8 @@ mongoose.connect(uri, {useNewUrlParser: true, useUnifiedTopology: true})
 app.use(cookieParser())
 app.use(cors({origin: "http://localhost:3000", credentials: true}))
 app.use(bodyParser.json())
+const {allowedMethods} = require("./middleware/requestMethod");
+const {checkCookie, checkPassword, createToken, createCookie}= require("./middleware/authentication")
 
 //Import routes
 const tutorRouter = require('./routes/tutor')
@@ -40,7 +41,6 @@ const subjectRouter = require('./routes/subject')
 app.use('/subject', allowedMethods, subjectRouter);
 
 const studentRouter = require('./routes/studentRoute')
-const {checkCookie} = require("./middleware/authentication");
 const {cookies} = require("next/headers");
 app.use('/student', studentRouter)
 
@@ -79,40 +79,6 @@ app.get('/logout', checkCookie, function (req, res) {
   res.clearCookie('access_token').status(201).send({message:'Succesfully logged out!'})
   res.end()
 })
-
-const createToken = (id, firstName, lastName, role) => {
-  return jwt.sign(
-    {
-      id: id,
-      firstName: firstName,
-      lastName: lastName,
-      role: role
-    }, process.env.ACCES_TOKEN_SECRET
-  )
-}
-const createCookie = (id, firstName, lastName, role, res, next) => {
-  const token = createToken(id, firstName, lastName, role);
-  try {
-    res.cookie("access_token", token, {
-      //HttpOnly = true meaning we cannot access the token via the javascript aka frontend/google chrome console
-      httpOnly: true,
-      //Set timer on 1 hour
-      expires: new Date(Date.now() + 10 * 24 * 60 * 60 * 1000),
-    }).status(200)
-      .json({message: "Logged in successfully"});
-  } catch (e) {
-    throw e
-  }
-  next();
-}
-
-const checkPassword = (data, password, res, next) => {
-  bcrypt.compare(password, data[0].password).then(result => {
-    result ? createCookie(data[0].id, data[0].firstName, data[0].lastName, data[0].role, res, next) : res.status(400).send({
-      error: 'Invalid credentials'
-    })
-  })
-}
 
 app.listen(8000, () => {
   console.log("Server started on port 8000");

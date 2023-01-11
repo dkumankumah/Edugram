@@ -12,7 +12,7 @@ import {
     Input,
     Text,
     FormControl,
-    FormHelperText, FormLabel, SimpleGrid, useToast, Grid,
+    FormHelperText, FormLabel, SimpleGrid, useToast, Grid, InputRightElement, Button, InputGroup,
 } from "@chakra-ui/react";
 import {SubmitButton} from "../components/shared/Buttons";
 import {DashboardCard} from "../components/shared/DashboardCard";
@@ -41,12 +41,20 @@ const INITIAL_STATE_ADDRESS = {
     postalCode: "",
 }
 
+const INITIAL_STATE_PASSWORD = {
+    oldPassword: "",
+    newPassword: "",
+}
+
 export const Profile = ({data, accessToken}: PageProps) => {
     const [tutor, setTutor] = useState(data as TutorModel)
     const [user, setUser] = useState(INITIAL_STATE_PROFILE)
     const [address, setAddress] = useState(INITIAL_STATE_ADDRESS)
+    const [password, setPassword] = useState(INITIAL_STATE_PASSWORD)
     const router = useRouter()
     const toast = useToast()
+    const [show, setShow] = React.useState(false)
+    const handleShowPassword = () => setShow(!show)
 
     useEffect(() => {
         console.log(data)
@@ -64,7 +72,65 @@ export const Profile = ({data, accessToken}: PageProps) => {
         setAddress({...address, [e.target.name]: e.target.value})
     };
 
+    const handleInputPassword = (e: any) => {
+        setPassword({...password, [e.target.name]: e.target.value})
+        console.log(password)
+    };
+
+    const updatePassword = async () => {
+
+        password.oldPassword === undefined || password.newPassword === undefined ?
+
+            toast({
+                description: 'Both old and new password should be filled',
+                status: "warning",
+                position: "top-right",
+                duration: 5000,
+                isClosable: true
+            }) :
+            await fetch('http://localhost:8000/tutor/password/' + tutor._id, {
+                method: 'PUT',
+                body: JSON.stringify({password: password}),
+                headers: {
+                    "Content-Type": "application/json",
+                    'Access-Control-Allow-Origin': 'http://localhost:8000',
+                    Cookie: accessToken
+                },
+                credentials: "include",
+                mode: 'cors',
+            }).then((res) => {
+                    if (!res.ok) {
+                        toast({
+                            description: 'Could not change password!',
+                            status: "warning",
+                            position: "top-right",
+                            duration: 3000
+                        })
+                    } else {
+                        toast({
+                            description: 'Succesfuly changed password',
+                            status: "success",
+                            position: "top-right",
+                            duration: 3000
+                        })
+                        wait(2000)
+                        window.location.reload()
+                    }
+                }
+            ).catch((err) => {
+
+                toast({
+                    description: err.response,
+                    status: "success",
+                    position: "top-right",
+                    duration: 3000
+                })
+
+            })
+    }
+
     const handleProfileChanges = () => {
+        console.log('triggered')
 
         user.firstName === '' && user.lastName === '' && user.gender === '' && user.phoneNumber === '' && user.dateOfBirth === '' ?
 
@@ -159,8 +225,8 @@ export const Profile = ({data, accessToken}: PageProps) => {
     return (
         <Box>
             <ProfileNavigation role={tutor.role}/>
-            <Box  display={{md:'flex'}}>
-                <Box w={{xl: '300px', md:'600px'}} padding={'10px'}>
+            <Box display={{md: 'flex'}}>
+                <Box w={{md: '600px'}} padding={'10px'}>
                     <Card boxShadow={'xl'} borderRadius={20} bg={'white'}>
                         <CardHeader>
                             <Image margin={'auto'}
@@ -228,9 +294,9 @@ export const Profile = ({data, accessToken}: PageProps) => {
                         </CardFooter>
                     </Card>
                 </Box>
-                <Box maxW={'100%'} minW={'320px'} w={'100%'} ml={{md:'10px'}} padding={'10px'}>
+                <Box maxW={'100%'} minW={'320px'} w={'100%'} ml={{md: '10px'}} padding={'10px'}>
                     <SimpleGrid minChildWidth='300px' spacing='40px' justifyItems={'center'}>
-                        <Box  height='300px' maxW={'320px'}>
+                        <Box height='300px' maxW={'320px'}>
                             <DashboardCard buttonWidth={'100px'} height={'280px'} label={'upload-identity'}
                                            buttonText={'Upload'} headerName={'Identity'}
                                            cardWidth={'320px'}
@@ -246,7 +312,7 @@ export const Profile = ({data, accessToken}: PageProps) => {
                                            }
                             />
                         </Box>
-                        <Box  height='300px' maxW={'320px'}>
+                        <Box height='300px' maxW={'320px'}>
                             <DashboardCard buttonWidth={'150px'} height={'280px'} label={'upload-degree'}
                                            buttonText={'Upload'} headerName={'My Diploma'}
                                            cardWidth={'320px'} optionalBodyOne={
@@ -256,7 +322,7 @@ export const Profile = ({data, accessToken}: PageProps) => {
                                     alt="Placeholder for image of Degree"
                                 />}/>
                         </Box>
-                        <Box  height='300px' maxW={'320px'}>
+                        <Box height='300px' maxW={'320px'}>
 
                             <DashboardCard buttonWidth={'200px'} height={'280px'} label={'delete-account'}
                                            buttonText={'Delete my account'} headerName={'Delete My Account'}
@@ -270,7 +336,7 @@ export const Profile = ({data, accessToken}: PageProps) => {
                             }/>
 
                         </Box>
-                        <Box  height='300px' maxW={'320px'}>
+                        <Box height='300px' maxW={'320px'}>
                             <DashboardCard buttonWidth={'150px'}
                                            height={'280px'}
                                            paddingTop={'15px'}
@@ -306,7 +372,7 @@ export const Profile = ({data, accessToken}: PageProps) => {
                                            }
                                            optionalBodyTwo={
                                                <><FormLabel margin={'0px'}
-                                                            fontSize={'xs'}>Postcal
+                                                            fontSize={'xs'}>Postal
                                                    code</FormLabel><InputField
                                                    placeholder={tutor.address ? tutor.address.postalCode?.toString() : 'Unknown'}
                                                    variant={'unstyled'}
@@ -324,15 +390,57 @@ export const Profile = ({data, accessToken}: PageProps) => {
                                                    onChange={(e) => {
                                                        handleInputAddress(e)
                                                    }}/></>}/></Box>
-                        <Box  height='300px' maxW={'320px'}>
+                        <Box height='300px' maxW={'320px'}>
 
-                            <DashboardCard buttonWidth={'150px'} height={'280px'}
+                            <DashboardCard buttonWidth={'150px'} height={'280px'} onClick={updatePassword}
                                            label={'save-changes-password'} buttonText={'Save changes'}
                                            headerName={'Change Password'} cardWidth={'320px'}
-                                           optionalBodyOne={<InputField placeholder={'Previous password'}
-                                                                        label={'inputfield-previous-password'}/>}
-                                           optionalBodyTwo={<InputField placeholder={'New password'}
-                                                                        label={'inputfield-new-password'}/>}
+                                           optionalBodyOne={<><FormLabel margin={'0px'}
+                                                                       fontSize={'xs'}>Old
+                                               Password</FormLabel><InputField placeholder={'Previous password'}
+                                                                               type={show ? 'text' : 'password'}
+                                                                               name={'oldPassword'}
+                                                                               value={password.oldPassword}
+                                                                               onChange={(e) => {
+                                                                                   handleInputPassword(e)
+                                                                               }} variant={'unstyled'}
+                                                                               border={'1px solid #e2e8f0'}
+                                                                               bg={'#e2e8f0'}
+                                                                               height={'var(--chakra-sizes-10)'}
+                                                                               color={'black'}
+                                                                               outline={'2px solid transparent'}
+                                                                               fontSize={'xs'}
+                                                                               textIndent={'20px'}
+                                                                               borderRadius={'var(--chakra-radii-md)'}
+                                                                               label={'inputfield-previous-password'}/></>}
+                                           optionalBodyTwo={<>
+                                               <FormLabel margin={'0px'}
+                                                          fontSize={'xs'}>New Password</FormLabel>
+                                               <InputGroup size='md'>
+                                               <InputRightElement width='4.5rem'>
+                                                   <Button h='1.75rem' size='sm' onClick={handleShowPassword}
+                                                           fontSize={"xs"}>
+                                                       {show ? 'Hide' : 'Show'}
+                                                   </Button>
+                                               </InputRightElement>
+                                               <InputField placeholder={'New password'}
+                                                           name={'newPassword'}
+                                                           type={show ? 'text' : 'password'}
+
+                                                           value={password.newPassword}
+                                                           onChange={(e) => {
+                                                               handleInputPassword(e)
+                                                           }}
+                                                           variant={'unstyled'}
+                                                           border={'1px solid #e2e8f0'}
+                                                           bg={'#e2e8f0'}
+                                                           height={'var(--chakra-sizes-10)'}
+                                                           color={'black'}
+                                                           outline={'2px solid transparent'}
+                                                           fontSize={'xs'}
+                                                           textIndent={'20px'}
+                                                           borderRadius={'var(--chakra-radii-md)'}
+                                                           label={'inputfield-new-password'}/></InputGroup></>}
                             />
                         </Box>
                     </SimpleGrid>
