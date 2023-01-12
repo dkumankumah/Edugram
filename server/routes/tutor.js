@@ -39,7 +39,7 @@ const userValidation = [
 ];
 
 // Get all tutors
-router.get('/', checkCookie, async (req, res, next) => {
+router.get('/', async (req, res, next) => {
   try {
     const tutors = await Tutor.find()
     res.json(tutors);
