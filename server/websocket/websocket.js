@@ -22,22 +22,21 @@ io.on('connection', (socket) => {
   });
 
   socket.on("get-chats", async (user) => {
-    console.log("Chats gevraagd voor: " + user);
+    console.log("Chats gevraagd voor: " + user.firstName + ": " + user._id);
     checkCookieForChat(socket);
     if (socket.request.role === "tutor") {
       await Chat.find({tutor: user}).then(result => {
         socket.emit("user-chats", result)
-        console.log("Gevonden chats voor tutor " + user + ": " + result);
+        console.log("Gevonden chats voor tutor " + user.firstName + ": " + result);
       });
     }
 
     if (socket.request.role === "student")
       await Chat.find({student: user}).then(result => {
         socket.emit("user-chats", result)
-        console.log("Gevonden chats voor student " + user + ": " + result);
+        console.log("Gevonden chats voor student " + user.firstName + ": " + result);
       });
   });
-
 
   socket.on("send-message", async (message, student, tutor, sender) => {
     console.log("Message sent by " + student + " : " + message + " to: " + tutor);

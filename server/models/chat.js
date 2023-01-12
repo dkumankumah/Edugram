@@ -6,11 +6,11 @@ const chatSchema = new Schema({
     required: true,
   },
   student: {
-    type: String,
+    type: [],
     required: true,
   },
   tutor: {
-    type: String,
+    type: [],
     required: true
   },
 });
