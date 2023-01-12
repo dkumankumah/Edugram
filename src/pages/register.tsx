@@ -48,7 +48,7 @@ export default function Register({ title, description, errors }: PageProps) {
               )}
             </Flex>
           </Flex>
-          <RegisterFormTutor errors={errors} />
+          <RegisterFormTutor/>
         </Flex>
       </Flex>
     </Flex>

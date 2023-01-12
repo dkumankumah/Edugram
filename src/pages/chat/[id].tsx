@@ -18,7 +18,7 @@ interface PageProps {
     tutorData: TutorModel,
 }
 
-const getMessages = (chat: ChatModel, {tutorData, accessToken}: PageProps) =>
+const getMessages = (chat: ChatModel, { accessToken}: PageProps) =>
     chat?.messages.map(msg => {
         const sender = msg.sender === decodeJWT(accessToken).id;
         return (
@@ -44,6 +44,14 @@ export default function ChatApp({tutorData, accessToken}: PageProps) {
             socket.emit('join-chat', chosenChatId);
         }
     }, [chosenChatId]);
+
+    useEffect(() => {
+        socket.on("update-chat", (chat) => {
+            
+            setChat(chat);
+        });
+    }, []);
+
     return (
         <Flex
             h="93vh"
@@ -62,6 +70,7 @@ export default function ChatApp({tutorData, accessToken}: PageProps) {
                       sx={{'::-webkit-scrollbar': {display: 'none'}}}>
                     {getMessages(chat!, {tutorData, accessToken})}
                 </Flex>
+
                 <Bottombar accessToken={accessToken} tutorData={tutorData}/>
             </Flex>
         </Flex>
