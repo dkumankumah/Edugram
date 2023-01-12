@@ -39,7 +39,7 @@ const userValidation = [
 ];
 
 // Get all tutors
-router.get('/', checkCookie, async (req, res, next) => {
+router.get('/', async (req, res, next) => {
   try {
     const tutors = await Tutor.find()
     res.json(tutors);
@@ -58,20 +58,20 @@ router.post("/", userValidation, async (req, res, next) => {
     password: hashedPassword,
     role: req.body.role,
   });
+  
   try {
     const errors = validationResult(req);
-    if (!errors.isEmpty()) {
-      errors.array().forEach((error) => {
-        console.log(error);
-      });
-      res.status(404).json({ message: errors });
+    if (Object.keys(errors).length > 0) {
+      res.status(404).send(errors.array())
     } else {
       tutor.save();
       res.status(201).json({ messsage: tutor });
     }
   } catch (error) {
+    console.log(error)
     res.status(400).json({ message: error });
   }
+
 });
 
 router.get('/details', checkCookie, async (req, res, next) => {

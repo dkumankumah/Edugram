@@ -1,6 +1,9 @@
 import {Flex} from "@chakra-ui/layout";
 import {Avatar, Heading} from "@chakra-ui/react";
 import React from "react";
+import {chosenChatId} from "../../pages/ChatSidebar";
+import {chosenUser} from "../../pages/ChatSidebar";
+
 
 export default function Topbar() {
     return (
@@ -11,7 +14,7 @@ export default function Topbar() {
             align="center"
             p={5}>
             <Avatar src="" marginEnd={3}/>
-            <Heading size="lg">user@gmail.com</Heading>
+            <Heading size="lg">{chosenUser}</Heading>
         </Flex>
     )
 }

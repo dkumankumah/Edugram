@@ -3,6 +3,10 @@ const Schema = mongoose.Schema;
 
 // let Profile;
 const Profile = new Schema({
+  description: {
+    type: String,
+    required: false
+  },
   bio: {
     type: String,
     required: false,
