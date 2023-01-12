@@ -35,7 +35,6 @@ interface PageProps {
     tutorData: TutorModel,
 }
 
-
 const Dashboard = ({tutorData, accessToken}: PageProps) => {
     const [isAuth, setIsAuth] = useState(false)
     const [tutor, setTutor] = useState(tutorData as TutorModel)
@@ -242,7 +241,7 @@ const Dashboard = ({tutorData, accessToken}: PageProps) => {
     }
     else return (
         <Box>
-            <ProfileNavigation/>
+            <ProfileNavigation role={tutor.role}/>
             <Box p={5} display={{ lg: 'flex' }}>
                 <Box flex={1}>
                     <Card boxShadow={'xl'} borderRadius={20} >
