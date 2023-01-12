@@ -1,5 +1,5 @@
 import {Flex} from "@chakra-ui/layout"
-import ChatSidebar, {chosenUserId} from "../ChatSidebar";
+import ChatSidebar, {chosenChatId} from "../ChatSidebar";
 import Topbar from "../../components/chatComponents/Topbar";
 import Bottombar from "../../components/chatComponents/Bottombar";
 import {Text} from "@chakra-ui/react";
@@ -12,7 +12,6 @@ import {TutorModel} from "../../models/TutorModel";
 import {decodeJWT} from "../api/api.storage";
 
 const socket = io.connect("ws://localhost:3001", { transports: ['websocket', 'polling', 'flashsocket'] });
-// const bottomOfChat = useRef();
 
 interface PageProps {
     accessToken: string,
@@ -39,12 +38,12 @@ export default function ChatApp({tutorData, accessToken}: PageProps) {
     useEffect(() => {
         if (decodeJWT(accessToken).role === "student") {
             console.log("Role is student")
-            socket.emit('join-chat', decodeJWT(accessToken).id, chosenUserId);
+            socket.emit('join-chat', chosenChatId);
         } else if (decodeJWT(accessToken).role === "tutor") {
             console.log("Role is tutor")
-            socket.emit('join-chat', chosenUserId, decodeJWT(accessToken).id);
+            socket.emit('join-chat', chosenChatId);
         }
-    }, [chosenUserId]);
+    }, [chosenChatId]);
     return (
         <Flex
             h="93vh"
@@ -63,7 +62,7 @@ export default function ChatApp({tutorData, accessToken}: PageProps) {
                       sx={{'::-webkit-scrollbar': {display: 'none'}}}>
                     {getMessages(chat!, {tutorData, accessToken})}
                 </Flex>
-                <Bottombar accessToken={accessToken}/>
+                <Bottombar accessToken={accessToken} tutorData={tutorData}/>
             </Flex>
         </Flex>
     )

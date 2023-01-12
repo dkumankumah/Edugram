@@ -1,7 +1,7 @@
 import {Flex} from "@chakra-ui/layout";
 import {Avatar, Heading} from "@chakra-ui/react";
 import React from "react";
-import {chosenUserId} from "../../pages/ChatSidebar";
+import {chosenChatId} from "../../pages/ChatSidebar";
 import {chosenUser} from "../../pages/ChatSidebar";
 
 

@@ -38,17 +38,23 @@ io.on('connection', (socket) => {
       });
   });
 
-  socket.on("send-message", async (message, student, tutor, sender) => {
-    console.log("Message sent by " + student + " : " + message + " to: " + tutor);
+  socket.on("send-message", async (message, sender, chatId) => {
+    console.log("Message sent by " + sender + " : " + message + " to chatId: " + chatId);
     await Chat.findOneAndUpdate(
-      {tutor: tutor, student: student},
+      {_id: chatId},
       {$push: {messages: new Message({message: message, sender: sender})}},
     );
-    io.to(student + tutor).emit("update-chat", await Chat.findOne({tutor: tutor, student: student}));
+    io.to(chatId).emit("update-chat", await Chat.findOne({_id: chatId}));
   });
-  socket.on("join-chat", async (student, tutor) => {
-    socket.join(student + tutor);
-    io.to(student + tutor).emit("update-chat", await Chat.findOne({tutor: tutor, student: student}));
+  socket.on("join-chat", async (chosenChatId) => {
+    if (chosenChatId.length < 3) {
+
+    } else {
+      socket.join(chosenChatId);
+      console.log("Chosen chat Id in socket: " + chosenChatId);
+      io.to(chosenChatId).emit("update-chat", await Chat.findOne({_id: chosenChatId}));
+    }
+
   })
 
   //This Renders at the start of visiting the page

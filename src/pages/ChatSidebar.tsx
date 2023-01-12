@@ -6,7 +6,7 @@ import {router} from "next/router";
 import React, {useEffect, useRef, useState} from "react";
 import * as io from "socket.io-client";
 import {ChatModel} from "../models/ChatModel";
-import {UserChatModel} from "../models/ChatModel";
+import {ChatUserModel} from "../models/ChatModel";
 
 import {useLocation} from "react-router";
 import {decodeJWT} from "./api/api.storage";
@@ -18,17 +18,24 @@ interface PageProps {
     tutorData: TutorModel,
 }
 
-let chosenUserId = "";
+let chosenChatId = "";
 let chosenUser = "";
 
+let fullname = "";
+
 function setId(id: string) {
-    console.log("chosen chat to be emitted: " + chosenUserId);
-    chosenUserId = id;
+    console.log("chosen chat to be emitted: " + chosenChatId);
+    chosenChatId = id;
 }
 
 function chosenChat(chatName: string, chatId: string) {
     setId(chatId)
+    chosenUser = chatName;
     router.push(`/chat/${chatName}`);
+}
+
+function goBack() {
+    router.push('/dashboard');
 }
 
 const showChats = (data: ChatModel[], accessToken: string) =>
@@ -62,24 +69,25 @@ export default function ChatSidebar({tutorData, accessToken}: PageProps) {
 
     const [chatList, setChatlist] = useState([]);
     useEffect(() => {
-        const user: UserChatModel = {
+        const user: ChatUserModel = {
             _id: decodeJWT(accessToken).id,
             firstName: decodeJWT(accessToken).firstName
         }
-        console.log("Ingelogde user chat model: " + user.firstName);
+        fullname = decodeJWT(accessToken).firstName + " " + decodeJWT(accessToken).lastName;
+        console.log("Ingelogde user chat model: " + user.firstName + ": " + user._id);
         socket.emit('get-chats', user);
         socket.on("user-chats", (data) => {
             const tempArray: ChatModel[] = [];
             data.forEach(function (value: ChatModel) {
                 if (value.tutor != null) {
-                    console.log(value)
+                    console.log("Chat: " + value)
                     tempArray.push(value)
                 }
             });
             console.log("This is tempArray: " + tempArray)
             setChatlist(tempArray);
         });
-    },[chosenUserId]);
+    },[chosenChatId]);
     return (
         <Flex
             w="300px"
@@ -95,9 +103,9 @@ export default function ChatSidebar({tutorData, accessToken}: PageProps) {
             >
                 <Flex align="center">
                     <Avatar src="" margin={3}/>
-                    <Text>{decodeJWT(accessToken).firstName} {decodeJWT(accessToken).lastName}</Text>
+                    <Text>{fullname}</Text>
                 </Flex>
-                <IconButton onClick={() => router.push('/dashboard')} size="sm" isRound icon={<ArrowLeftIcon/>} aria-label="Close"/>
+                <IconButton onClick={() => goBack()} size="sm" isRound icon={<ArrowLeftIcon/>} aria-label="Close"/>
             </Flex>
 
             <Flex overflowX="hidden" overflowY="scroll" direction="column"
@@ -128,4 +136,4 @@ const getServerSideProps: GetServerSideProps = async (ctx) => {
     };
 }
 
-export {chosenUserId, chosenUser};
+export {chosenChatId, chosenUser};

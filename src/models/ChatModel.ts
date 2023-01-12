@@ -1,8 +1,8 @@
 export interface ChatModel {
     _id: string;
     messages: Message[];
-    student: UserChatModel;
-    tutor: UserChatModel;
+    student: ChatUserModel;
+    tutor: ChatUserModel;
 }
 
 export interface Message {
@@ -11,7 +11,7 @@ export interface Message {
     dateTime: string;
 }
 
-export interface UserChatModel {
+export interface ChatUserModel {
     _id: string;
     firstName: string;
 }

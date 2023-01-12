@@ -1,4 +1,5 @@
 import {UserModel} from "./UserModel";
+import {Course} from "./CourseModel";
 
 export interface TutorModel extends UserModel {
     course?: Course[];
@@ -6,11 +7,6 @@ export interface TutorModel extends UserModel {
     responses?: Response[];
     request?: Request[];
 
-}
-
-export interface Course {
-    subject?: string;
-    fee: number;
 }
 
 export interface Review {
