@@ -63,10 +63,28 @@ export function RegisterFormTutor() {
     } 
 
     if (numberOfError == 0) {
+     
       try {
-        axios.post("http://localhost:8000/tutor", tutor);
-          // router.push("http://localhost:3000/search/overview");
+       
+        axios.post("http://localhost:8000/tutor", tutor).then((res) => {
+          console.log(res)
           console.log("tutor created");
+        }).catch((error) => {
+          if (error.response) {
+            console.log("er is een errrr: " + JSON.stringify(error.response))
+            console.log(error.response)
+            setErrors(error.response)
+            let message = JSON.stringify(error.response).split('[]',)[1]
+            toast({
+              title: 'Warning',
+              description: JSON.stringify(error.response.data),
+              status: 'warning',
+              duration: 19000,
+              isClosable: true,
+            })
+          }
+        });
+          
         
       } catch (error) {
         console.log("error");
@@ -115,9 +133,7 @@ export function RegisterFormTutor() {
             let message = JSON.stringify(error.response).split('[]',)[1]
             toast({
               title: 'Warning',
-              description: JSON.stringify(error.response.data.map((err:any) => {
-                return err.msg.map(err.mgs.split('')[0])
-              })),
+              description: JSON.stringify(error.response.data),
               status: 'warning',
               duration: 19000,
               isClosable: true,
