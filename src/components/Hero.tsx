@@ -37,9 +37,11 @@ const Hero = ({ title, description }: ComponentProps) => {
   };
 
   const handleKeyDown = (event: any) => {
+    const data = searchData.toLowerCase()
+
     if (event.key === "Enter") {
       router.push({
-        pathname: `/search/${searchData.toLowerCase()}`,
+        pathname: `/search/${(data.charAt(0).toUpperCase()+data.slice(1)).toString()}`,
       });
     }
   };

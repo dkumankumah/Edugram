@@ -21,9 +21,10 @@ export function Navbar({ ...props }: ComponentProps) {
   };
   
   const handleKeyDown = (event:any) => {
+    const data = value.toLowerCase()
     if (event.key === 'Enter') {
       router.push({
-        pathname: `/search/${value.toLowerCase()}`
+        pathname: `/search/${(data.charAt(0).toUpperCase()+data.slice(1)).toString()}`
       })
     }
 
