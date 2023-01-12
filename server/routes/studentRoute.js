@@ -34,6 +34,7 @@ const userValidation = [
     .withMessage("Password must contain uppercase"),
 ];
 
+// add student
 router.post("/", userValidation, async (req, res, next) => {
   const hashedPassword = await bcrypt.hash(req.body.password, 10);
 
@@ -58,21 +59,6 @@ router.post("/", userValidation, async (req, res, next) => {
     res.status(400).json({ message: error });
   }
 
-  // try {
-  //   const errors = validationResult(req);
-  //   if (!errors.isEmpty()) {
-  //     errors.array().forEach((error) => {
-  //       console.log(error);
-  //     });
-  //     // res.status(400).json({ message: errors });
-  //     res.status(400).json({errors: errors.array()})
-  //   } else {
-  //     student.save();
-  //     res.status(201).json({ messsage: student });
-  //   }
-  // } catch (error) {
-  //   res.status(400).json({ message: error });
-  // }
 });
 
 module.exports = router;
