@@ -15,9 +15,6 @@ import {
     Button,
     Collapse,
     useDisclosure,
-    EditableTextarea,
-    Editable,
-    EditablePreview,
     FormControl,
     Textarea,
     FormHelperText
@@ -168,9 +165,7 @@ const Dashboard = ({tutorData, accessToken}: PageProps) => {
 
     const handleSubmit = () => {
         setIsEditing(!isEditing)
-        if (typeof textValue === "string") {
-            tutor.profile.bio = textValue
-        }
+        tutor.profile.bio = textValue
 
         fetch('http://localhost:8000/tutor/' + tutor._id, {
             method: 'PATCH',
