@@ -37,12 +37,18 @@ const Hero = ({ title, description }: ComponentProps) => {
   };
 
   const handleKeyDown = (event: any) => {
+    const data = searchData.toLowerCase()
+
     if (event.key === "Enter") {
       router.push({
-        pathname: `/search/${searchData.toLowerCase()}`,
+        pathname: `/search/${(data.charAt(0).toUpperCase()+data.slice(1)).toString()}`,
       });
     }
   };
+
+  const redirectToRegisterPage = () => {
+    router.push('/register')
+  }
 
   function clearCredentials() {
     setEmail("");
@@ -121,7 +127,7 @@ const Hero = ({ title, description }: ComponentProps) => {
                   </Flex>
                   <Flex>{!!description && <Text fontSize={{base: "2xs", lg: "xs"}}>{description}</Text>}</Flex>
                 </Flex>
-                <ActionButton ml={6} label="Get started">
+                <ActionButton ml={6} label="Get started" onClick={redirectToRegisterPage}>
                   Get started
                 </ActionButton>
                 <ActionButton ml={6} label="How it works">
