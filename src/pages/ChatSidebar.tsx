@@ -6,51 +6,58 @@ import {router} from "next/router";
 import React, {useEffect, useRef, useState} from "react";
 import * as io from "socket.io-client";
 import {ChatModel} from "../models/ChatModel";
+import {ChatUserModel} from "../models/ChatModel";
+
 import {useLocation} from "react-router";
 import {decodeJWT} from "./api/api.storage";
 import {TutorModel} from "../models/TutorModel";
 import {GetServerSideProps} from "next";
-// const Chat = require("../../server/models/chat");
 
 interface PageProps {
     accessToken: string,
     tutorData: TutorModel,
 }
 
-let chosenUserId = "";
+let chosenChatId = "";
+let chosenUser = "";
+
+let fullname = "";
 
 function setId(id: string) {
-    chosenUserId = id;
+    console.log("chosen chat to be emitted: " + chosenChatId);
+    chosenChatId = id;
 }
 
-function chosenChat(chat: string) {
-    console.log("_id in chosenChat: " + chat);
-    chosenUserId = chat;
-    router.push(`/chat/${chat}`);
+function chosenChat(chatName: string, chatId: string) {
+    setId(chatId)
+    chosenUser = chatName;
+    router.push(`/chat/${chatName}`);
 }
 
-const showChats = (data: ChatModel[], {tutorData, accessToken}: PageProps) =>
+function goBack() {
+    router.push('/dashboard');
+}
+
+const showChats = (data: ChatModel[], accessToken: string) =>
     data?.map(chat => {
-        console.log("data in showChats: " + data);
-        console.log("Dit is de rol: " + decodeJWT(accessToken).role);
         if (decodeJWT(accessToken).role === "student") {
+            console.log("Access Token: " + accessToken)
             return (
                 <Flex key={chat._id} p={3} align="center" _hover={{bg: "gray.100", cursor: "pointer"}}
-                      onClick={() => chosenChat(chat.tutor)}>
+                      onClick={() => chosenChat(chat.tutor.firstName, chat._id)}>
                     <Avatar src="" marginEnd={3}/>
-                    <Text>{chat.tutor}</Text>
+                    <Text>{chat.tutor.firstName}</Text>
                 </Flex>
             )
         } else if (decodeJWT(accessToken).role === "tutor") {
             return (
                 <Flex key={chat._id} p={3} align="center" _hover={{bg: "gray.100", cursor: "pointer"}}
-                      onClick={() => chosenChat(chat.student)}>
+                      onClick={() => chosenChat(chat.student.firstName, chat._id)}>
                     <Avatar src="" marginEnd={3}/>
-                    <Text>{chat.student}</Text>
+                    <Text>{chat.student.firstName}</Text>
                 </Flex>
             )
         }
-
     })
 
 
@@ -64,12 +71,18 @@ export default function ChatSidebar({tutorData, accessToken}: PageProps) {
    
 
     useEffect(() => {
-        socket.emit('get-chats', decodeJWT(accessToken).id);
+        const user: ChatUserModel = {
+            _id: decodeJWT(accessToken).id,
+            firstName: decodeJWT(accessToken).firstName
+        }
+        fullname = decodeJWT(accessToken).firstName + " " + decodeJWT(accessToken).lastName;
+        console.log("Ingelogde user chat model: " + user.firstName + ": " + user._id);
+        socket.emit('get-chats', user);
         socket.on("user-chats", (data) => {
             const tempArray: ChatModel[] = [];
             data.forEach(function (value: ChatModel) {
                 if (value.tutor != null) {
-                    console.log(value)
+                    console.log("Chat: " + value)
                     tempArray.push(value)
                 }
             });
@@ -77,7 +90,7 @@ export default function ChatSidebar({tutorData, accessToken}: PageProps) {
             setChatlist(tempArray);
             
         });
-    },[accessToken]);
+    },[chosenChatId]);
     
     return (
         <Flex
@@ -94,15 +107,15 @@ export default function ChatSidebar({tutorData, accessToken}: PageProps) {
             >
                 <Flex align="center">
                     <Avatar src="" margin={3}/>
-                    <Text>Alperen Kavakli</Text>
+                    <Text>{fullname}</Text>
                 </Flex>
-                <IconButton size="sm" isRound icon={<ArrowLeftIcon/>} aria-label="Close"/>
+                <IconButton onClick={() => goBack()} size="sm" isRound icon={<ArrowLeftIcon/>} aria-label="Close"/>
             </Flex>
 
             <Flex overflowX="hidden" overflowY="scroll" direction="column"
                   sx={{'::-webkit-scrollbar': {display: 'none'}}}>
             </Flex>
-            {showChats(chatList, {tutorData, accessToken})}
+            {showChats(chatList, accessToken)}
         </Flex>
     )
 }
@@ -127,4 +140,4 @@ const getServerSideProps: GetServerSideProps = async (ctx) => {
     };
 }
 
-export {chosenUserId};
+export {chosenChatId, chosenUser};
