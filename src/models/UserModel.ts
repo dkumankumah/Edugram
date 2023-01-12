@@ -26,9 +26,17 @@ export interface Address {
 export interface Profile {
     bio?: string;
     image?: string;
+    lessonLocation?: LessonLocation[]
+    isVerified?: boolean
 }
 
 export interface Notification {
     notificationId: string;
     description: string;
+}
+
+export interface LessonLocation {
+    locationId: number;
+    locationName: string;
+    chosen: boolean
 }
