@@ -12,7 +12,8 @@ const ProfileNavigation = () => {
             <HStack justifyContent={'center'}>
                 <ProfileLinkNavigation path={'dashboard'}/>
                 <ProfileLinkNavigation path={'profile'}/>
-                <ProfileLinkNavigation path={'messages'}/>
+                <ProfileLinkNavigation path={'courses'}/>
+                <ProfileLinkNavigation path={'/chat/chats'}/>
                 <ProfileLinkNavigation path={'invoices'}/>
             </HStack>
         </Box>

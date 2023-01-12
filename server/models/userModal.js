@@ -1,23 +1,25 @@
 const mongoose = require('mongoose')
-const Schema = mongoose.Schema;
 
-// let Profile;
-const Profile = new Schema({
-  description: {
+const AddressSchema = {
+  street: {
     type: String,
-    required: false
+    required: true
   },
-  bio: {
+  city: {
     type: String,
-    required: false,
+    required: true
   },
-  image: {
+  state: {
     type: String,
-    required: false,
+    required: true
+  },
+  zipCode: {
+    type: String,
+    required: true
   }
-})
+};
 
-const TutorSchema = new Schema({
+const userSchema = new mongoose.Schema({
   firstName: {
     type: String,
     required: true
@@ -36,7 +38,7 @@ const TutorSchema = new Schema({
   },
   role: {
     type: String,
-    required: false
+    required: true
   },
   phoneNumber: {
     type: String,
@@ -50,14 +52,12 @@ const TutorSchema = new Schema({
     type: String,
     required: false
   },
-
-  profile: Profile,
-  course: [
-    {subject: String, fee: Number, courseDescription: String}
-  ],
-  request: [
-    {id: String, firstName: String, lastName: String, location: String, subject: String, status: String}
-  ]
+  address: {
+    type: AddressSchema,
+    required: false
+  }
 });
 
-module.exports = mongoose.model('tutor', TutorSchema);
+const User = mongoose.model("User", userSchema);
+
+module.exports = User;

@@ -22,6 +22,7 @@ import {
 } from "@chakra-ui/react";
 import { TutorModel } from "../../models/TutorModel";
 import Router, { useRouter } from "next/router";
+import {GetServerSideProps} from "next";
 
 interface PageProps {
     tutors: TutorModel[]
@@ -44,11 +45,9 @@ export default function Overview ({ tutors, subject }: PageProps) {
                 break;
             case options[1]:
                 tutors.reverse()
-                console.log(value);
                 break;
             case options[2]:
                 sortName()
-                console.log(value);
                 break;
         }
     }
@@ -61,9 +60,6 @@ export default function Overview ({ tutors, subject }: PageProps) {
     const group = getRootProps()
     return (
         <Box>
-            <Flex>
-
-            </Flex>
             <Box
                 justifyContent = "center"
                 px={20}
@@ -245,8 +241,9 @@ export function RadioCard(props: any) {
     )
 }
 
-export async function getServerSideProps ({ params }: any) {
-    const subject = params.subject
+export const getServerSideProps: GetServerSideProps = async (context) => {
+    const subject = context.params?.subject
+
     const res = await fetch('http://localhost:8000/tutor/search/' + subject)
     const tutors = await res.json()
 
