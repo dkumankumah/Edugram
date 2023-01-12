@@ -1,5 +1,6 @@
 const mongoose = require('mongoose'),
   Tutors = mongoose.model('tutor'),
+  Subjects = mongoose.model('subject'),
   Students = mongoose.model('student');
 
 const blockUser = async (req, res) => {
@@ -22,8 +23,22 @@ const editProfile = async (req, data) => {
   res.send({ message: 'User blocked successfully' });
 };
 
+const createSubject = async (req, res) => {
+  const newSubject = new Subjects(req.body);
+  await newSubject.save(function (err, task) {
+    if (err) {
+      res.status(400).send(err);
+    } else {
+      res.status(201).json(task);
+    }
+  });
+};
+
+
+
 
 module.exports = {
   blockUser,
-  editProfile
+  editProfile,
+  createSubject
 };

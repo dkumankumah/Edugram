@@ -7,8 +7,33 @@ import {Bar} from "react-chartjs-2";
 import AdminContainer from "../components/admin/container/adminContainer";
 import DashboardTable from "../components/admin/container/dashboardTable";
 import {Box, Flex, Stack} from "@chakra-ui/layout";
+import Select from 'react-select';
+import {loggers} from "winston";
+
 
 Chart.register(CategoryScale);
+
+
+const options2 = [
+    {value: 'chocolate', label: 'Chocolate'},
+    {value: 'strawberry', label: 'Strawberry'},
+    {value: 'vanilla', label: 'Vanilla'},
+    {value: 'mint', label: 'Mint'},
+    {value: 'peanut-butter', label: 'Peanut Butter'},
+    {value: 'coffee', label: 'Coffee'},
+    {value: 'pistachio', label: 'Pistachio'},
+    {value: 'mocha', label: 'Mocha'},
+    {value: 'caramel', label: 'Caramel'},
+    {value: 'hazelnut', label: 'Hazelnut'},
+    {value: 'lemon', label: 'Lemon'},
+    {value: 'blueberry', label: 'Blueberry'},
+    {value: 'raspberry', label: 'Raspberry'},
+    {value: 'peach', label: 'Peach'},
+    {value: 'apple', label: 'Apple'},
+    {value: 'orange', label: 'Orange'},
+    {value: 'grape', label: 'Grape'}
+];
+
 
 const socket = io.connect("ws://localhost:3001", {transports: ['websocket', 'polling', 'flashsocket']});
 const Dashboard = () => {
@@ -16,6 +41,15 @@ const Dashboard = () => {
     const [chartMap, setChartMap] = useState(new Map());
     const [dataa, setDataa] = useState([]);
     let [arrayChartData, setArrayChartData] = useState([]);
+    const [selectedOption, setSelectedOption] = useState(null);
+
+    const handleInputChange = (newValue: string) => {
+        console.log(`Input changed to ${newValue}`);
+    };
+
+    const handleChange = (selectedOption: any) => {
+        setSelectedOption(selectedOption);
+    };
 
     useEffect(() => {
         socket.on('data', (result: any) => {
@@ -125,7 +159,21 @@ const Dashboard = () => {
             },
         }
     };
-    console.log('Data for input:', chartData)
+    console.log('Data for input:', chartData);
+
+    const customStyles = {
+        control: (provided: any) => ({
+            ...provided,
+            borderRadius: '30px'
+        }),
+        indicatorSeparator: () => ({
+            display: 'none'
+        }),
+        dropdownIndicator: () => ({
+            display: 'none'
+        }),
+    };
+
     return (
 
         <AdminContainer>
@@ -173,10 +221,6 @@ const Dashboard = () => {
                     borderRadius='10'>
                     <CardBody>
                         <Text as='b'>Activity</Text>
-                        {/*<Bar*/}
-                        {/*    data={chartData}*/}
-                        {/*    options={options}*/}
-                        {/*/>*/}
                     </CardBody>
                 </Card>
             </Flex>
@@ -206,10 +250,10 @@ const Dashboard = () => {
                     <CardBody>
                         <Text as='b'>Last Updates</Text>
                         <Box
-                            bg= "#107385"
+                            bg="#107385"
                             borderRadius='20'
-                            py = "5px"
-                            px = "18px">
+                            py="5px"
+                            px="18px">
                             <Text color="#F5F5F5">/u</Text>
                         </Box>
                         {/*<DashboardTable/>*/}

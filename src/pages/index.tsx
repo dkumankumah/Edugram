@@ -20,7 +20,9 @@ import {
     ModalOverlay, Stack, Text, Image, FormHelperText, FormControl, FormErrorMessage,
     useDisclosure, VStack, InputRightElement, InputGroup, Alert, AlertDescription, AlertTitle, AlertIcon,
 } from '@chakra-ui/react'
+import Select from 'react-select';
 import React, {useState} from "react";
+
 import {Router, useRouter} from "next/router";
 import ChatSidebar from "./ChatSidebar"
 

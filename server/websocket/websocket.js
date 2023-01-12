@@ -2,15 +2,11 @@ const mongoose = require('mongoose');
 const Chat = require('../../server/models/chat');
 const Message = require('../../server/models/message');
 let Tickets = require('../../server/models/ticketsModal');
-// const Tickets = mongoose.model('TicketModel');
 const io = require('socket.io')(3001)
-// const io = require('socket.io')
 require("dotenv").config({path: require('find-config')('.env')});
 const username = process.env.DATABASE_CONNECTION_USERNAME;
 const password = process.env.DATABASE_CONNECTION_PASSWORD;
 const uri = `mongodb+srv://${username}:${password}@cluster0.wscvjuf.mongodb.net/Edugram?retryWrites=true&w=majority`;
-
-const changeStream = Tickets.watch()
 
 mongoose.connect(uri, {useNewUrlParser: true, useUnifiedTopology: true}).then(() => {
   console.log('Connected')
@@ -60,10 +56,4 @@ io.on('connection', (socket) => {
     });
     // console.log("test")
   })
-
-
 });
-
-
-
-
