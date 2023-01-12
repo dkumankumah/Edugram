@@ -15,7 +15,6 @@ import {
     HStack,
     Tag,
     TagLabel,
-    TagCloseButton,
     FormControl,
     FormLabel,
     FormHelperText,
@@ -30,6 +29,7 @@ import {
     DrawerFooter,
     Button,
     Stack,
+    useToast,
     useDisclosure,
     NumberInput,
     NumberInputField,
@@ -37,7 +37,7 @@ import {
     NumberIncrementStepper, NumberDecrementStepper, InputLeftAddon, InputGroup
 } from "@chakra-ui/react";
 import ProfileNavigation from "../components/shared/ProfileNavigation/ProfileNavigation";
-import {AddIcon, EditIcon, PlusSquareIcon} from "@chakra-ui/icons";
+import {AddIcon, EditIcon} from "@chakra-ui/icons";
 import React, {useEffect, useState} from "react";
 import {TutorModel} from "../models/TutorModel";
 import {Course} from "../models/CourseModel";
@@ -57,16 +57,24 @@ export default function courses ({tutorData, accessToken, subjects}: PageProps) 
     const [tutor, setTutor] = useState(tutorData as TutorModel)
     const router = useRouter()
     const [isEditing, setIsEditing] = useState(false)
+    const [isEditingFee, setIsEditingFee] = useState(false)
+    const [courseSelected, setCourseSelected] = useState(false)
     const [subject, setSubject] = useState({} as Course)
     const [value, setValue] = useState(subject.subject);
     const [selectedValue, setSelectedValue] = useState("");
     const [feeValue, setFeeValue] = useState(20)
+    const [alterFeeValue, setAlterFeeValue] = useState(20)
     const { isOpen, onOpen, onClose } = useDisclosure()
     const [isInvalidArea, setIsInvalidArea] = useState(true);
+    const [isInvalidTextArea, setIsInvalidTextArea] = useState(true);
+
     const [isInvalidOption, setIsInvalidOption] = useState(true);
+
+    const toast = useToast()
 
     const handleChangeEvent = (event:any) => {
         setValue(event.target.value);
+        setIsInvalidTextArea(!(event.target.value.length > 15));
     };
 
     const options = tutor.course?.map(course => {
@@ -82,17 +90,10 @@ export default function courses ({tutorData, accessToken, subjects}: PageProps) 
         setIsEditing(!isEditing)
     }
 
-    // const handleOption = () => {
-    //     // console.log("CHECK VALUE " + selectedValue)
-    //     // setIsLag((event.target.value !== ""))
-    //     // setSelectedValue(event.target.value);
-    //     // console.log("CHECK VALUE = " + selectedValue)
-    //     // console.log("isLag value = " + isLag)
-    //     // console.log("taget value = " + event.target.value)
-    //     if(selectedValue !== ""){
-    //         setIsInvalidOption(false)
-    //     }
-    // }
+    const handleEditFee = () => {
+        setIsEditingFee(!isEditingFee)
+    }
+
     const handleAddDescription = (event: any) => {
         const { value } = event.target;
         setValue(value);
@@ -114,9 +115,21 @@ export default function courses ({tutorData, accessToken, subjects}: PageProps) 
             }
             setSubject(subject)
             setValue("")
-        } else {
+        }
+        else if(isEditingFee) {
+
+            setIsEditingFee(!isEditingFee)
+            subject.fee=alterFeeValue
+            setAlterFeeValue(20)
+
+        }
+        else {
             const newCourse = {subject: selectedValue, fee: feeValue, courseDescription: value!}
             tutor.course?.push(newCourse)
+            toast({
+                title: "Course Added",
+                status: "success",
+                isClosable: true})
         }
 
         fetch('http://localhost:8000/tutor/' + tutor._id, {
@@ -134,15 +147,43 @@ export default function courses ({tutorData, accessToken, subjects}: PageProps) 
         console.log(tutor.course)
         setIsInvalidArea(true);
         setIsInvalidOption(true);
+        setSelectedValue("")
         onClose()
     }
 
+    const handleDelete = () => {
+        const index = tutor.course!.indexOf(subject)
+        tutor.course?.splice(index, 1)
+
+        fetch('http://localhost:8000/tutor/' + tutor._id, {
+            method: 'PATCH',
+            headers: {
+                "Content-Type": "application/json",
+                'Access-Control-Allow-Origin': 'http://localhost:8000',
+                'Authorization': 'Bearer ' + getToken()
+            },
+            body: JSON.stringify({course: tutor.course }),
+        }).then(response => response.json()).then(result => {
+            setTutor(result)
+                toast({
+                    title: "Course Deleted",
+                    status: "warning",
+                    isClosable: true})
+            }
+        )
+
+        setCourseSelected(!courseSelected)
+        setSubject({} as Course)
+
+    }
+
     const handleClick = (value: String) => {
-        tutor.course?.map((course)=>{
+        tutor.course?.map((course, key)=>{
             if(course.subject === value) {
                 setSubject(course)
             }
         })
+        setCourseSelected(true)
     }
 
     const { getRootProps, getRadioProps } = useRadioGroup({
@@ -199,22 +240,25 @@ export default function courses ({tutorData, accessToken, subjects}: PageProps) 
 
                             </CardBody>
                         </Card>
-                        <VStack {...group}
-                        align="left">
-                            {options?.map((value) => {
-                                const radio = getRadioProps({ value })
-                                return (
-                                    <RadioCard key={value} {...radio}>
-                                        {value}
-                                    </RadioCard>
-                                )
-                            })}
-                        </VStack>
-
+                        <Box
+                            height="400px" overflowY="scroll">
+                            <VStack {...group}
+                                    align="left">
+                                {options?.map((value) => {
+                                    const radio = getRadioProps({ value })
+                                    return (
+                                        <RadioCard key={value} {...radio}>
+                                            {value}
+                                        </RadioCard>
+                                    )
+                                })}
+                            </VStack>
+                        </Box>
                     </Box>
                     <Box flex={5}
                          mr={3}>
                         <Card
+                            display={!courseSelected ? 'block' : 'none'}
                             mb={5}
                             borderRadius={20} >
                             <CardHeader>
@@ -229,7 +273,44 @@ export default function courses ({tutorData, accessToken, subjects}: PageProps) 
                                         mt={3}
                                         fontSize={'larger'}
                                         fontWeight='bold'>
-                                        Short Add Description
+                                        Instruction
+                                    </Text>
+                                </Flex>
+                                <Divider
+                                    mt={3}
+                                />
+                            </CardHeader>
+                            <CardBody>
+                                <Text
+                                    fontSize={'sm'}>
+                                    On the left you can add a new subject you would like to tutor.
+                                    Choose a subject from the dropdown and add a short description to convince students
+                                    to choose you.
+                                </Text>
+                                <Text
+                                    fontSize={'sm'}
+                                mt={2}>
+                                    If wish to adjust the course description or your fee click on the subject and make your changes!
+                                </Text>
+                            </CardBody>
+                        </Card>
+                        <Card
+                            mb={5}
+                            borderRadius={20}
+                            display={courseSelected ? 'block' : 'none'}>
+                            <CardHeader>
+                                <Flex
+                                    flex='1'
+                                    flexDirection="row"
+                                    justifyContent={"space-between"}
+                                    gap='4'
+                                    flexWrap='wrap'>
+                                    <Text
+                                        color='blueGreen'
+                                        mt={3}
+                                        fontSize={'larger'}
+                                        fontWeight='bold'>
+                                        Add Short Description
                                     </Text>
                                     <Icon
                                         as={EditIcon}
@@ -253,14 +334,19 @@ export default function courses ({tutorData, accessToken, subjects}: PageProps) 
                                     <FormControl
                                         pt={2}>
                                         <Textarea
+                                            isInvalid={isInvalidTextArea}
                                             fontSize={'sm'}
                                             value={value}
                                             onChange={handleChangeEvent}
                                         />
-                                        <FormHelperText>Keep it brief but catching for a higher clickrate.</FormHelperText>
+                                        <FormHelperText
+                                            fontSize={15}>Keep it brief but catching for a higher clickrate.</FormHelperText>
+                                        <FormHelperText
+                                            fontSize={15}>Minimum character length is 20</FormHelperText>
                                     </FormControl>
                                     <Flex justifyContent={'end'}>
                                         <SubmitButton
+                                            isDisabled={isInvalidTextArea}
                                             label={'save-description'}
                                             onClick={handleSubmit}>
                                             Save Changes
@@ -270,37 +356,7 @@ export default function courses ({tutorData, accessToken, subjects}: PageProps) 
                             </CardBody>
                         </Card>
                         <Card
-                            mb={5}
-                            borderRadius={20} >
-                            <CardHeader>
-                                <Flex
-                                    flex='1'
-                                    flexDirection="row"
-                                    justifyContent={"space-between"}
-                                    gap='4'
-                                    flexWrap='wrap'>
-                                    <Text
-                                        color='blueGreen'
-                                        mt={3}
-                                        fontSize={'larger'}
-                                        fontWeight='bold'>
-                                        About You!
-                                    </Text>
-                                    <Icon
-                                        as={PlusSquareIcon}
-                                        alignSelf="center"
-                                        color='blueGreen'
-                                        boxSize={6}/>
-                                </Flex>
-                                <Divider
-                                    mt={3}
-                                />
-                            </CardHeader>
-                            <CardBody>
-
-                            </CardBody>
-                        </Card>
-                        <Card
+                            display={courseSelected ? 'block' : 'none'}
                             borderRadius={20} >
                             <CardHeader>
                                 <Flex
@@ -316,11 +372,6 @@ export default function courses ({tutorData, accessToken, subjects}: PageProps) 
                                         fontWeight='bold'>
                                         Location
                                     </Text>
-                                    <Icon
-                                        as={PlusSquareIcon}
-                                        alignSelf="center"
-                                        color='blueGreen'
-                                        boxSize={6}/>
                                 </Flex>
                                 <Divider
                                     mt={3}
@@ -329,16 +380,28 @@ export default function courses ({tutorData, accessToken, subjects}: PageProps) 
                             <CardBody>
                                 <HStack spacing={4}>
                                     <Tag
-                                        size={'lg'}
-                                        variant='outline'
-                                        borderColor='blue'
+                                        size={'md'}
+                                        colorScheme='green'
+                                        variant='solid'
+                                        borderRadius='full'
                                     >
                                         <TagLabel>Webcam</TagLabel>
-                                        <TagCloseButton />
                                     </Tag>
                                 </HStack>
                             </CardBody>
                         </Card>
+                        <Flex
+                            pt={'4'}
+                            justifyContent={"space-between"}
+                            textAlign={'center'}
+                            display={courseSelected ? 'block' : 'none'}>
+                            <Button
+                                fontSize={'xs'}
+                                cursor={'pointer'}
+                                size={'md'}
+                                colorScheme='red'
+                                onClick={handleDelete}>Remove subject</Button>
+                        </Flex>
                     </Box>
                     <Box flex={1.3}>
                         <Card borderRadius={20} >
@@ -368,20 +431,62 @@ export default function courses ({tutorData, accessToken, subjects}: PageProps) 
                                     mt={3}
                                 />
                             </CardHeader>
-                            <CardBody>
+                            <CardBody
+                                display={courseSelected ? 'block' : 'none'}>
                                 <SimpleGrid columns={2} spacing={12}>
                                     <Text
                                         fontSize={'medium'}
                                         fontWeight='bold'>
                                         Hourly Rate
                                     </Text>
-                                    <Text
-                                        fontSize={'large'}
-                                        fontWeight='bold'>
-                                        €{subject.fee}
-                                    </Text>
-                                </SimpleGrid>
+                                    <Flex>
+                                        <Text
+                                            fontSize={'large'}
+                                            fontWeight='bold'>
+                                            €{subject.fee}
+                                        </Text>
+                                        <Icon
+                                            as={EditIcon}
+                                            ml={1}
+                                            // alignSelf="center"
+                                            color='blueGreen'
+                                            boxSize={5}
+                                            cursor='pointer'
+                                            onClick={handleEditFee}/>
+                                    </Flex>
 
+                                </SimpleGrid>
+                                <Box
+                                    pt={2}
+                                    display={isEditingFee ? 'block' : 'none'}>
+                                    <InputGroup>
+                                        <InputLeftAddon fontSize={'xs'}>€</InputLeftAddon>
+                                        <NumberInput fontSize={'xs'} value={alterFeeValue} >
+                                            <NumberInputField  fontSize={'xs'} onChange={(event) => {
+                                                setAlterFeeValue(event.target.value as unknown as number);
+                                            }}/>
+                                            <NumberInputStepper>
+                                                <NumberIncrementStepper />
+                                                <NumberDecrementStepper />
+                                            </NumberInputStepper>
+                                        </NumberInput>
+                                    </InputGroup>
+                                    <Flex
+                                        pt={3}
+                                        justifyContent={'end'}>
+                                        <Button
+                                            bg='yellow'
+                                            size={'sm'}
+                                            fontSize={'xs'}
+                                            fontWeight={'md'}
+                                            cursor={'pointer'}
+                                            onClick={handleSubmit}
+                                        >
+                                            Save
+                                        </Button>
+                                    </Flex>
+
+                                </Box>
                             </CardBody>
                         </Card>
                     </Box>
@@ -391,7 +496,6 @@ export default function courses ({tutorData, accessToken, subjects}: PageProps) 
                 isOpen={isOpen}
                 placement='left'
                 size={'md'}
-                // initialFocusRef={firstField}
                 onClose={handleClose}
             >
                 <DrawerOverlay />
@@ -425,34 +529,47 @@ export default function courses ({tutorData, accessToken, subjects}: PageProps) 
                                         }}
                                         fontSize={'sm'}
                                 >
-                                    {subjects.map(s => {
-                                        if(!options?.includes(s.title)){
+
+                                    {subjects.sort((a, b) => {
+                                        if (a.name < b.name) {
+                                            return -1;
+                                        }
+                                        if (a.name > b.name) {
+                                            return 1;
+                                        }
+                                        return 0;
+                                    }).map(s => {
+                                        if(!options?.includes(s.name)){
                                             return(
-                                                <option key={s.title} value={s.title}>{s.title}</option>
+                                                <option key={s.name} value={s.name}>{s.name}</option>
                                             )
                                         }
                                     })}
                                 </Select>
                             </Box>
                             <Box>
-                                <FormLabel
-                                    fontSize={'sm'}
-                                    color='blueGreen'
-                                    htmlFor='desc'>Description</FormLabel>
-                                <Textarea id='desc'
-                                          isInvalid={isInvalidArea}
-                                          fontSize={'sm'}
-                                          onChange={handleAddDescription}
-                                />
+                                <FormControl
+                                    pt={2}>
+                                    <FormLabel
+                                        fontSize={'sm'}
+                                        color='blueGreen'
+                                        htmlFor='desc'>Description</FormLabel>
+                                    <Textarea id='desc'
+                                              isInvalid={isInvalidArea}
+                                              fontSize={'sm'}
+                                              onChange={handleAddDescription}
+                                    />
+                                    <FormHelperText
+                                        fontSize={15}>Minimum character length is 20</FormHelperText>
+                                </FormControl>
                             </Box>
                             <Box>
-
                                 <FormLabel
                                     fontSize={'sm'}
                                     color='blueGreen'
                                     htmlFor='rate'>Hourly Rate</FormLabel>
                                 <InputGroup>
-                                    <InputLeftAddon fontSize={'sm'}>€</InputLeftAddon>
+                                    <InputLeftAddon fontSize={'xs'}>€</InputLeftAddon>
                                     <NumberInput defaultValue={20} min={10} max={99} fontSize={'xs'}>
                                         <NumberInputField value={feeValue} fontSize={'sm'} onChange={(event) => {
                                             setFeeValue(event.target.value as unknown as number);

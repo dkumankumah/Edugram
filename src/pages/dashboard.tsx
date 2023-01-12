@@ -10,16 +10,24 @@ import {
     Icon,
     Image,
     Divider,
-    Text, Flex, Button, Collapse, useDisclosure
+    Text,
+    Flex,
+    Button,
+    Collapse,
+    useDisclosure,
+    FormControl,
+    Textarea,
+    FormHelperText
 } from "@chakra-ui/react";
 import AdminContainer from "../components/admin/container/adminContainer";
 import {decodeJWT, getToken, isAdmin, isTutor} from "./api/api.storage";
 import Chart from "chart.js/auto";
 import {Bar} from 'react-chartjs-2'
 import {CategoryScale} from 'chart.js';
-import {ArrowUpDownIcon, CheckCircleIcon, CheckIcon, CloseIcon} from "@chakra-ui/icons";
+import {ArrowUpDownIcon, CheckCircleIcon, CheckIcon, CloseIcon, EditIcon, PlusSquareIcon} from "@chakra-ui/icons";
 import {TutorModel} from "../models/TutorModel";
 import {GetServerSideProps} from "next";
+import {SubmitButton} from "../components/shared/Buttons";
 Chart.register(CategoryScale);
 
 interface PageProps {
@@ -34,6 +42,9 @@ const Dashboard = ({tutorData, accessToken}: PageProps) => {
     const { isOpen, onToggle } = useDisclosure()
     const baseUrl = "http://localhost:8001/tickets"
     const [map, setMap] = useState(new Map());
+    const [isEditing, setIsEditing] = useState(false)
+    const [textValue, setValue] = useState("")
+    const [isInvalidArea, setIsInvalidArea] = useState(true);
 
     useEffect(() => {
         setIsAuth(isAdmin(accessToken))
@@ -139,6 +150,36 @@ const Dashboard = ({tutorData, accessToken}: PageProps) => {
             },
         ],
     };
+
+    const handleEdit = () => {
+        setValue("")
+        setIsEditing(!isEditing)
+        setIsInvalidArea(true)
+    }
+
+    const handleChangeEvent = (event:any) => {
+        setValue(event.target.value);
+        setIsInvalidArea(!(event.target.value.length > 15))
+
+    };
+
+    const handleSubmit = () => {
+        setIsEditing(!isEditing)
+        tutor.profile.bio = textValue
+
+        fetch('http://localhost:8000/tutor/' + tutor._id, {
+            method: 'PATCH',
+            headers: {
+                "Content-Type": "application/json",
+                'Access-Control-Allow-Origin': 'http://localhost:8000',
+                'Authorization': 'Bearer ' + getToken()
+            },
+            body: JSON.stringify({profile: tutor.profile }),
+        }).then(response => response.json()).then(result =>
+            setTutor(result)
+
+        )
+    }
 
     function handleAccept(input : string, id: string): void {
         tutor.request?.map((request)=>{
@@ -287,17 +328,82 @@ const Dashboard = ({tutorData, accessToken}: PageProps) => {
                         flex={3}
                         pl={2}>
                         <Card
-                            boxShadow={'xl'}
+                            mb={5}
                             borderRadius={20}
-                            p={2}>
+                            boxShadow={'xl'}
+                        >
+                            <CardHeader>
+                                <Flex
+                                    flex='1'
+                                    flexDirection="row"
+                                    justifyContent={"space-between"}
+                                    gap='4'
+                                    flexWrap='wrap'>
+                                    <Text
+                                        as = "h2"
+                                        color='blueGreen'
+                                        mt={3}
+                                        fontWeight='bold'>
+                                        About Me!
+                                    </Text>
+                                    <Icon
+                                        as={EditIcon}
+                                        alignSelf="center"
+                                        color='blueGreen'
+                                        boxSize={6}
+                                        cursor='pointer'
+                                        onClick={handleEdit}/>
+                                </Flex>
+                                <Divider
+                                    mt={3}
+                                />
+                            </CardHeader>
+                            <CardBody>
+                                <Text
+                                    fontSize={'sm'}>
+                                    {tutor.profile?.bio}
+                                </Text>
+                                <Box
+                                    display={isEditing ? 'block' : 'none'}>
+                                    <FormControl
+                                        pt={2}>
+                                        <Textarea
+                                            isInvalid={isInvalidArea}
+                                            fontSize={'sm'}
+                                            value={textValue}
+                                            onChange={handleChangeEvent}
+                                        />
+                                        <FormHelperText>Minimum character length is 20</FormHelperText>
+                                    </FormControl>
+                                    <Flex justifyContent={'end'}>
+                                        <SubmitButton
+                                            isDisabled={isInvalidArea}
+                                            label={'save-description'}
+                                            onClick={handleSubmit}>
+                                            Save Changes
+                                        </SubmitButton>
+                                    </Flex>
+                                </Box>
+                            </CardBody>
+                        </Card>
+                    </Box>
+                    <Box
+                        flex={3}
+                        pl={2}>
+                        <Card
+                            mb={5}
+                            borderRadius={20}
+                            boxShadow={'xl'}
+                            >
                             <CardHeader>
                                 <Text as = "h2"
-                                      mt={5}
+                                      color='blueGreen'
+                                      mt={3}
                                       fontWeight='bold'>
                                     My lesson requests
                                 </Text>
                                 <Divider
-                                    mt={10}
+                                    mt={3}
                                 />
                             </CardHeader>
                             <CardBody>
@@ -363,15 +469,16 @@ const Dashboard = ({tutorData, accessToken}: PageProps) => {
                         flex={3}
                         pl={2}>
                         <Card
-                            boxShadow={'xl'}
+                            mb={5}
                             borderRadius={20}
-                            p={2}>
+                            boxShadow={'xl'}>
                             <CardHeader
                                 cursor='pointer'
                                 onClick={onToggle}>
                                 <Flex flex='1' flexDirection="row" justifyContent={"space-between"} gap='4' alignItems='center' flexWrap='wrap'>
                                     <Text as = "h2"
-                                          mt={5}
+                                          color='blueGreen'
+                                          mt={3}
                                           fontWeight='bold'>
                                         Accepted requests
                                     </Text>
@@ -382,9 +489,8 @@ const Dashboard = ({tutorData, accessToken}: PageProps) => {
                                         boxSize={7}
                                         onClick={onToggle}/>
                                 </Flex>
-
                                 <Divider
-                                    mt={10}
+                                    mt={3}
                                 />
                             </CardHeader>
                             <Collapse in={isOpen} animateOpacity>
