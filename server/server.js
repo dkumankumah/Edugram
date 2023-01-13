@@ -75,3 +75,5 @@ server.listen(PORT, () => {
   // console.log(`API is listening on port ${PORT}`);
   logger.log('info', `Server Running on the following port:   ${PORT} `)
 });
+
+module.exports = app;

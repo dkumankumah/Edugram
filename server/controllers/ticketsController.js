@@ -1,22 +1,6 @@
 const mongoose = require('mongoose'),
   Tickets = mongoose.model('Tickets');
 
-
-const getData = async (req, data) => {
-  console.log('Data', data)
-  switch (data.operationType) {
-    case 'insert':
-      io.emit('chat message', data.fullDocument);
-      console.log('Insert: ', data.fullDocument);
-      break;
-    case 'update':
-      io.emit('Ticket message', data.updateDescription.updatedFields.createdBy);
-      console.log('Updated: ', data.updateDescription.updatedFields.createdBy);
-    // global.io.emit('news', {hello: 'world'});
-  }
-};
-
-
 // Retrieve all the tasks saved in the database
 const getTickets = async (req, res) => {
   Tickets.find({}, function (err, ticket) {
@@ -25,69 +9,32 @@ const getTickets = async (req, res) => {
     } else {
       res.status(200)
       res.json(ticket);
-      // res.send("Get all Tickets");
     }
   });
 };
 
-// io.on('connection', (socket) => {
-//   console.log('a user connected');
-//   socket.on('disconnect', () => {
-//     console.log('user disconnected');
-//   });
-
-//   socket.on("send-message", async (message, student, tutor, sender) => {
-//     console.log("Message sent by " + student + " : " + message + " to: " + tutor);
-//     await   Tickets.find({}, function (err, ticket) {
-//       if (err) {
-//         res.status(400).send(err);
-//       } else {
-//         res.status(200)
-//         res.json(ticket);
-//         // res.send("Get all Tickets");
-//       }
-//     });
-//   });
-// });
-
-const getAllWorkouts = async (req, res) => {
-  // changeStream.on('change', (change) => {
-  //   console.log('Change detected:', change);
-  //   // if (change.operationType === 'insert') {
-  //   //   Tickets.find({}, (err, ticket) => {
-  //   //
-  //   //     console.log('TicketData Fetched:', ticket);
-  //   //     // req.io.emit('new data', ticket.fullDocument);
-  //   //     req.io.emit('data-update', ticket.fullDocument);
-  //   //     res.send('Event emitted');
-  //   //   });
-  //   // } else if (change.operationType === 'update') {
-  //   //   console.log("Updated.")
-  //   // }
-  // });
-};
-
-// Create a new task
+// Create a new ticket
 const createTicket = async (req, res) => {
   const newTicket = new Tickets(req.body);
-  await newTicket.save(function (err, task) {
-    if (err) {
-      res.status(400).send(err);
-    } else {
-      res.status(201).json(task);
-    }
-  });
+  try {
+    await newTicket.save();
+    res.status(201).json(newTicket);
+  } catch (error) {
+    res.status(400).send(error);
+  }
 };
 
-// Retrieve a task by taskId
-exports.getTaskById = (req, res) => {
+
+// Retrieve a task by ticketId
+const getTicketById = (req, res) => {
+
   Tickets.findById(req.params.id, function (err, task) {
     if (err) {
       res.status(404).send({
         error: {
           errors: [{
             domain: 'global', reason: 'notFound', message: 'Not Found',
-            description: 'Couldn\'t find the requested taskId \'' + req.params.id + '\''
+            description: 'Couldn\'t find the requested ticketId \'' + req.params.id + '\''
           }], err, code: 404
         }
       })
@@ -98,7 +45,7 @@ exports.getTaskById = (req, res) => {
 };
 
 // Edit a task by taskId
-exports.editTaskById = (req, res) => {
+const editTicketById = (req, res) => {
   Tickets.findOneAndUpdate({_id: req.params.id}, req.body, {new: true}, function (err, task) {
     if (err) {
       res.status(400).send(err);
@@ -109,7 +56,7 @@ exports.editTaskById = (req, res) => {
 };
 
 // Delete a task by taskId
-exports.deleteTaskById = (req, res) => {
+const deleteTicketById = (req, res) => {
   Tickets.remove({
     _id: req.params.id
   }, function (err, task) {
@@ -118,7 +65,7 @@ exports.deleteTaskById = (req, res) => {
         error: {
           errors: [{
             domain: 'global', reason: 'notFound', message: 'Not Found',
-            description: 'Couldn\'t find the requested taskId \'' + req.params.id + '\''
+            description: 'Couldn\'t find the requested ticketId \'' + req.params.id + '\''
           }], code: 404, message: 'Not Found'
         }
       })
@@ -130,8 +77,9 @@ exports.deleteTaskById = (req, res) => {
 };
 
 module.exports = {
-  getAllWorkouts,
   getTickets,
   createTicket,
-  getData,
+  getTicketById,
+  editTicketById,
+  deleteTicketById
 };
