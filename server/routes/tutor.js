@@ -15,10 +15,11 @@ router.get('/', async (req, res) => {
   }
 });
 
+//uploads image
+// router.post('/profile/upload-image', upload.single('image'), (req, res) => {
+//   // The uploaded file is available in req.file
+// });
 
-router.post('/profile/upload-image', upload.single('image'), (req, res) => {
-  // The uploaded file is available in req.file
-});
 // Adds a new tutor
 router.post('/', async (req, res, next) => {
   const role = 'tutor';

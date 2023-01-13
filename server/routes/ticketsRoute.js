@@ -1,6 +1,9 @@
 const express = require('express')
+const Ticket = require("../models/ticketsModal");
 const router = express.Router()
+const ticketList = require('../controllers/ticketsController');
 const ticketController = require('../controllers/ticketsController');
+const { MongoClient } = require("mongodb");
 
 router.get("/tickets", ticketController.getTickets);
 // router.get("/getById", ticketController.getTicketById);
