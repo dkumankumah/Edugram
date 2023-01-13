@@ -20,7 +20,6 @@ export default function DashboardTable({data}) {
     };
 
     return (
-
             <Table size='md' w='100%'>
                 <Thead w="100vh">
                     <Tr>

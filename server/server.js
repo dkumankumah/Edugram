@@ -6,6 +6,7 @@
  */
 require("dotenv").config({path: require('find-config')('.env')})
 const express = require("express");
+const cookieParser = require('cookie-parser')
 const mongoose = require("mongoose");
 
 const username = process.env.DATABASE_CONNECTION_USERNAME;
@@ -14,9 +15,8 @@ const bodyParser = require('body-parser');
 const logger = require('./middleware/logger');
 const morgan = require('morgan');
 const cors = require('cors');
-// const apiCache = require("apicache");
-// const cache = apiCache.middleware;
-// const { swaggerDocs: V1SwaggerDocs } = require("src/v1/swagger");
+
+
 const PORT = process.env.PORT || 8001
 const http = require('http');
 const app = express();
@@ -28,25 +28,18 @@ mongoose.connect(uri, {useNewUrlParser: true, useUnifiedTopology: true})
   .then(() => console.log('connected to db'))
   .catch((err) => console.log(err));
 
-//Importing route
-const ticketRoute = require('./routes/ticketsRoute');
-
 /**
  * Configure app to use bodyParser()
  * Add the routes here as well to get noticed
  * Cache is installed and set for 5 minutes
  */
-app.use(cors());
-//caching all routes for 5 minutes. Debating if it is useful.
-// app.use(cache('5 minutes'));
-app.use(bodyParser.json());
 
-//Register the route
-app.use(ticketRoute);
 
-// Health route to make sure everything is working (accessed at GET http://localhost:3000/health)
-app.use('/health', require('express-healthcheck')({}));
 
+//Middlewares
+app.use(cookieParser())
+app.use(cors({origin: "http://localhost:3000", credentials: true}))
+app.use(bodyParser.json())
 // Using morgan middleware to log requests
 const morganMiddleware = morgan(
   ':method :url :status :res[content-length] - :response-time ms',
@@ -56,11 +49,71 @@ const morganMiddleware = morgan(
     },
   }
 );
-
 app.use(morganMiddleware);
+const {allowedMethods} = require("./middleware/requestMethod");
+const blockBlockedUsers = require('./middleware/checkBlockedUsers');
+//caching all routes for 5 minutes. Debating if it is useful.
+// app.use(cache('5 minutes'));
+
+
+//Import routes
+const tutorRouter = require('./routes/tutor')
+app.use('/tutor', allowedMethods, tutorRouter);
+
+const subjectRouter = require('./routes/subject')
+app.use('/subject', allowedMethods, subjectRouter);
+
+const ticketRoute = require('./routes/ticketsRoute');
+app.use(ticketRoute);
+
+const studentRouter = require('./routes/studentRoute')
+const {cookies} = require("next/headers");
+
+const Student = require("./models/studentModal");
+const {checkPassword, checkCookie} = require("./middleware/authentication");
+const Tutor = require("./models/tutorModal");
+const Admin = require("./models/Admin");
+
+
+// Health route to make sure everything is working (accessed at GET http://localhost:3000/health)
+app.use('/health', require('express-healthcheck')({}));
+
+app.get('/', (req, res) => {
+  res.send('we are on home')
+})
+
+app.post('/login', (req, res, next) => {
+  const email = req.body.email;
+  const password = req.body.password;
+  Student.find({email: email},
+    function (error, data) {
+      data.length === 1 ? checkPassword(data, password, res, next) : Tutor.find({email: email},
+        function (error, data) {
+          data.length === 1 ? checkPassword(data, password, res, next) : Admin.find({email: email},
+            function (error, data) {
+              data.length === 1 ? checkPassword(data, password, res, next) : res.status(400).send({
+                error: 'Invalid Credentials'
+              })
+              if (error) {
+                throw error;
+              }
+            })
+          if (error) {
+            throw error;
+          }
+        })
+      if (error) {
+        throw error;
+      }
+    })
+})
+
+app.get('/logout', checkCookie, function (req, res) {
+  res.clearCookie('access_token').status(201).send({message: 'Succesfully logged out!'})
+  res.end()
+})
 
 server.listen(PORT, () => {
-  // console.log(`API is listening on port ${PORT}`);
   logger.log('info', `Server Running on the following port:   ${PORT} `)
 });
 

@@ -57,11 +57,10 @@ const userSchema = new mongoose.Schema({
     required: false
   },
   blocked: {
-    type: bool,
+    type: Boolean,
     required: false
   }
 });
 
 const User = mongoose.model("User", userSchema);
-
 module.exports = User;
