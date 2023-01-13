@@ -1,12 +1,46 @@
 const express = require('express')
 const router = express.Router()
-const Tutor = require('../models/Tutor')
-const bcrypt = require('bcrypt')
+const Student = require('../models/studentModal')
+const {checkCookie} = require("../middleware/authentication");
+const Tutor = require("../models/tutorModal");
+const bcrypt = require("bcrypt");
+const {check, validationResult, body} = require("express-validator");
 const {verifyToken} = require("../middleware/authentication");
 const {JsonWebTokenError} = require("jsonwebtoken");
+const {checkPassword} = require('../middleware/authentication')
+
+const userValidation = [
+  check("firstName")
+    .exists()
+    .notEmpty()
+    .withMessage("Firstname can not be empty")
+    .trim()
+    .escape(),
+  check("lastName").exists().notEmpty().trim().escape().bail(),
+  check("email")
+    .exists()
+    .notEmpty()
+    .withMessage("Email can not be empty")
+    .isEmail()
+    .withMessage("Email is not valid")
+    .trim()
+    .escape(),
+  check("password")
+    .exists()
+    .trim()
+    .escape()
+    .notEmpty()
+    .withMessage("Password can not be empty")
+    .isLength({min: 8})
+    .withMessage("Password must contain at leat 8 characters")
+    .matches("[0-9]")
+    .withMessage("Password must contain numbers")
+    .matches("[A-Z]")
+    .withMessage("Password must contain uppercase"),
+];
 
 // Get all tutors
-router.get('/', async (req, res) => {
+router.get('/', async (req, res, next) => {
   try {
     const tutors = await Tutor.find()
     res.json(tutors);
@@ -15,14 +49,7 @@ router.get('/', async (req, res) => {
   }
 });
 
-//uploads image
-// router.post('/profile/upload-image', upload.single('image'), (req, res) => {
-//   // The uploaded file is available in req.file
-// });
-
-// Adds a new tutor
-router.post('/', async (req, res, next) => {
-  const role = 'tutor';
+router.post("/", userValidation, async (req, res, next) => {
   const hashedPassword = await bcrypt.hash(req.body.password, 10);
 
   const tutor = new Tutor({
@@ -30,30 +57,61 @@ router.post('/', async (req, res, next) => {
     lastName: req.body.lastName,
     email: req.body.email,
     password: hashedPassword,
-    role: role
+    role: req.body.role,
   });
-
+  
   try {
-    const savedTutor = tutor.save();
-    res.status(201).json(savedTutor)
-  } catch (err) {
-    res.status(400).json({message: err})
+    const errors = validationResult(req);
+    if (Object.keys(errors).length > 0) {
+      res.status(404).send(errors.array())
+    } else {
+      tutor.save();
+      res.status(201).json({messsage: tutor});
+    }
+  } catch (error) {
+    console.log(error)
+    res.status(400).json({ message: error });
   }
 
 });
 
+router.get('/details', checkCookie, async (req, res, next) => {
+    if (req.role === 'tutor') {
+      try {
+        const tutor = await Tutor.findById(req.id);
+        return res.json(tutor);
+      } catch (err) {
+        return res.send({message: err})
+      }
+    } else if (req.role === 'student') {
+      try {
+        const student = await Student.findById(req.id);
+        return res.json(student);
+      } catch (err) {
+        return res.send({message: err})
+      }
+    } else if (req.role === 'admin') {
+      next()
+    } else {
+      //Try to redirect to unauthenticated route or something
+      res.status(403).send({message: "unautenticated"})
+      console.log('unauthenticated')
+      // return next('/unauthenticated')
+    }
+  }
+);
+
 //Gets a specific tutor
-router.get('/:tutorId', verifyToken, async (req, res) => {
+router.get('/:tutorId', async (req, res) => {
   try {
     const tutor = await Tutor.findById(req.params.tutorId);
     res.send(tutor);
   } catch (err) {
     res.json({message: err})
   }
-
 });
 
-router.delete('/:tutorId', verifyToken, async (req, res) => {
+router.delete('/:tutorId', async (req, res) => {
   try {
     const updateTutor = await Tutor.deleteOne(
       {_id: req.params.tutorId},
@@ -65,27 +123,114 @@ router.delete('/:tutorId', verifyToken, async (req, res) => {
 })
 
 //Update a specific tutor
-router.put('/:tutorId', verifyToken, async (req, res, next) => {
+router.put('/:tutorId', checkCookie, async (req, res, next) => {
+  const profile = req.body.user
+  console.log('triggered')
+  const updates = Object.keys(profile);
+  const allowedUpdatesForProfile = ["firstName", "lastName", "dateOfBirth", "gender", "phoneNumber"];
+  const allowedUpdatesForAddress = ["street", "postalCode"];
+  const isValidProfileOperation = updates.every((update) =>
+    allowedUpdatesForProfile.includes(update)
+  );
+  const isValidAddressOperation = updates.every((update) =>
+    allowedUpdatesForAddress.includes(update)
+  );
 
-  if (req.body.profile) {
+  //Delete the empty values if sent to backend
+  Object.keys(req.body.user).forEach(key => {
+    if (req.body.user[key] === '') {
+      delete req.body.user[key];
+    }
+  });
+
+  //First check if dateOfBirth has been entered and thus is not an empty string
+  //Reformat date because ours is superior and makes more sense
+  if (profile.dateOfBirth) {
+    profile.dateOfBirth = new Date(profile.dateOfBirth).toLocaleDateString('german', {
+      year: 'numeric',
+      month: 'numeric',
+      day: 'numeric'
+    })
+  }
+
+  //Check if only the aforementioned fields are being used
+  if (isValidProfileOperation) {
     try {
       const updateTutor = await Tutor.updateOne(
         {_id: req.params.tutorId},
         {
-          $set: {
-            firstName: req.body.profile.firstName,
-            lastName: req.body.profile.lastName,
-            dateOfBirth: req.body.profile.formattedBirthDate,
-            gender: req.body.profile.gender,
-            phoneNumber: req.body.profile.phoneNumber,
-          }
+          $set: profile
         });
-      res.json(updateTutor);
+      res.json({message: updateTutor});
     } catch (err) {
-      res.json({message: err})
+      res.json({error: err})
     }
   }
 
+  if (isValidAddressOperation) {
+    try {
+      const updateTutor = await Tutor.findByIdAndUpdate(
+        req.params.tutorId,
+        {
+          $set: {
+            "address.street": profile.street,
+            "address.postalCode": profile.postalCode,
+          }
+        }, {new: true})
+      console.log(updateTutor)
+      res.json({message: updateTutor});
+    } catch (err) {
+      res.json({error: err})
+    }
+  } else {
+    console.log('nah man')
+  }
+})
+
+router.put('/password/:tutorId', checkCookie, async (req, res, next) => {
+  console.log(req.body.password)
+  const password = req.body.password.oldPassword
+  const newPassword = await bcrypt.hash(req.body.password.newPassword, 10);
+
+  if (req.body.password.oldPassword && req.body.password.oldPassword){
+    try{
+      Tutor.find({_id: req.params.tutorId},
+        function (error, data) {
+          if (data.length === 1 ){
+            bcrypt.compare(password, data[0].password).then(async result => {
+              if (result) {
+                const updatePassword = await Tutor.findByIdAndUpdate(req.params.tutorId, {
+                  $set: {
+                    password: newPassword
+                  }
+                })
+                res.json(updatePassword);
+              } else {
+                res.status(400).json({error: 'Wrong query!'})
+              }
+            })
+          } else {
+            res.status(400).json({error: 'Wrong password!'})
+          }
+        }
+      )
+    } catch (e) {
+      res.status(400).json({error: e})
+    }
+  } else {
+    res.status(400).json({error: 'Old or new password is empty!'})
+  }
+})
+
+
+//Update a specific tutor
+router.patch('/:tutorId', async (req, res) => {
+  try {
+    const updatedTutor = await Tutor.findByIdAndUpdate(req.params.tutorId, req.body, {new: true})
+    res.send(updatedTutor);
+  } catch (err) {
+    res.json({message: err})
+  }
 });
 
 //Retrieve tutors based on a specific subject
@@ -122,4 +267,3 @@ router.post('/tutor', async (req, res) => {
 })
 
 module.exports = router;
-

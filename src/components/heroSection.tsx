@@ -15,7 +15,7 @@ import {
 const HeroSection = () => {
 
     return (
-        <Container maxW={'7xl'}>
+        <Container maxW={'7xl'} border='1px solid red'>
             <Stack
                 align={'center'}
                 spacing={{base: 8, md: 10}}

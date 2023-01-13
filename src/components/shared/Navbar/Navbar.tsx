@@ -7,8 +7,8 @@ import Link from "next/link";
 // component imports
 import { SearchField } from "../SearchField";
 import { ProfileBtn } from "../../ProfileBtn";
-import {useState} from "react";
-import {useRouter} from "next/router";
+import { useState } from "react";
+import { useRouter } from "next/router";
 
 interface ComponentProps extends FlexProps {}
 
@@ -19,10 +19,12 @@ export function Navbar({ ...props }: ComponentProps) {
   const handleChangeEvent = (event:any) => {
     setValue(event.target.value);
   };
+  
   const handleKeyDown = (event:any) => {
+    const data = value.toLowerCase()
     if (event.key === 'Enter') {
       router.push({
-        pathname: `/search/${value.toLowerCase()}`
+        pathname: `/search/${(data.charAt(0).toUpperCase()+data.slice(1)).toString()}`
       })
     }
 
@@ -46,11 +48,11 @@ export function Navbar({ ...props }: ComponentProps) {
         <GridItem w="100%">
           <Flex justify={{ sm: "center", md: "flex-end" }} mt={2}>
             <SearchField
+                aria-label="What do you want to learn?"
                 value={value}
                 data={value.toLowerCase()}
                 onChange={handleChangeEvent}
                 onKeyDown={handleKeyDown}
-                label="SearchField, What do you want to learn?"
                 id="searchfield"
               placeholder="What do you want to learn?"
             />

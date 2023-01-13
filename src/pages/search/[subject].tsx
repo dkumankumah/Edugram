@@ -21,6 +21,8 @@ import {
     useRadioGroup, GridItem
 } from "@chakra-ui/react";
 import { TutorModel } from "../../models/TutorModel";
+import Router, { useRouter } from "next/router";
+import {GetServerSideProps} from "next";
 
 interface PageProps {
     tutors: TutorModel[]
@@ -28,6 +30,11 @@ interface PageProps {
 }
 
 export default function Overview ({ tutors, subject }: PageProps) {
+    const router = useRouter();
+
+    const redirectToTutorPage = (id: string) => {
+        router.push({pathname: `http://localhost:3000/tutor/`+id , query: { subject } })
+    }
 
     const options = ['Price', 'Response time', 'Name']
 
@@ -38,11 +45,9 @@ export default function Overview ({ tutors, subject }: PageProps) {
                 break;
             case options[1]:
                 tutors.reverse()
-                console.log(value);
                 break;
             case options[2]:
                 sortName()
-                console.log(value);
                 break;
         }
     }
@@ -55,9 +60,6 @@ export default function Overview ({ tutors, subject }: PageProps) {
     const group = getRootProps()
     return (
         <Box>
-            <Flex>
-
-            </Flex>
             <Box
                 justifyContent = "center"
                 px={20}
@@ -113,7 +115,7 @@ export default function Overview ({ tutors, subject }: PageProps) {
                                     bg="#FFFFFF"
                                     borderRadius='20'
                                     data-cy="card"
-                                    onClick={() => alert("Tutor " + tutor.firstName + " met id " + tutor._id) + " is geselecteerd"}>
+                                    onClick={() => redirectToTutorPage(tutor._id)}>
                                     <Box
                                         height= "40%">
                                         <Image
@@ -239,8 +241,9 @@ export function RadioCard(props: any) {
     )
 }
 
-export async function getServerSideProps ({ params }: any) {
-    const subject = params.subject
+export const getServerSideProps: GetServerSideProps = async (context) => {
+    const subject = context.params?.subject
+
     const res = await fetch('http://localhost:8000/tutor/search/' + subject)
     const tutors = await res.json()
 

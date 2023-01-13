@@ -1,13 +1,13 @@
 
 import {FAQSection} from "./FAQSection";
 import {Feature} from "./Feature";
-import CustomFooter from "./Footer";
 import React from "react";
 import {Box, Container, SimpleGrid, VStack, Text} from "@chakra-ui/react";
 // import { HeroSection } from "./components/HeroSection";
 // import { Layout } from "./components/Layout";
 // import { PricingSection } from "./components/PricingSection";
 // import { Helmet } from "react-helmet";
+import Hero from "./Hero";
 
 const faqs: any[] = [
     {
@@ -94,10 +94,7 @@ const features: FeatureType[] = [
 const Layout = () => {
     return (
         <>
-
-            <Box bg="gray.50">
-                {/*<HeroSection />*/}
-
+            <Box bg="gray.50" pt={{base: '50px', lg: "0px"}}>
                 <VStack
                     backgroundColor="white"
                     w="full"
@@ -135,9 +132,6 @@ const Layout = () => {
                         ))}
                     </SimpleGrid>
                 </Container>
-                {/*<Container py={28} maxW="container.lg" w="full" id="pricing">*/}
-                {/*    <PricingSection/>*/}
-                {/*</Container>*/}
                 <Container py={28} maxW="container.md">
                     <Box w="full">
                         <VStack spacing={10} w="full">
@@ -148,7 +142,6 @@ const Layout = () => {
                         </VStack>
                     </Box>
                 </Container>
-                <CustomFooter/>
             </Box>
 
         </>

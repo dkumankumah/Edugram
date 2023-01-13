@@ -9,7 +9,7 @@ export interface UserModel {
     dateOfBirth?: string;
     profile: Profile;
     educationLevel?: string;
-    phoneNumber?: number;
+    phoneNumber?: string;
     verified?: boolean;
     averageResponseTime?: number;
     role: string;
@@ -17,6 +17,7 @@ export interface UserModel {
 }
 
 export interface Address {
+    _id: string;
     city: string;
     houseNumber: string;
     postalCode: string;
@@ -26,9 +27,17 @@ export interface Address {
 export interface Profile {
     bio?: string;
     image?: string;
+    lessonLocation?: LessonLocation[]
+    isVerified?: boolean
 }
 
 export interface Notification {
     notificationId: string;
     description: string;
+}
+
+export interface LessonLocation {
+    locationId: number;
+    locationName: string;
+    chosen: boolean
 }

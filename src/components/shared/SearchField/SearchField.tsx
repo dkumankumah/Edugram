@@ -13,17 +13,15 @@ import { IconContext } from "react-icons";
 import {useRouter} from "next/router";
 
 interface ComponentProps extends InputProps {
-  placeholder: string;
-  label: string;
   id?: string;
-  data:  string;
+  data: string;
 }
 
-export function SearchField({ data, placeholder, label, id, ...props }: ComponentProps) {
+export function SearchField({ data, id, ...props }: ComponentProps) {
     const router = useRouter();
     function handleClick () {
         router.push({
-            pathname: `/search/${data}`
+            pathname: `/search/${(data.charAt(0).toUpperCase()+data.slice(1)).toString()}`
         })
     }
 
@@ -39,8 +37,8 @@ export function SearchField({ data, placeholder, label, id, ...props }: Componen
         {...props}
         fontSize="xs"
         h="45px"
-        placeholder={placeholder}
-        label={label}
+        placeholder={"what do you want to learn?"}
+        label={"SearchField, what do you want to learn"}
       ></Input>
       <InputRightElement>
         <IconButton

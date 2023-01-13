@@ -1,19 +1,27 @@
 import React, {useState} from "react";
 import {Button, FormControl, Input} from "@chakra-ui/react";
 import * as io from "socket.io-client";
-import {chosenChatTutor} from "../../pages/ChatSidebar";
+import {chosenChatId} from "../../pages/ChatSidebar";
+import {GetServerSideProps} from "next";
+import {TutorModel} from "../../models/TutorModel";
+import {decodeJWT} from "../../pages/api/api.storage";
+import {ChatUserModel} from "../../models/ChatModel";
 
 const socket = io.connect("ws://localhost:3001", { transports: ['websocket', 'polling', 'flashsocket'] });
 
-export default function Bottombar() {
+interface PageProps {
+    accessToken: string,
+    tutorData: TutorModel,
+}
+
+export default function Bottombar({tutorData, accessToken}: PageProps) {
     const [input, setInput] = useState("");
     // @ts-ignore
     // I don't know why typescript gives an error, it works just fine that's why I do @ts-ignore
     const sendMessage = async (e) => {
         console.log(input)
         e.preventDefault();
-        //test1 needs to be replaced with logged in user or student if tutor is logged in
-        socket.emit("send-message", input, "test1", chosenChatTutor, "test1")
+        socket.emit("send-message", input, decodeJWT(accessToken).id, chosenChatId)
         setInput("");
     }
     return (
