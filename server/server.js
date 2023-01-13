@@ -62,14 +62,6 @@ const morganMiddleware = morgan(
 );
 
 app.use(morganMiddleware);
-// app.use(morgan('combined', {
-//   stream: {
-//     write: message => {
-//       console.log(message);
-//       logger.info(message)
-//     }
-//   }
-// }))
 
 server.listen(PORT, () => {
   // console.log(`API is listening on port ${PORT}`);

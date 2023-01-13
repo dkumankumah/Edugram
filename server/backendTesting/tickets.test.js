@@ -9,8 +9,14 @@ const app = require('../server');
 const ticketController = require('../controllers/ticketsController');
 
 describe('GET /tickets', () => {
-
-
+  const tickets = [
+    // .... same as in the question
+  ];
+  beforeEach(() => {
+    // give the mock function a value
+    // for the promise to be resolved with
+    Tickets.find.mockResolvedValue(tickets);
+  });
 
 });
 
