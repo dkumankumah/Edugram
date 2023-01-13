@@ -2,7 +2,16 @@ const mongoose = require('mongoose'),
   Tutors = mongoose.model('tutor'),
   Subjects = mongoose.model('subject'),
   Students = mongoose.model('student');
+const Tutor = require("../models/Tutor");
 
+router.get('/', async (req, res) => {
+  try {
+    const tutors = await Users.find()
+    res.json(tutors);
+  } catch (err) {
+    res.json({message: err})
+  }
+});
 const blockUser = async (req, res) => {
   // Get the user ID from the request body
   const userId = req.body.userId;

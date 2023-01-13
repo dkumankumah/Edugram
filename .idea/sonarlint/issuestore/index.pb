@@ -23,5 +23,3 @@ H
 src/pages/categories.tsx,7\9\7943e983c138bc51aba35072e90ff6e736526e60
 E
 src/pages/contact.tsx,f\6\f6dbd6232b633dfd21cedddc87a937695f5da2ce
-U
-%server/controllers/adminController.js,f\c\fc446637327612a44099dadfa5a83bd2c302f499
