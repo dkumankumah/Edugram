@@ -54,13 +54,13 @@ const Dashboard = ({tutorData, accessToken}: PageProps) => {
 
     useEffect(() => {
         setIsAuth(isAdmin(accessToken))
-        if(isAuth) {
+        // if(isAuth) {
             socket.on('data', (result: any) => {
                 console.log('Getting Data', result)
                 getChartData(result);
                 setDataa(result);
             });
-        }
+        // }
 
     }, []);
 
@@ -226,7 +226,6 @@ const Dashboard = ({tutorData, accessToken}: PageProps) => {
     if(isAuth) {
         return (
             <AdminContainer>
-
                 <Flex color='black' minWidth='max-content' gap='20'>
                     <Card
                         maxW='md'

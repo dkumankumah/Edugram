@@ -34,8 +34,6 @@ mongoose.connect(uri, {useNewUrlParser: true, useUnifiedTopology: true})
  * Cache is installed and set for 5 minutes
  */
 
-
-
 //Middlewares
 app.use(cookieParser())
 app.use(cors({origin: "http://localhost:3000", credentials: true}))
@@ -114,7 +112,7 @@ app.get('/logout', checkCookie, function (req, res) {
 })
 
 server.listen(PORT, () => {
-  logger.log('info', `Server Running on the following port:   ${PORT} `)
+  logger.log('info', `Server Running on the following port: ${PORT} `)
 });
 
 module.exports = app;

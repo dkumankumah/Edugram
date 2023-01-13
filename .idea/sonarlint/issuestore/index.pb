@@ -1,8 +1,6 @@
 
 _
 /src/components/shared/LoginModal/LoginModal.tsx,1\e\1ecf610039ef9a3fdd02e95362768df1ae6dacd8
-S
-#server/middleware/authentication.js,6\2\62ad80102836446cbecacadcff4610da3026a708
 F
 server/models/Tutor.js,8\0\80a5405aadb49788e2dc20535043bf320a9616db
 =
@@ -15,5 +13,3 @@ C
 combined.log,0\d\0d130661be58cd38a802dc4b28f67f0e521ea720
 H
 src/pages/categories.tsx,7\9\7943e983c138bc51aba35072e90ff6e736526e60
-E
-src/pages/contact.tsx,f\6\f6dbd6232b633dfd21cedddc87a937695f5da2ce
