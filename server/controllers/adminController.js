@@ -3,6 +3,7 @@ const mongoose = require('mongoose'),
   Subjects = mongoose.model('subject'),
   Students = mongoose.model('student');
 const Tutor = require("../models/Tutor");
+const User = require("../models/userModal");
 
 router.get('/', async (req, res) => {
   try {
