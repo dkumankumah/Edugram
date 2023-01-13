@@ -1,0 +1,44 @@
+
+Dtypescript:S1128"#Remove this unused import of 'Box'.(í‚Ğÿúÿÿÿÿ
+Btypescript:S1128"&Remove this unused import of 'chakra'.(Ä€‘œ
+Etypescript:S1128")Remove this unused import of 'Container'.(½»±¶
+Ktypescript:S1128	"*Remove this unused import of 'SimpleGrid'.(Ñ¸§Öüÿÿÿÿ
+Jtypescript:S1128
+".Remove this unused import of 'VisuallyHidden'.(§ÔÀ×
+Etypescript:S1128"*Remove this unused import of 'IconButton'.(€æ×
+Mtypescript:S1128"1Remove this unused import of 'useColorModeValue'.(‘ÕªŸ
+Htypescript:S1128"'Remove this unused import of 'Divider'.(·½€‚ÿÿÿÿÿ
+Atypescript:S1128"%Remove this unused import of 'Modal'.(¶“Û´
+Etypescript:S1128")Remove this unused import of 'ModalBody'.(¶“Û´
+Qtypescript:S1128"0Remove this unused import of 'ModalCloseButton'.(ûÙËºÿÿÿÿÿ
+Mtypescript:S1128",Remove this unused import of 'ModalContent'.(ûÙËºÿÿÿÿÿ
+Ltypescript:S1128"+Remove this unused import of 'ModalFooter'.(ûÙËºÿÿÿÿÿ
+Ltypescript:S1128"+Remove this unused import of 'ModalHeader'.(Î›ÊÜûÿÿÿÿ
+Htypescript:S1128",Remove this unused import of 'ModalOverlay'.(õ§»
+Atypescript:S1128"%Remove this unused import of 'Stack'.(õ§»
+@typescript:S1128"$Remove this unused import of 'Text'.(õ§»
+Atypescript:S1128"%Remove this unused import of 'Image'.(õ§»
+Jtypescript:S1128".Remove this unused import of 'FormHelperText'.(õ§»
+Gtypescript:S1128"+Remove this unused import of 'FormControl'.(õ§»
+Ltypescript:S1128"0Remove this unused import of 'FormErrorMessage'.(õ§»
+Btypescript:S1128"&Remove this unused import of 'VStack'.(Áœ²
+Mtypescript:S1128"1Remove this unused import of 'InputRightElement'.(Áœ²
+Ftypescript:S1128"*Remove this unused import of 'InputGroup'.(Áœ²
+Atypescript:S1128"%Remove this unused import of 'Alert'.(Áœ²
+Ltypescript:S1128"0Remove this unused import of 'AlertDescription'.(Áœ²
+Ftypescript:S1128"*Remove this unused import of 'AlertTitle'.(Áœ²
+Etypescript:S1128")Remove this unused import of 'AlertIcon'.(Áœ²
+Gtypescript:S1128"&Remove this unused import of 'Select'.(àºÑŸøÿÿÿÿ
+Gtypescript:S1128"&Remove this unused import of 'Router'.(°ª¼Üøÿÿÿÿ
+Jtypescript:S1128")Remove this unused import of 'useRouter'.(°ª¼Üøÿÿÿÿ
+Gtypescript:S1128"+Remove this unused import of 'ChatSidebar'.(ü”¬Ù
+Ftypescript:S1128"*Remove this unused import of 'InputField'.(“¢ 
+Jtypescript:S1128")Remove this unused import of 'GoogleBtn'.(Ë‡Ê¡şÿÿÿÿ
+Btypescript:S1128 "&Remove this unused import of 'Footer'.(Ö±çë
+Mtypescript:S3863!",'../components/Footer' import is duplicated.(©ÿ¤©úÿÿÿÿ
+Mtypescript:S1128!",Remove this unused import of 'CustomFooter'.(©ÿ¤©úÿÿÿÿ
+Jtypescript:S1128%".Remove this unused import of 'DashboardTable'.(øÇ¢”
+Otypescript:S1854)"3Remove this useless assignment to variable "email".(€‘™á
+Wtypescript:S1854*"6Remove this useless assignment to variable "password".(·üŠÏüÿÿÿÿ
+Ttypescript:S1854+"3Remove this useless assignment to variable "error".(¶Şòçúÿÿÿÿ
+=typescript:S6480=""JSX props should not use functions(×½ 

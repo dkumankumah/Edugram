@@ -55,6 +55,10 @@ const userSchema = new mongoose.Schema({
   address: {
     type: AddressSchema,
     required: false
+  },
+  blocked: {
+    type: bool,
+    required: false
   }
 });
 

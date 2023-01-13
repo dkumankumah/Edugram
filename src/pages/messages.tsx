@@ -5,7 +5,6 @@ const Messages = () => {
   return (
       <Box>
           <ProfileNavigation/>
-
           Messages page
       </Box>
   )
