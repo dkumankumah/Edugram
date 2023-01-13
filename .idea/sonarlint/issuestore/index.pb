@@ -10,12 +10,6 @@ F
 C
 src/pages/index.tsx,d\2\d2d3bb60cab7e8c869b5fdf0a820b7edf2fc7859
 >
-logs/error.log,5\a\5a00245462ed6666737fdbfd3ba4de91698d61ae
-=
-logs/info.log,d\3\d3090eba8be764b31ee31b4cd61536c0aee41bb4
-K
-server/middleware/logger.js,e\4\e4e84701d9f9aba345eed1cca8d429a4d372bfb5
->
 jest.config.js,8\8\881d5d47bdc17ef8facebef59b68b5fc099a0293
 <
 combined.log,0\d\0d130661be58cd38a802dc4b28f67f0e521ea720

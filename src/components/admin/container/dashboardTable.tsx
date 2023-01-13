@@ -1,6 +1,5 @@
-import {Checkbox, SelectAll, Table, Tbody, Td, Th, Thead, Tr} from '@chakra-ui/react'
+import {Checkbox, Table, Tbody, Td, Th, Thead, Tr} from '@chakra-ui/react'
 import {useState} from "react";
-import {Stack} from "@chakra-ui/layout";
 
 export default function DashboardTable({data}) {
     const [checkedItems, setCheckedItems] = useState([false, false])
@@ -21,7 +20,7 @@ export default function DashboardTable({data}) {
     };
 
     return (
-        <Stack>
+
             <Table size='md' w='100%'>
                 <Thead w="100vh">
                     <Tr>
@@ -57,7 +56,7 @@ export default function DashboardTable({data}) {
                     ))}
                 </Tbody>
             </Table>
-        </Stack>
+
     );
 }
 

@@ -10,7 +10,7 @@ export default function TicketTable({data}) {
 
     const sortedData = data
         // .slice(0, 5)
-        .sort((a:any, b:any) =>{ new Date(a.dateCreated) + new Date(b.dateCreated)});
+        .sort((a:any, b:any) =>{ new Date(a.dateCreated) - new Date(b.dateCreated)});
     // .sort((a:any, b:any) =>{ new Date(a.dateCreated) - new Date(b.dateCreated)});
 
     const dateFormatOptions = {

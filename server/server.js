@@ -22,9 +22,6 @@ const http = require('http');
 const app = express();
 const server = http.createServer(app);
 
-
-
-
 // mongoose.Promise = global.Promise;
 const uri = `mongodb+srv://${username}:${password}@cluster0.wscvjuf.mongodb.net/Edugram?retryWrites=true&w=majority`;
 mongoose.connect(uri, {useNewUrlParser: true, useUnifiedTopology: true})
