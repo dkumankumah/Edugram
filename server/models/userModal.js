@@ -57,7 +57,7 @@ const userSchema = new mongoose.Schema({
     required: false
   },
   blocked: {
-    type: bool,
+    type: Boolean,
     required: false
   }
 });
