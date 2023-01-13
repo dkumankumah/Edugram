@@ -1,14 +1,0 @@
-
-Atypescript:S1128	"%Remove this unused import of 'Stack'.(ãÞÈ½
-Gtypescript:S1128
-"&Remove this unused import of 'Select'.(àºÑŸøÿÿÿÿ
-Otypescript:S1128"'Remove this unused import of 'loggers'.(ì–ªïüÿÿÿÿ8’… ­Ú0
-Vtypescript:S1854("5Remove this useless assignment to variable "baseUrl".(÷€’¨üÿÿÿÿ
-Ttypescript:S1854*"3Remove this useless assignment to variable "dataa".(þÈž§üÿÿÿÿ
-Wtypescript:S1854+"<Remove this useless assignment to variable "arrayChartData".(³Ûèj
-Xtypescript:S1854,"<Remove this useless assignment to variable "selectedOption".(ÉæÒÛ
-Ztypescript:S1854."?Remove this useless assignment to variable "handleInputChange".(Š×‡
-[typescript:S18542":Remove this useless assignment to variable "handleChange".(«ÚÕøýÿÿÿÿ
-:typescript:S1258"Remove this commented out code.(Ü›ü¾
-Ttypescript:S1854?"3Remove this useless assignment to variable "myMap".(×è«þûÿÿÿÿ
-\typescript:S1854¤":Remove this useless assignment to variable "customStyles".(ÍÕàúüÿÿÿÿ
