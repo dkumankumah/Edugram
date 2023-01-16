@@ -41,7 +41,7 @@ import {AddIcon, EditIcon} from "@chakra-ui/icons";
 import React, {useEffect, useState} from "react";
 import {TutorModel} from "../models/TutorModel";
 import {Course} from "../models/CourseModel";
-import {decodeJWT, getToken, isAuthenticated, isTutor} from "./api/api.storage";
+import {getToken} from "./api/api.storage";
 import {useRouter} from "next/router";
 import {GetServerSideProps} from "next";
 import { SubmitButton } from "../components/shared/Buttons";
@@ -71,6 +71,12 @@ export default function courses ({tutorData, accessToken, subjects}: PageProps) 
     const [isInvalidOption, setIsInvalidOption] = useState(true);
 
     const toast = useToast()
+
+    useEffect(() => {
+        if(tutor.role !== "tutor") {
+            router.back()
+        }
+    }, []);
 
     const handleChangeEvent = (event:any) => {
         setValue(event.target.value);
@@ -144,10 +150,10 @@ export default function courses ({tutorData, accessToken, subjects}: PageProps) 
             setTutor(result)
 
         )
-        console.log(tutor.course)
         setIsInvalidArea(true);
         setIsInvalidOption(true);
         setSelectedValue("")
+        setFeeValue(20)
         onClose()
     }
 
@@ -524,7 +530,7 @@ export default function courses ({tutorData, accessToken, subjects}: PageProps) 
                                         onChange={(e) => {
                                             setSelectedValue(e.target.value)
                                             if(e.target.value !== ""){
-                                                setIsInvalidOption(!isInvalidOption)
+                                                setIsInvalidOption(false)
                                             } else setIsInvalidOption(true)
                                         }}
                                         fontSize={'sm'}
@@ -571,8 +577,12 @@ export default function courses ({tutorData, accessToken, subjects}: PageProps) 
                                 <InputGroup>
                                     <InputLeftAddon fontSize={'xs'}>€</InputLeftAddon>
                                     <NumberInput defaultValue={20} min={10} max={99} fontSize={'xs'}>
-                                        <NumberInputField value={feeValue} fontSize={'sm'} onChange={(event) => {
-                                            setFeeValue(event.target.value as unknown as number);
+                                        <NumberInputField fontSize={'sm'} onChange={(event) => {
+                                            if(event.target.value as unknown as number > 99) {
+                                                setFeeValue(99)
+                                            } else if(event.target.value as unknown as number < 10) {
+                                                setFeeValue(10)
+                                            } else setFeeValue(event.target.value as unknown as number);
                                         }}/>
                                         <NumberInputStepper>
                                             <NumberIncrementStepper />
@@ -601,7 +611,7 @@ export default function courses ({tutorData, accessToken, subjects}: PageProps) 
 }
 
 export const getServerSideProps: GetServerSideProps = async (ctx) => {
-    const accessToken = JSON.stringify(ctx.req.cookies.access_token)
+    const accessToken = JSON.stringify(ctx.req.cookies.access_token) ?? null
     const response = await fetch('http://localhost:8000/tutor/details', {
         method: "GET",
         credentials: "include",
@@ -611,10 +621,24 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
             Cookie: accessToken
         }
     });
+
+    if (response.status !== 200) {
+        ctx.res.writeHead(302, { Location: '/notFoundPage' });
+        ctx.res.end();
+        return { props: {} };
+    }
+
+    const tutorData = await response.json()
+    console.log(tutorData.role)
+    if(tutorData.role === 'student') {
+        ctx.res.writeHead(302, { Location: '/dashboard' });
+        ctx.res.end();
+        return { props: {tutorData} };
+    }
+
     const res = await fetch('http://localhost:8000/subject/' )
     const subjects = await res.json()
 
-    const tutorData = await response.json()
     return {
         props: {tutorData, accessToken, subjects},
     };

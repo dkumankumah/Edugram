@@ -42,7 +42,7 @@ const userValidation = [
 // Get all tutors
 router.get('/', async (req, res, next) => {
   try {
-    const tutors = await Tutor.find()
+    const tutors = await Tutor.find().select('_id')
     res.json(tutors);
   } catch (err) {
     res.json({message: err})
@@ -224,9 +224,11 @@ router.put('/password/:tutorId', checkCookie, async (req, res, next) => {
 
 
 //Update a specific tutor
-router.patch('/:tutorId', async (req, res) => {
+router.patch('/:tutorId', checkCookie, async (req, res) => {
   try {
-    const updatedTutor = await Tutor.findByIdAndUpdate(req.params.tutorId, req.body, {new: true})
+    const updatedTutor = await Tutor.findByIdAndUpdate(req.params.tutorId, req.body, {new: true}).lean()
+    delete updatedTutor.password
+    delete updatedTutor.email
     res.send(updatedTutor);
   } catch (err) {
     res.json({message: err})
@@ -237,7 +239,7 @@ router.patch('/:tutorId', async (req, res) => {
 router.get('/search/:subject', async (req, res) => {
   try {
     const query = {"course.subject": req.params.subject}
-    const tutors = await Tutor.find(query);
+    const tutors = await Tutor.find(query).select('_id firstName lastName profile course');
     res.json(tutors);
   } catch (err) {
     res.json({message: err})
