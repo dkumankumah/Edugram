@@ -2,7 +2,7 @@ import {Avatar, Checkbox, Table, Tbody, Td, Th, Thead, Tr} from '@chakra-ui/reac
 import {useState} from "react";
 import {Stack} from "@chakra-ui/layout";
 
-export default function TicketTable({data}) {
+export default function TicketTable({data} : any) {
     const [checkedItems, setCheckedItems] = useState([false, false])
 
     const allChecked = checkedItems.every(Boolean)
@@ -10,7 +10,7 @@ export default function TicketTable({data}) {
 
     const sortedData = data
         // .slice(0, 5)
-        .sort((a:any, b:any) =>{ new Date(a.dateCreated) - new Date(b.dateCreated)});
+        .sort((a:any, b:any) =>{ new Date(a.dateCreated).getTime() - new Date(b.dateCreated).getTime()});
     // .sort((a:any, b:any) =>{ new Date(a.dateCreated) - new Date(b.dateCreated)});
 
     const dateFormatOptions = {
@@ -54,7 +54,7 @@ export default function TicketTable({data}) {
                             <Td>{item.subject}</Td>
                             <Td>{item.assignedBy}</Td>
                             <Td>{item.status}</Td>
-                            <Td>   {new Intl.DateTimeFormat("en-US", dateFormatOptions).format(
+                            <Td>   {new Intl.DateTimeFormat("en-US", {dateStyle: "medium"}).format(
                                 new Date(item.dateCreated)
                             )}</Td>
                         </Tr>
