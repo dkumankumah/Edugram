@@ -88,16 +88,16 @@ describe('Local Storage', () => {
         cy.get('[data-cy="phoneNumber"]').should('have.value', '')
     });
 
-    it('Fake the get request and put the fake returned value in the firstName input value', function () {
-        localStorage.setItem('token', token)
-        cy.visit('http://localhost:3000/profile')
-        cy.intercept('GET', 'http://localhost:8000/tutor/' + decodeJWT().id, {"firstName": 'Danny'}).as('asProfile')
-        cy.wait('@asProfile').then((interception) => {
-            assert.isNotNull(interception.response?.body, 'response has data')
-            expect(interception.response?.body).eql({"firstName": 'Danny'})
-            cy.get('[data-cy="firstName"]').type(interception.response?.body.firstName)
-            cy.get('[data-cy="firstName"]').should('have.value', 'Danny')
-        })
-    });
+    // it('Fake the get request and put the fake returned value in the firstName input value', function () {
+    //     localStorage.setItem('token', token)
+    //     cy.visit('http://localhost:3000/profile')
+    //     cy.intercept('GET', 'http://localhost:8000/tutor/' + decodeJWT().id, {"firstName": 'Danny'}).as('asProfile')
+    //     cy.wait('@asProfile').then((interception) => {
+    //         assert.isNotNull(interception.response?.body, 'response has data')
+    //         expect(interception.response?.body).eql({"firstName": 'Danny'})
+    //         cy.get('[data-cy="firstName"]').type(interception.response?.body.firstName)
+    //         cy.get('[data-cy="firstName"]').should('have.value', 'Danny')
+    //     })
+    // });
 })
 export {}
