@@ -260,7 +260,7 @@ const Contact = () => {
                                             <FormLabel>Subject</FormLabel>
                                             <Select placeholder="Select an option" onChange={handleChange}>
                                                 {LinkItems.map(item => (
-                                                    <option key={item.values} value={item.values}>
+                                                    <option key={item.value} value={item.value}>
                                                         {item.label}
                                                     </option>
                                                 ))}
