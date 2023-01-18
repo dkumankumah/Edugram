@@ -53,7 +53,7 @@ interface PageProps {
     subjects: SubjectModel[]
 }
 
-export default function courses ({tutorData, accessToken, subjects}: PageProps) {
+export default function Courses ({tutorData, accessToken, subjects}: PageProps) {
     const [tutor, setTutor] = useState(tutorData as TutorModel)
     const router = useRouter()
     const [isEditing, setIsEditing] = useState(false)
@@ -140,14 +140,16 @@ export default function courses ({tutorData, accessToken, subjects}: PageProps) 
 
         fetch('http://localhost:8000/tutor/' + tutor._id, {
             method: 'PATCH',
+            credentials: "include",
             headers: {
                 "Content-Type": "application/json",
                 'Access-Control-Allow-Origin': 'http://localhost:8000',
-                'Authorization': 'Bearer ' + getToken()
+                Cookie: accessToken
             },
             body: JSON.stringify({course: tutor.course }),
-        }).then(response => response.json()).then(result =>
-            setTutor(result)
+        }).then(response => response.json()).then(result => {
+            console.log(result)
+            setTutor(result)}
 
         )
         setIsInvalidArea(true);
@@ -163,10 +165,11 @@ export default function courses ({tutorData, accessToken, subjects}: PageProps) 
 
         fetch('http://localhost:8000/tutor/' + tutor._id, {
             method: 'PATCH',
+            credentials: "include",
             headers: {
                 "Content-Type": "application/json",
                 'Access-Control-Allow-Origin': 'http://localhost:8000',
-                'Authorization': 'Bearer ' + getToken()
+                Cookie: accessToken
             },
             body: JSON.stringify({course: tutor.course }),
         }).then(response => response.json()).then(result => {
