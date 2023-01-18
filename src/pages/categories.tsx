@@ -16,7 +16,6 @@ import {
     TableCaption,
     TableContainer, Card, CardBody,
 } from '@chakra-ui/react';
-import {Form, Formik} from 'formik';
 
 
 const Categories = () => {
