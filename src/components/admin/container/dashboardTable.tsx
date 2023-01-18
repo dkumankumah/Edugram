@@ -1,7 +1,7 @@
 import {Checkbox, Table, Tbody, Td, Th, Thead, Tr} from '@chakra-ui/react'
 import {useState} from "react";
 
-export default function DashboardTable({data}) {
+export default function DashboardTable({data}: any) {
     const [checkedItems, setCheckedItems] = useState([false, false])
 
     const allChecked = checkedItems.every(Boolean)
@@ -10,13 +10,16 @@ export default function DashboardTable({data}) {
     const sortedData = data
         .slice(0, 5)
         .sort((a: any, b: any) => {
-            new Date(a.dateCreated) - new Date(b.dateCreated)
+            return new Date(a.dateCreated).getTime() - new Date(b.dateCreated).getTime();
         });
-
+        // .sort((a: any, b: any) => {
+        //     new Date(a.dateCreated) - new Date(b.dateCreated)
+        // });
+        //
     const dateFormatOptions = {
-        month: "long",
-        day: "numeric",
-        year: "numeric"
+        month: 'numeric',
+        day: 'numeric',
+        year: 'numeric'
     };
 
     return (
@@ -49,7 +52,7 @@ export default function DashboardTable({data}) {
                             </Td>
                             <Td>{item.createdBy}</Td>
                             <Td>{item.subject}</Td>
-                            <Td>   {new Intl.DateTimeFormat("en-US", dateFormatOptions).format(
+                            <Td>   {new Intl.DateTimeFormat("en-US", {dateStyle: "medium"}).format(
                                 new Date(item.dateCreated)
                             )}</Td>
                         </Tr>
