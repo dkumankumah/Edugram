@@ -51,7 +51,7 @@ const Dashboard = ({tutorData, accessToken}: PageProps) => {
 
     const [chartMap, setChartMap] = useState(new Map());
     const [dataa, setDataa] = useState([]);
-    let [arrayChartData, setArrayChartData] = useState([]);
+    let [arrayChartData, setArrayChartData] = useState<[]>();
     const [selectedOption, setSelectedOption] = useState(null);
 
     useEffect(() => {
@@ -68,7 +68,7 @@ const Dashboard = ({tutorData, accessToken}: PageProps) => {
 
     const getChartData = (fromSocket: any) => {
         let myMap = new Map();
-        let array: any[] = [];
+        let array: any = [];
         let ticket: string;
         try {
             console.log("The following data is: ", fromSocket)
