@@ -251,7 +251,7 @@ const Contact = () => {
                                                         setEmail(e.target.value)
                                                     }}
                                                     value={email}
-                                                    pattern={emailRegex}
+                                                    // pattern={emailRegex}
                                                 />
                                             </InputGroup>
                                         </FormControl>
