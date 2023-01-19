@@ -632,7 +632,6 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
     }
 
     const tutorData = await response.json()
-    console.log(tutorData.role)
     if(tutorData.role === 'student') {
         ctx.res.writeHead(302, { Location: '/dashboard' });
         ctx.res.end();
