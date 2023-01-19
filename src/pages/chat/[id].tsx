@@ -79,7 +79,7 @@ export default function ChatApp({tutorData, accessToken}: PageProps) {
 
 export const getServerSideProps: GetServerSideProps = async (ctx) => {
     const accessToken = JSON.stringify(ctx.req.cookies.access_token)
-    const response = await fetch('http://localhost:8000/tutor/details', {
+    const response = await fetch(`${process.env.HOST}/tutor/details`, {
         method: "GET",
         credentials: "include",
         mode: 'cors',

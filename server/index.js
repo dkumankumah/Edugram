@@ -95,6 +95,7 @@ app.post('/login', (req, res, next) => {
 })
 
 app.get('/logout', checkCookie, function (req, res) {
+  res.clearCookie('connect.sid')
   res.clearCookie('access_token').status(201).send({message:'Succesfully logged out!'})
   res.end()
 })

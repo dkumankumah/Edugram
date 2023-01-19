@@ -6,7 +6,7 @@ export default function DashboardTable({data}: any) {
 
     const allChecked = checkedItems.every(Boolean)
     const isIndeterminate = checkedItems.some(Boolean) && !allChecked
-
+    console.log(data)
     const sortedData = data
         .slice(0, 5)
         .sort((a: any, b: any) => {

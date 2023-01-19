@@ -173,12 +173,13 @@ const Dashboard = ({tutorData, accessToken}: PageProps) => {
         setIsEditing(!isEditing)
         tutor.profile.bio = textValue
 
-        fetch('http://localhost:8000/tutor/' + tutor._id, {
+        fetch(`${process.env.HOST}/tutor/` + tutor._id, {
             method: 'PATCH',
+            credentials: "include",
             headers: {
                 "Content-Type": "application/json",
-                'Access-Control-Allow-Origin': 'http://localhost:8000',
-                'Authorization': 'Bearer ' + getToken()
+                'Access-Control-Allow-Origin': `${process.env.HOST}`,
+                Cookie: accessToken
             },
             body: JSON.stringify({profile: tutor.profile }),
         }).then(response => response.json()).then(result =>
@@ -194,12 +195,13 @@ const Dashboard = ({tutorData, accessToken}: PageProps) => {
             }
         })
 
-        fetch('http://localhost:8000/tutor/' + tutor._id, {
+        fetch(`${process.env.HOST}/tutor/` + tutor._id, {
             method: 'PATCH',
+            credentials: "include",
             headers: {
                 "Content-Type": "application/json",
-                'Access-Control-Allow-Origin': 'http://localhost:8000',
-                'Authorization': 'Bearer ' + getToken()
+                'Access-Control-Allow-Origin': `${process.env.HOST}`,
+                Cookie: accessToken
             },
             body: JSON.stringify({request: tutor.request }),
         }).then(response => response.json()).then(result =>
