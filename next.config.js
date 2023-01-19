@@ -13,6 +13,11 @@ const nextConfig = {
   
       return config
     },
+
+  env: {
+    HOST: 'http://localhost:8000',
+  },
+
   }
 
 
