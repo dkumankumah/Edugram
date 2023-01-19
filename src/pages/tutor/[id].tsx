@@ -240,7 +240,7 @@ export const getStaticPaths = async () => {
 
 export const getStaticProps = async (context: any) => {
   const id = context.params.id;
-  const data = await fetch(`${process.env.HOST}/tutor/` + id).then(response => response.json()
+  const data = await fetch(`https://edugram.onrender.com/tutor/` + id).then(response => response.json()
   ).catch(error => console.log("Some problem(s) encountered when fetching data, " + error))
 
   return {
