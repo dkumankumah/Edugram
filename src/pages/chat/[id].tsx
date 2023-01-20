@@ -10,6 +10,7 @@ import {ChatModel} from "../../models/ChatModel";
 import {GetServerSideProps} from "next";
 import {TutorModel} from "../../models/TutorModel";
 import {decodeJWT} from "../api/api.storage";
+import ProfileNavigation from "../../components/shared/ProfileNavigation/ProfileNavigation";
 
 const socket = io.connect("ws://localhost:3001", { transports: ['websocket', 'polling', 'flashsocket'] });
 
@@ -21,9 +22,21 @@ interface PageProps {
 const getMessages = (chat: ChatModel, {tutorData, accessToken}: PageProps) =>
     chat?.messages.map(msg => {
         const sender = msg.sender === decodeJWT(accessToken).id;
+        const today = new Date();
+        const date = new Date(msg.dateTime);
+        let stringDate = "";
+        if (date.toDateString() === today.toDateString()) {
+            const formattedTime = date.toLocaleTimeString("en-US", { hour: 'numeric', minute: 'numeric', hour12: false });
+            stringDate += formattedTime;
+        } else {
+            const formattedDate = date.toLocaleDateString("en-US", { day: 'numeric', month: 'numeric', year: 'numeric' });
+            const formattedTime = date.toLocaleTimeString("en-US", { hour: 'numeric', minute: 'numeric', hour12: false });
+            stringDate = formattedDate + " " + formattedTime;
+        }
         return (
-            <Flex key = {Math.random()} alignSelf={sender ? "flex-end" : "flex-start"} bg={sender ? "green.100" : "#BBDEFB"} w="fit-content" minWidth="100px" borderRadius="lg" p={3} m={1}>
-                <Text>{msg.message}</Text>
+            <Flex style={{ display: 'flex', flexDirection: 'column' }} key = {Math.random()} alignSelf={sender ? "flex-end" : "flex-start"} bg={sender ? "#FFCA48" : "#FFFFFF"} w="fit-content" minWidth="100px" borderRadius="lg" p={2} m={2}>
+                <Text style={{fontSize: 18}}>{msg.message}</Text>
+                <Text style={{ alignSelf: 'flex-end', fontSize: 11}}>{stringDate}</Text>
             </Flex>
         )
     })
@@ -45,26 +58,32 @@ export default function ChatApp({tutorData, accessToken}: PageProps) {
         }
     }, [chosenChatId]);
     return (
-        <Flex
-            h="93vh"
-            overflowX="hidden">
-            <Head>
-                <title>Chat app</title>
-            </Head>
-            <ChatSidebar tutorData={tutorData} accessToken={accessToken}/>
-
+        <Flex direction="column">
+            <ProfileNavigation/>
             <Flex
-                flex={1}
-                direction="column">
-                <Topbar/>
+                bg = "#FFCA48"
+                h="87vh"
+                overflowX="hidden"
+                p={7}>
+                <Head>
+                    <title>Chat app</title>
+                </Head>
+                <ChatSidebar tutorData={tutorData} accessToken={accessToken}/>
 
-                <Flex flex={1} direction="column" pt={4} mx={5} overflowX="scroll" overflowY="scroll"
-                      sx={{'::-webkit-scrollbar': {display: 'none'}}}>
-                    {getMessages(chat!, {tutorData, accessToken})}
+                <Flex
+                    flex={1}
+                    direction="column">
+                    <Topbar/>
+
+                    <Flex borderRightRadius="10px" bg="#F5F5F5" flex={1} direction="column" pt={4} overflowX="scroll" overflowY="scroll"
+                          sx={{'::-webkit-scrollbar': {display: 'none'}}}>
+                        {getMessages(chat!, {tutorData, accessToken})}
+                    </Flex>
+                    <Bottombar accessToken={accessToken} tutorData={tutorData}/>
                 </Flex>
-                <Bottombar accessToken={accessToken} tutorData={tutorData}/>
             </Flex>
         </Flex>
+
     )
 }
 
