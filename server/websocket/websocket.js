@@ -71,5 +71,10 @@ io.on('connection', (socket) => {
       socket.emit('update-tickets', result)
     });
   });
+
+  Notification.find({}).then(result => {
+    console.log(result)
+    // socket.emit('getPersonalNotification', result)
+  });
 });
 

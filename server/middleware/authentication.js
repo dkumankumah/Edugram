@@ -30,6 +30,8 @@ module.exports.checkCookie = (req, res, next) => {
       res.status(403).send({error: 'Malformed token detected'})
     } else if (data) {
       req.id = data.id
+      req.firstName= data.firstName
+      req.lastName = data.lastName
       req.role = data.role
       next()
     } else {

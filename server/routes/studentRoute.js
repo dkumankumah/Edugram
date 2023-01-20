@@ -2,7 +2,9 @@ const express = require("express");
 const router = express.Router();
 const Student = require("../models/studentModal");
 const bcrypt = require("bcrypt");
-const { check, validationResult } = require("express-validator");
+const {check, validationResult} = require("express-validator");
+const Tutor = require("../models/tutorModal");
+const {checkCookie} = require("../middleware/authentication");
 
 const userValidation = [
   check("firstName")
@@ -26,7 +28,7 @@ const userValidation = [
     .escape()
     .notEmpty()
     .withMessage("Password can not be empty")
-    .isLength({ min: 8 })
+    .isLength({min: 8})
     .withMessage("Password must contain at leat 8 characters")
     .matches("[0-9]")
     .withMessage("Password must contain numbers")
@@ -52,13 +54,31 @@ router.post("/", userValidation, async (req, res, next) => {
       res.status(404).send(errors.array())
     } else {
       student.save();
-      res.status(201).json({ messsage: student });
+      res.status(201).json({messsage: student});
     }
   } catch (error) {
     console.log(error)
-    res.status(400).json({ message: error });
+    res.status(400).json({message: error});
   }
 
+});
+
+router.post("/booking", checkCookie, async (req, res, next) => {
+  const tutorObject = {
+    firstName: req.firstName,
+    lastName: req.lastName,
+    location: 'online',
+    subject: req.body.request.subject,
+    status: 'pending',
+  }
+  try {
+    const updateTutor = await Tutor.findByIdAndUpdate({_id: req.body.request.tutorId},
+      {$push: { request: tutorObject }}, {new: true});
+    res.json(updateTutor);
+    console.log(updateTutor)
+  } catch (e) {
+    // handle error
+  }
 });
 
 module.exports = router;
