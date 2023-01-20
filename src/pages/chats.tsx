@@ -106,5 +106,3 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
         props: {tutorData, accessToken},
     };
 }
-
-export {getMessages};

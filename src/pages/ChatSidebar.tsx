@@ -7,11 +7,9 @@ import * as io from "socket.io-client";
 import {ChatModel} from "../models/ChatModel";
 import {ChatUserModel} from "../models/ChatModel";
 
-import {useLocation} from "react-router";
 import {decodeJWT} from "./api/api.storage";
 import {TutorModel} from "../models/TutorModel";
 import {GetServerSideProps} from "next";
-import {getMessages} from "./chats";
 
 interface PageProps {
     accessToken: string,

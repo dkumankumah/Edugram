@@ -2,11 +2,8 @@ import React, {useState} from "react";
 import {Button, Flex, FormControl, Input} from "@chakra-ui/react";
 import * as io from "socket.io-client";
 import {chosenChatId} from "../../pages/ChatSidebar";
-import {GetServerSideProps} from "next";
 import {TutorModel} from "../../models/TutorModel";
 import {decodeJWT} from "../../pages/api/api.storage";
-import {ChatUserModel} from "../../models/ChatModel";
-import {dateToUtcString} from "@aws-sdk/smithy-client";
 const socket = io.connect("ws://localhost:3001", { transports: ['websocket', 'polling', 'flashsocket'] });
 
 interface PageProps {
