@@ -11,6 +11,7 @@ import {useLocation} from "react-router";
 import {decodeJWT} from "./api/api.storage";
 import {TutorModel} from "../models/TutorModel";
 import {GetServerSideProps} from "next";
+import {getMessages} from "./chats";
 
 interface PageProps {
     accessToken: string,
@@ -23,18 +24,15 @@ let chosenUser = "";
 let fullname = "";
 
 function setId(id: string) {
-    console.log("chosen chat to be emitted: " + chosenChatId);
     chosenChatId = id;
+    console.log("chosen chat to be emitted: " + chosenChatId);
+
 }
 
 function chosenChat(chatName: string, chatId: string) {
     setId(chatId)
     chosenUser = chatName;
-    router.push(`/chat/${chatName}`);
-}
-
-function goBack() {
-    router.push('/dashboard');
+    router.push(`/chats`);
 }
 
 const showChats = (data: ChatModel[], accessToken: string) =>
@@ -110,7 +108,6 @@ export default function ChatSidebar({tutorData, accessToken}: PageProps) {
                     <Avatar src="" margin={3}/>
                     <Text>{fullname}</Text>
                 </Flex>
-                <IconButton bg="#4EA4B1" onClick={() => goBack()} size="sm" isRound icon={<ArrowLeftIcon/>} aria-label="Close"/>
             </Flex>
             <Flex overflowX="hidden" overflowY="scroll" direction="column"
                   sx={{'::-webkit-scrollbar': {display: 'none'}}}>

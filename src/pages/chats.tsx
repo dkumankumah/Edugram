@@ -1,16 +1,16 @@
 
-import ChatSidebar, {chosenChatId} from "../ChatSidebar";
-import Topbar from "../../components/chatComponents/Topbar";
-import Bottombar from "../../components/chatComponents/Bottombar";
+import ChatSidebar, {chosenChatId} from "./ChatSidebar";
+import Topbar from "../components/chatComponents/Topbar";
+import Bottombar from "../components/chatComponents/Bottombar";
 import {Text, Flex} from "@chakra-ui/react";
 import Head from "next/head";
 import React, {useEffect, useRef, useState} from "react";
 import * as io from "socket.io-client";
-import {ChatModel} from "../../models/ChatModel";
+import {ChatModel} from "../models/ChatModel";
 import {GetServerSideProps} from "next";
-import {TutorModel} from "../../models/TutorModel";
-import {decodeJWT} from "../api/api.storage";
-import ProfileNavigation from "../../components/shared/ProfileNavigation/ProfileNavigation";
+import {TutorModel} from "../models/TutorModel";
+import {decodeJWT} from "./api/api.storage";
+import ProfileNavigation from "../components/shared/ProfileNavigation/ProfileNavigation";
 
 const socket = io.connect("ws://localhost:3001", { transports: ['websocket', 'polling', 'flashsocket'] });
 
@@ -59,7 +59,7 @@ export default function ChatApp({tutorData, accessToken}: PageProps) {
     }, [chosenChatId]);
     return (
         <Flex direction="column">
-            <ProfileNavigation/>
+            <ProfileNavigation role={tutorData.role}/>
             <Flex
                 bg = "#FFCA48"
                 h="87vh"
@@ -106,3 +106,5 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
         props: {tutorData, accessToken},
     };
 }
+
+export {getMessages};
