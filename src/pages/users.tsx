@@ -9,3 +9,16 @@ const Users = () => {
     )
 }
 export default Users
+
+export async function getServerSideProps ({ params }: any) {
+    const subject = params.subject
+    const res = await fetch('http://localhost:8000/users/search/' + subject)
+    const tutors = await res.json()
+
+    return {
+        props: {
+            tutors,
+            subject
+        },
+    };
+}

@@ -1,8 +1,8 @@
 /**
-* @author Bugra Karaaslan, 500830631, connection to MongoDB
-* @author Daniel Kumankumah, 500811456, Routes from MongoDB
-* To run the server write command 'node server' in the terminal.
-**/
+ * @author Bugra Karaaslan, 500830631, connection to MongoDB
+ * @author Daniel Kumankumah, 500811456, Routes from MongoDB
+ * To run the server write command 'node server' in the terminal.
+ **/
 require("dotenv").config({path: require('find-config')('.env')})
 const cookieParser = require('cookie-parser')
 const express = require("express");
@@ -17,20 +17,36 @@ const Student = require("./models/studentModal");
 const Tutor = require("./models/tutorModal");
 const Admin = require("./models/Admin");
 const bcrypt = require('bcrypt')
-const {allowedMethods} = require("./middleware/requestMethod");
+const passport = require('passport')
+const session = require('express-session')
+
+// Passport config
+require('./oauth/passport')(passport)
 
 /**
-* URI of the database, The username and password are in the .env file.
-**/
+ * URI of the database, The username and password are in the .env file.
+ **/
 const uri = `mongodb+srv://${username}:${password}@cluster0.wscvjuf.mongodb.net/Edugram?retryWrites=true&w=majority`;
 mongoose.connect(uri, {useNewUrlParser: true, useUnifiedTopology: true})
   .then((result) => console.log('connected to db'))
   .catch((err) => console.log(err));
 
+// Sessions
+app.use(session({
+  secret: 'keyboard cat',
+  resave: false,
+  saveUninitialized: false,
+}))
+
 //Middlewares
 app.use(cookieParser())
 app.use(cors({origin: "http://localhost:3000", credentials: true}))
-  app.use(bodyParser.json())
+app.use(bodyParser.json())
+const {allowedMethods} = require("./middleware/requestMethod");
+const {checkCookie, checkPassword, createToken, createCookie}= require("./middleware/authentication")
+// Passport middleware
+app.use(passport.initialize())
+app.use(passport.session())
 
 //Import routes
 const tutorRouter = require('./routes/tutor')
@@ -40,74 +56,49 @@ const subjectRouter = require('./routes/subject')
 app.use('/subject', allowedMethods, subjectRouter);
 
 const studentRouter = require('./routes/studentRoute')
+
+const authRouter = require('./routes/auth')
+app.use('/auth', authRouter)
+
+const {cookies} = require("next/headers");
 app.use('/student', studentRouter)
 
 //Routes
-  app.get('/', (req, res) => {
-    res.send('we are on home')
-  })
+app.get('/', (req, res) => {
+  res.send('we are on home')
+})
 
 app.post('/login', (req, res, next) => {
   const email = req.body.email;
   const password = req.body.password;
-    Student.find({email: email},
-      function (error, data) {
-        data.length === 1 ? checkPassword(data, password, res, next) : Tutor.find({email: email},
-          function (error, data) {
-            data.length === 1 ? checkPassword(data, password, res, next) : Admin.find({email: email},
-              function (error, data) {
-                data.length === 1 ? checkPassword(data, password, res, next) : res.status(400).send({
-                  error: 'Invalid Credentials'
-                })
-                if (error) {
-                  throw error;
-                }
+  Student.find({email: email},
+    function (error, data) {
+      data.length === 1 ? checkPassword(data, password, res, next) : Tutor.find({email: email},
+        function (error, data) {
+          data.length === 1 ? checkPassword(data, password, res, next) : Admin.find({email: email},
+            function (error, data) {
+              data.length === 1 ? checkPassword(data, password, res, next) : res.status(400).send({
+                error: 'Invalid Credentials'
               })
-            if (error) {
-              throw error;
-            }
-          })
-        if (error) {
-          throw error;
-        }
-      })
-  })
-
-  const createToken = (id, firstName, lastName, role) => {
-    return jwt.sign(
-      {
-        id: id,
-        firstName: firstName,
-        lastName: lastName,
-        role: role
-
-      }, process.env.ACCES_TOKEN_SECRET
-    )
-  }
-  const createCookie = (id, firstName, lastName, role, res, next) => {
-    const token = createToken(id, firstName, lastName, role);
-    try {
-      res.cookie("access_token", token, {
-        //HttpOnly = true meaning we cannot access the token via the javascript aka frontend/google chrome console
-        httpOnly: true,
-        //Set timer on 1 hour
-        expires: new Date(Date.now() + 10 * 24 * 60 * 60 * 1000),
-    }).status(200)
-        .json({message: "Logged in successfully"});
-    } catch (e){
-      throw e
-    }
-    next();
-  }
-
-  const checkPassword = (data, password, res, next) => {
-    bcrypt.compare(password, data[0].password).then(result => {
-      result ? createCookie(data[0].id, data[0].firstName, data[0].lastName, data[0].role, res, next) : res.status(400).send({
-        error: 'Invalid credentials'
-      })
+              if (error) {
+                console.log(error);
+              }
+            })
+          if (error) {
+            console.log(error);
+          }
+        })
+      if (error) {
+        console.log(error);
+      }
     })
-  }
+})
 
-  app.listen(8000, () => {
-    console.log("Server started on port 8000");
-  });
+app.get('/logout', checkCookie, function (req, res) {
+  res.clearCookie('access_token').status(201).send({message:'Succesfully logged out!'})
+  res.end()
+})
+
+app.listen(8000, () => {
+  console.log("Server started on port 8000");
+});

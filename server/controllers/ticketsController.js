@@ -1,33 +1,8 @@
 const mongoose = require('mongoose'),
   Tickets = mongoose.model('Tickets');
-const io = require("yarn/lib/cli");
-
-
-// Tickets.watch([]).on("change",(data)=>{
-//   console.log({data})
-// })
-
-// Create a change stream. The 'change' event gets emitted when there's a
-// change in the database. Print what the change stream emits.
-Tickets.watch().on('change', data => console.log('Changed data is: ',data));
-
-// await Tickets.create({
-//   createdBy: "testUser@example.com",
-//   assignedBy: "admi2n@example.com",
-//   dateCreated: "1970-01-20T08:01:33.518Z",
-//   dateOfEnding: "Tue Oct 11 2022 00:00:00 GMT+0200 (Central European Summer Time)",
-//   status: [
-//     "Open"
-//   ],
-//   subject: "testing testing",
-//   escription: "I am having trouble logging into the system",
-//   _id: "6391b54e64901ecd3b78a2f8",
-//   __v: 0
-// });
-
 
 // Retrieve all the tasks saved in the database
-exports.getTickets = async (req, res) => {
+const getTickets = async (req, res) => {
   Tickets.find({}, function (err, ticket) {
     if (err) {
       res.status(400).send(err);
@@ -36,30 +11,30 @@ exports.getTickets = async (req, res) => {
       res.json(ticket);
     }
   });
-
 };
 
-// Create a new task
-exports.createTicket = async  (req, res) =>{
+// Create a new ticket
+const createTicket = async (req, res) => {
   const newTicket = new Tickets(req.body);
-  await newTicket.save(function (err, task) {
-    if (err) {
-      res.status(400).send(err);
-    } else {
-      res.status(201).json(task);
-    }
-  });
+  try {
+    await newTicket.save();
+    res.status(201).json(newTicket);
+  } catch (error) {
+    res.status(400).send(error);
+  }
 };
 
-// Retrieve a task by taskId
-exports.getTaskById =  (req, res) => {
+
+// Retrieve a task by ticketId
+const getTicketById = (req, res) => {
+
   Tickets.findById(req.params.id, function (err, task) {
     if (err) {
       res.status(404).send({
         error: {
           errors: [{
             domain: 'global', reason: 'notFound', message: 'Not Found',
-            description: 'Couldn\'t find the requested taskId \'' + req.params.id + '\''
+            description: 'Couldn\'t find the requested ticketId \'' + req.params.id + '\''
           }], err, code: 404
         }
       })
@@ -70,7 +45,7 @@ exports.getTaskById =  (req, res) => {
 };
 
 // Edit a task by taskId
-exports.editTaskById =  (req, res) => {
+const editTicketById = (req, res) => {
   Tickets.findOneAndUpdate({_id: req.params.id}, req.body, {new: true}, function (err, task) {
     if (err) {
       res.status(400).send(err);
@@ -81,7 +56,7 @@ exports.editTaskById =  (req, res) => {
 };
 
 // Delete a task by taskId
-exports.deleteTaskById =  (req, res) => {
+const deleteTicketById = (req, res) => {
   Tickets.remove({
     _id: req.params.id
   }, function (err, task) {
@@ -90,7 +65,7 @@ exports.deleteTaskById =  (req, res) => {
         error: {
           errors: [{
             domain: 'global', reason: 'notFound', message: 'Not Found',
-            description: 'Couldn\'t find the requested taskId \'' + req.params.id + '\''
+            description: 'Couldn\'t find the requested ticketId \'' + req.params.id + '\''
           }], code: 404, message: 'Not Found'
         }
       })
@@ -99,4 +74,12 @@ exports.deleteTaskById =  (req, res) => {
       //res.json({ message: 'Task successfully deleted' });
     }
   });
+};
+
+module.exports = {
+  getTickets,
+  createTicket,
+  getTicketById,
+  editTicketById,
+  deleteTicketById
 };

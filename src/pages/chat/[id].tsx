@@ -1,8 +1,8 @@
-import {Flex} from "@chakra-ui/layout"
+
 import ChatSidebar, {chosenChatId} from "../ChatSidebar";
 import Topbar from "../../components/chatComponents/Topbar";
 import Bottombar from "../../components/chatComponents/Bottombar";
-import {Text} from "@chakra-ui/react";
+import {Text, Flex} from "@chakra-ui/react";
 import Head from "next/head";
 import React, {useEffect, useRef, useState} from "react";
 import * as io from "socket.io-client";

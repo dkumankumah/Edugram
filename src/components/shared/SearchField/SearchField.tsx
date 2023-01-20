@@ -21,7 +21,7 @@ export function SearchField({ data, id, ...props }: ComponentProps) {
     const router = useRouter();
     function handleClick () {
         router.push({
-            pathname: `/search/${data}`
+            pathname: `/search/${(data.charAt(0).toUpperCase()+data.slice(1)).toString()}`
         })
     }
 

@@ -1,5 +1,4 @@
-import {Flex} from "@chakra-ui/layout";
-import {Avatar, Button, IconButton, Link, Text} from "@chakra-ui/react";
+import {Avatar, Button, IconButton, Link, Flex, Text} from "@chakra-ui/react";
 import {ArrowLeftIcon} from "@chakra-ui/icons"
 // @ts-ignore
 import {router} from "next/router";
@@ -113,7 +112,6 @@ export default function ChatSidebar({tutorData, accessToken}: PageProps) {
                 </Flex>
                 <IconButton bg="#4EA4B1" onClick={() => goBack()} size="sm" isRound icon={<ArrowLeftIcon/>} aria-label="Close"/>
             </Flex>
-
             <Flex overflowX="hidden" overflowY="scroll" direction="column"
                   sx={{'::-webkit-scrollbar': {display: 'none'}}}>
                 {showChats(chatList, accessToken)}

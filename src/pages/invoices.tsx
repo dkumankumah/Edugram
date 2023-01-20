@@ -4,8 +4,8 @@ import ProfileNavigation from "../components/shared/ProfileNavigation/ProfileNav
 const Invoices = () => {
     return (
         <Box>
-            <ProfileNavigation/>
-
+            {/*Tutor by default please change to right role if needed*/}
+            <ProfileNavigation role={'tutor'}/>
             Invoices page
         </Box>
     )

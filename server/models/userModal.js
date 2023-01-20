@@ -13,7 +13,7 @@ const AddressSchema = {
     type: String,
     required: true
   },
-  zipCode: {
+  postalCode: {
     type: String,
     required: true
   }
@@ -34,7 +34,7 @@ const userSchema = new mongoose.Schema({
   },
   password: {
     type: String,
-    required: true
+    required: false
   },
   role: {
     type: String,
@@ -54,6 +54,10 @@ const userSchema = new mongoose.Schema({
   },
   address: {
     type: AddressSchema,
+    required: false
+  },
+  blocked: {
+    type: Boolean,
     required: false
   }
 });

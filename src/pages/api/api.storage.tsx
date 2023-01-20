@@ -11,9 +11,19 @@ export function isAuthenticated() {
 }
 
 export function logout() {
-    localStorage.removeItem('token')
-    localStorage.clear()
-    window.location.href = '/'
+    console.log('yes')
+    fetch('http://localhost:8000/logout', {
+        method: 'GET',
+        credentials: "include",
+        mode: "cors"
+    }).then(r => {
+        console.log()
+        alert('Succesfully logged out')
+        window.location.href = '/'
+    }).catch((err)=> {
+        console.log(err)
+        window.location.href = '/'
+    })
 }
 
 export function decodeJWT(jwt: string) {
