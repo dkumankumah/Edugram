@@ -7,6 +7,9 @@ import {
   FormErrorMessage,
   FormControl,
   Alert,
+  AlertTitle,
+  AlertDescription,
+  useToast,
 } from "@chakra-ui/react";
 import axios from "axios";
 
@@ -15,7 +18,7 @@ import { InputField } from "../components/shared/InputField/InputField";
 import { SubmitButton } from "../components/shared/Buttons/SubmitButton";
 import { GoogleBtn } from "../components/shared/GoogleBtn";
 import { PasswordInput } from "../components/shared/PasswordInput";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useRouter } from "next/router";
 
 export function RegisterFormTutor() {
@@ -34,61 +37,116 @@ export function RegisterFormTutor() {
     role: role,
   });
   const router = useRouter();
+  let numberOfError = 0;
+  const [errors, setErrors] = useState<any[]>([]);
 
   const createTutor = async (event: React.FormEvent) => {
     event.preventDefault();
+    let tutor = user;
+    console.log(tutor);
+    
+    if (tutor.firstName === "") {
+      setvalidFirstName(true);
+      numberOfError++
+    }
+    if (tutor.lastName === "") {
+      setvalidLastName(true);
+      numberOfError++
+    }
+    if (tutor.email === "") {
+      setvalidEmail(true);
+      numberOfError++
+    }
+    if (tutor.password === "") {
+      setvalidPassword(true);
+      numberOfError++
+    } 
 
-    try {
-      let tutor = user;
-      console.log(tutor);
-
-      if (tutor.firstName === "") {
-        setvalidFirstName(true);
+    if (numberOfError == 0) {
+     
+      try {
+       
+        axios.post("http://localhost:8000/tutor", tutor).then((res) => {
+          console.log(res)
+          console.log("tutor created");
+        }).catch((error) => {
+          if (error.response) {
+            console.log("er is een errrr: " + JSON.stringify(error.response))
+            console.log(error.response)
+            setErrors(error.response)
+            let message = JSON.stringify(error.response).split('[]',)[1]
+            toast({
+              title: 'Warning',
+              description: JSON.stringify(error.response.data),
+              status: 'warning',
+              duration: 19000,
+              isClosable: true,
+            })
+          }
+        });
+          
+        
+      } catch (error) {
+        console.log("error");
       }
-      if (tutor.lastName === "") {
-        setvalidLastName(true);
-      }
-      if (tutor.email === "") {
-        setvalidEmail(true);
-      }
-      if (tutor.password === "") {
-        setvalidPassword(true);
-      } else {
-        axios.post("http://localhost:8000/tutor", tutor);
-        router.push("http://localhost:3000/register");
-        console.log("Tutor created");
-      }
-    } catch (error) {
-      console.log(error);
     }
   };
 
+  /**
+   * 
+   * @param event 
+   */
   const createStudent = async (event: React.FormEvent) => {
     event.preventDefault();
+    let student = user;
+    console.log(student);
 
-    try {
-      let student = user;
-      console.log(student);
-
-      if (student.firstName === "") {
-        setvalidFirstName(true);
-      }
-      if (student.lastName === "") {
-        setvalidLastName(true);
-      }
-      if (student.email === "") {
-        setvalidEmail(true);
-      }
-      if (student.password === "") {
-        setvalidPassword(true);
-      } else {
-        axios.post("http://localhost:8000/student", student);
-        // router.push("http://localhost:3000/search/overview");
-        console.log("Student created");
-      }
-    } catch (error) {
-      console.log(error);
+    if (student.firstName === "") {
+      setvalidFirstName(true);
+      numberOfError++
     }
+    if (student.lastName === "") {
+      setvalidLastName(true);
+      numberOfError++
+    }
+    if (student.email === "") {
+      setvalidEmail(true);
+      numberOfError++
+    }
+    if (student.password === "") {
+      setvalidPassword(true);
+      numberOfError++
+    } 
+
+    if (numberOfError == 0) {
+     
+      try {
+       
+        axios.post("http://localhost:8000/student", student).then((res) => {
+          console.log(res)
+          console.log("Student created");
+        }).catch((error) => {
+          if (error.response) {
+            console.log("er is een errrr: " + JSON.stringify(error.response))
+            console.log(error.response)
+            setErrors(error.response)
+            let message = JSON.stringify(error.response).split('[]',)[1]
+            toast({
+              title: 'Warning',
+              description: JSON.stringify(error.response.data),
+              status: 'warning',
+              duration: 19000,
+              isClosable: true,
+            })
+          }
+        });
+          
+        
+      } catch (error) {
+        console.log("error");
+      }
+    }
+
   };
 
   const getTutorForm = () => {
@@ -113,8 +171,11 @@ export function RegisterFormTutor() {
       };
     });
   };
-
+  const toast = useToast()
+  
   return (
+
+    <Flex flexDir="column">
     <Flex
       minW={{ sm: "330px", lg: "500px" }}
       height="750px"
@@ -124,6 +185,7 @@ export function RegisterFormTutor() {
       flexDir="column"
       ml={{ sm: "0px", md: "40px" }}
     >
+  
       <Flex bg="yellow" minW="230px" minH="45px" borderRadius={20} mt={10}>
         <Flex
           bg={studentClicked ? "transparant" : "lightblue"}
@@ -151,6 +213,7 @@ export function RegisterFormTutor() {
           Tutor
         </Flex>
       </Flex>
+
       <Text color="eduWhite" mt={10} as="h1" fontSize={{ sm: "md", lg: "lg" }}>
         Create your {role} account
       </Text>
@@ -230,5 +293,7 @@ export function RegisterFormTutor() {
         Sign up with Google
       </GoogleBtn>
     </Flex>
+    </Flex>
+    
   );
 }
