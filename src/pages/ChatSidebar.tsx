@@ -60,7 +60,7 @@ const showChats = (data: ChatModel[], accessToken: string) =>
     })
 
 
-const socket = io.connect("ws://localhost:3001", { transports: ['websocket', 'polling', 'flashsocket'] });
+const socket = io.connect("https://edugram.azurewebsites.net:3001", { transports: ['websocket', 'polling', 'flashsocket'] });
 
 export default function ChatSidebar({tutorData, accessToken}: PageProps) {
     const temp: ChatModel[] = [];

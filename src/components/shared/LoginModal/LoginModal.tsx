@@ -45,7 +45,7 @@ export function LoginModal({
         !email || !password ?
             setError('Please fill in credentials!')
             : fetch(
-                `${process.env.HOST}/login`, {
+                `http://localhost:8000/login`, {
                     method: 'POST',
                     credentials: "include",
                     headers: {

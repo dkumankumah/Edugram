@@ -11,7 +11,7 @@ import {GetServerSideProps} from "next";
 import {TutorModel} from "../../models/TutorModel";
 import {decodeJWT} from "../api/api.storage";
 
-const socket = io.connect("ws://localhost:3001", { transports: ['websocket', 'polling', 'flashsocket'] });
+const socket = io.connect("https://edugram.azurewebsites.net:3001", { transports: ['websocket', 'polling', 'flashsocket'] });
 
 interface PageProps {
     accessToken: string,

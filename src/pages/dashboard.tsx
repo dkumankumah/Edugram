@@ -37,7 +37,7 @@ interface PageProps {
     accessToken: string,
     tutorData: TutorModel,
 }
-const socket = io.connect("ws://localhost:3001", {transports: ['websocket', 'polling', 'flashsocket']});
+const socket = io.connect("https://edugram.azurewebsites.net:3001", {transports: ['websocket', 'polling', 'flashsocket']});
 const Dashboard = ({tutorData, accessToken}: PageProps) => {
     const [isAuth, setIsAuth] = useState(false)
     const [tutor, setTutor] = useState(tutorData as TutorModel)
