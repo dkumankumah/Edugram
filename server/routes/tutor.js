@@ -62,7 +62,7 @@ router.post("/", userValidation, async (req, res, next) => {
   
   try {
     const errors = validationResult(req);
-    if (Object.keys(errors).length > 0) {
+    if (Object.keys(errors.errors).length > 0) {
       res.status(404).send(errors.array())
     } else {
       tutor.save();
