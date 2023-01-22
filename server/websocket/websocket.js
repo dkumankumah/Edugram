@@ -48,14 +48,27 @@ io.on('connection', (socket) => {
   });
   socket.on("join-chat", async (chosenChatId) => {
     if (chosenChatId.length < 3) {
-
+      console.log('NOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO')
     } else {
       socket.join(chosenChatId);
       console.log("Chosen chat Id in socket: " + chosenChatId);
-      io.to(chosenChatId).emit("update-chat", await Chat.findOne({_id: chosenChatId}));
+      console.log(chosenChatId.chatId)
+      io.to(chosenChatId).emit("update-chat", await Chat.findOne({_id: chosenChatId.chatId}).catch((error)=> {
+        console.log(error)
+      }));
     }
 
   })
+
+  // const changeChatStream = Chat.watch();
+  // changeChatStream.on('change', (change) => {
+  //   console.log('Change detected in the tickets collection:', change);
+  //
+  //   // Fetch the updated data from the database
+  //   Chat.find().then(result => {
+  //     socket.emit('update-chat', result)
+  //   });
+  // });
 
   //This Renders at the start of visiting the page
   Tickets.find({}).then(result => {
@@ -72,9 +85,9 @@ io.on('connection', (socket) => {
     });
   });
 
-  Notification.find({}).then(result => {
-    console.log(result)
-    // socket.emit('getPersonalNotification', result)
-  });
+  // Notification.find({}).then(result => {
+  //   console.log(result)
+  //   // socket.emit('getPersonalNotification', result)
+  // });
 });
 

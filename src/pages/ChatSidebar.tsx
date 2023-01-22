@@ -23,12 +23,11 @@ let chosenUser = "";
 
 let fullname = "";
 
-function setId(id: string) {
-    console.log("chosen chat to be emitted: " + chosenChatId);
+export function setId(id: string) {
     chosenChatId = id;
 }
 
-function chosenChat(chatName: string, chatId: string) {
+export function chosenChat(chatName: string, chatId: string) {
     setId(chatId)
     chosenUser = chatName;
     router.push(`/chat/${chatName}`);
@@ -41,7 +40,6 @@ function goBack() {
 const showChats = (data: ChatModel[], accessToken: string) =>
     data?.map(chat => {
         if (decodeJWT(accessToken).role === "student") {
-            console.log("Access Token: " + accessToken)
             return (
                 <Flex key={chat._id} p={3} align="center" _hover={{bg: "gray.100", cursor: "pointer"}}
                       onClick={() => chosenChat(chat.tutor.firstName, chat._id)}>
@@ -139,5 +137,4 @@ const getServerSideProps: GetServerSideProps = async (ctx) => {
         props: {data, accessToken},
     };
 }
-
 export {chosenChatId, chosenUser};

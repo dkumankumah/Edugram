@@ -12,24 +12,36 @@ import Router, {useRouter} from "next/router";
 // component imports
 import TutorCard from "../../components/tutorCard/tutorCard";
 import axios from "axios";
-import {GetStaticPaths} from "next";
+import {GetStaticPaths, NextPage} from "next";
 import {Context, useEffect, useState} from "react";
 import {TutorModel} from "../../models/TutorModel";
 
 interface Pageprops {
     tutor: TutorModel;
-    accessToken: string,
-    auth: string,
 }
 
 const TutorInfo = ({tutor}: Pageprops) => {
     const [locationChoiceOnline, setLocationChoiceOnline] = useState(false);
     const [locationChoiceHome, setLocationChoiceHome] = useState(false);
-    const [locationChoiceLibrary, setLocationAtLibrary] = useState(false);
+    const [locationChoiceLibrary, setLocationAtLibrary] = useState(false)
+    const [accessToken, setAccessToken] = useState('')
 
     const lessonLocatonOnline = "online via webcam";
     const lessonLocationHome = "at your home";
     const lessonLocationLibrary = "library";
+
+    const checkIfIsLoggedIn = () => {
+        fetch('http://localhost:8000/getCookie', {
+            method: 'GET',
+            headers: {
+                "Content-Type": "application/json",
+                'Access-Control-Allow-Origin': 'http://localhost:8000/',
+            },
+            credentials: "include",
+        }).then((r) => {
+            setAccessToken(r.message)
+        })
+    }
 
     const checkLessonLocations = () => {
         {
@@ -66,6 +78,7 @@ const TutorInfo = ({tutor}: Pageprops) => {
     useEffect(() => {
         console.log(data)
         checkLessonLocations();
+        checkIfIsLoggedIn()
     });
 
     return (
@@ -246,7 +259,8 @@ export const getStaticPaths = async () => {
 
 export const getStaticProps = async (context: any) => {
     const id = context.params.id;
-    const data = await fetch(`http://localhost:8000/tutor/` + id).then(response => response.json()
+    const data = await fetch(`http://localhost:8000/tutor/` + id
+    ).then(response => response.json()
     ).catch(error => console.log("Some problem(s) encountered when fetching data, " + error))
 
     return {
@@ -256,4 +270,6 @@ export const getStaticProps = async (context: any) => {
     };
 };
 
+
 export default TutorInfo;
+

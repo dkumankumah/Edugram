@@ -31,7 +31,7 @@ app.use(cookieParser())
 app.use(cors({origin: "http://localhost:3000", credentials: true}))
 app.use(bodyParser.json())
 const {allowedMethods} = require("./middleware/requestMethod");
-const {checkCookie, checkPassword, createToken, createCookie}= require("./middleware/authentication")
+const {checkCookie, checkPassword, createToken, createCookie} = require("./middleware/authentication")
 
 //Import routes
 const tutorRouter = require('./routes/tutor')
@@ -76,10 +76,19 @@ app.post('/login', (req, res, next) => {
 })
 
 app.get('/logout', checkCookie, function (req, res) {
-  res.clearCookie('access_token').status(201).send({message:'Succesfully logged out!'})
+  res.clearCookie('access_token').status(201).send({message: 'Succesfully logged out!'})
   res.end()
 })
 
+// app.get('/getCookie', checkCookie, function (req, res) {
+//   const cookie = req
+//   if (cookie) {
+//     res.status(201).json({message: cookie})
+//   } else {
+//     res.status(404).json({error: 'bad request'})
+//
+//   }
+// })
 app.listen(8000, () => {
   console.log("Server started on port 8000");
 });

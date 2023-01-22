@@ -11,29 +11,52 @@ import {
     Table,
     Tbody,
     TableContainer,
+    useToast,
+    useDisclosure,
+    ModalOverlay,
+    ModalBody,
+    ModalHeader,
+    ModalContent,
+    ModalFooter,
+    ModalCloseButton, Modal, Button, Textarea, Checkbox,
 } from "@chakra-ui/react";
 import * as icon from "react-icons/ai";
 import {IconContext} from "react-icons";
 import Image from "next/image";
 import {TutorModel} from "../../models/TutorModel";
 import {useRouter} from "next/router";
-import {useEffect, useState} from "react";
+import React, {useEffect, useState} from "react";
 import {colors} from "../../theme/colors";
+
 
 // components
 import {SubmitButton} from "../shared/Buttons";
+import {wait} from "next/dist/build/output/log";
+import {chosenChat, setId} from "../../pages/ChatSidebar";
+import Bottombar from "../chatComponents/Bottombar";
+
+interface PageProps {
+    accessToken: string,
+    tutorData: TutorModel,
+    value?: string
+}
 
 interface ComponentProps {
-    tutor: TutorModel,
     accessToken: string,
+    tutor: TutorModel,
 }
 
 export function TutorCard({tutor, accessToken}: ComponentProps) {
     const lessons = ["English", "Maths", "Programming", "French", "Photoshop"];
+    const [checkedItem, setCheckedItem] = React.useState(false)
     const [isVerified, setVerified] = useState(false);
-
+    const [textValue, setTextValue] = useState(
+        '');
+    const {isOpen, onOpen, onClose} = useDisclosure()
+    const toast = useToast()
     const router = useRouter()
     const {query: {subject},} = router
+
 
     const checkIfTutorIsVerfied = () => {
         if (tutor.profile?.isVerified == true) {
@@ -43,26 +66,70 @@ export function TutorCard({tutor, accessToken}: ComponentProps) {
 
     useEffect(() => {
         checkIfTutorIsVerfied()
+        fetch('http://localhost:8000/cookie', {
+            method: 'GET',
+            headers: {
+                "Content-Type": "application/json",
+                'Access-Control-Allow-Origin': 'http://localhost:8000/',
+            },
+            credentials: "include",
+        }).then((r) => {
+            console.log('response' + r)
+        })
+        setTextValue(`Dear ${tutor.firstName},\n
+My name is ${'vul naam in'}  en ik zoek een leraar voor ${subject}.
+De lessen kunnen het liefst ${checkedItem ? 'online via de Edugram webapp.' : `bij u thuis (in ${tutor.address?.city ? tutor.address.city : "City unknown"}) of bij mij thuis (in ${'eigen adress'}).`}
+Het liefst zou ik mijn lessen zo snel mogelijk beginnen.
+Zou u contact met me op kunnen nemen zodat we alle details kunnen doorspreken? \n
+Hartelijk bedankt en een fijne dag toegewenst,
+Met vriendelijke groet, Maria`)
     })
 
     const bookLesson = () => {
+        const redirectToChatPage = (chatName: string, chatId: string) => {
+            router.push({
+                pathname: `http://localhost:3000/chat/Chats`,
+            }).then(() => {
+                chosenChat(tutor.firstName, chatId)
+            })
+        }
+        const location = checkedItem ? 'Online' : 'On location'
+
         fetch('http://localhost:8000/student/booking', {
             method: 'POST',
-                headers: {
-                    "Content-Type": "application/json",
-                    'Access-Control-Allow-Origin': 'http://localhost:8000/',
-                    Cookie: accessToken,
-            },
+            headers: {
+                "Content-Type": "application/json",
+                'Access-Control-Allow-Origin': 'http://localhost:8000/',
+            }, mode: "cors",
             credentials: "include",
-            body: JSON.stringify({tutorId: tutor._id, subject: subject}),
-        }).then((r) => {
-            console.log(r)
+            body: JSON.stringify({
+                request: {
+                    tutorId: tutor._id,
+                    subject: subject,
+                    message: textValue,
+                    location: location,
+                    firstName: tutor.firstName
+                },
+            }),
+        }).then(r => r.json()).then((chatId) => {
+            if (chatId) {
+                toast({
+                    title: 'Success',
+                    description: 'Successfully sent request',
+                    status: 'success',
+                    duration: 3000,
+                    isClosable: true,
+                })
+                redirectToChatPage(tutor.firstName, chatId)
+                // setTimeout(() => ), 2000)
+            }
         }).catch((error) => {
             console.log(error)
+            alert(error)
         })
-
     }
 
+    // @ts-ignore
     return (
         <Flex
             bg="lightBlue"
@@ -160,9 +227,47 @@ export function TutorCard({tutor, accessToken}: ComponentProps) {
                 </Table>
             </TableContainer>
 
-            <SubmitButton mt={6} label="book a lesson" onClick={bookLesson}>
+            <SubmitButton mt={6} label="book a lesson" onClick={onOpen}>
                 Book a lesson
             </SubmitButton>
+
+            {/*MODAL CONTENT HERE*/}
+
+            <Modal isOpen={isOpen} onClose={onClose} size={"6xl"}>
+                <ModalOverlay/>
+                <ModalContent backgroundColor={'#4EA4B1'}>
+                    <ModalHeader color={'white'}>Book a lesson</ModalHeader>
+                    <ModalCloseButton/>
+                    <ModalBody>
+                        <Box>
+                            <Text as={'h2'} color={'white'}> Set up a message to send
+                                to {tutor.firstName} {tutor.lastName} (optional)</Text>
+                            <Text as={'em'} fontSize={'sm'} color={'white'}> Leaving it blank will send the auto message
+                                as seen below</Text>
+                            <Textarea
+                                borderColor={'white'}
+                                _focus={{borderColor: 'white'}}
+                                color={'white'}
+                                fontSize={'md'}
+                                height={'md'}
+                                value={textValue}
+                                onChange={(e) => {
+                                    setTextValue(e.target.value)
+                                }}
+                            />
+                        </Box>
+                    </ModalBody>
+                    <ModalFooter>
+                        <Checkbox color={'white'} colorScheme={'cyan'} textAlign={'left'} mr={'auto'}
+                                  isChecked={checkedItem}
+                                  onChange={(e) => setCheckedItem(e.target.checked)}>Lesson online</Checkbox>
+                        <Button color={'white'} colorScheme={'red'} mr={3} onClick={onClose}>
+                            cancel
+                        </Button>
+                        <Button variant='ghost' bg={"#FFCA48"} color={'white'} onClick={bookLesson}>Book lesson</Button>
+                    </ModalFooter>
+                </ModalContent>
+            </Modal>
         </Flex>
     );
 }

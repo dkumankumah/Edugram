@@ -103,6 +103,7 @@ router.get('/details', checkCookie, async (req, res, next) => {
 
 //Gets a specific tutor
 router.get('/:tutorId', async (req, res) => {
+  console.log(req.headers)
   try {
     const tutor = await Tutor.findById(req.params.tutorId);
     res.send(tutor);

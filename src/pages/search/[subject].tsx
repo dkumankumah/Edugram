@@ -31,14 +31,11 @@ interface PageProps {
 }
 
 export default function Overview({tutors, subject, accessToken}: PageProps) {
-    console.log(accessToken)
-    console.log(accessToken.length < 5)
-    console.log(accessToken)
+
 
     const router = useRouter();
 
     const auth = accessToken.length > 4 ? '/auth=true' : '/auth=false'
-    console.log(auth)
 
     const redirectToTutorPage = (id: string, accessToken: string) => {
         router.push({
