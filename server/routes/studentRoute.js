@@ -11,7 +11,7 @@ const userValidation = [
     .withMessage("Firstname can not be empty")
     .trim()
     .escape(),
-  check("lastName").exists().notEmpty().trim().escape().bail(),
+  check("lastName").exists().notEmpty().trim().withMessage("Lastname can not be empty").escape().bail(),
   check("email")
     .exists()
     .notEmpty()
@@ -50,7 +50,7 @@ router.post("/", userValidation, async (req, res, next) => {
     const errors = validationResult(req);
     if (Object.keys(errors.errors).length > 0) {
       res.status(404).send(errors.array())
-      console.log("SIIUUUUU" + errors.array().length)
+      console.log("student:" + student)
     } else {
       student.save();
       res.status(201).json({ messsage: student });

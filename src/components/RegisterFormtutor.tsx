@@ -29,6 +29,7 @@ export function RegisterFormTutor() {
   const [validLastName, setvalidLastName] = useState(false);
   const [validEmail, setvalidEmail] = useState(false);
   const [ValidPassword, setvalidPassword] = useState(false);
+  const [message, setMessage] = useState("")
   const [user, setUser] = useState({
     firstName: "",
     lastName: "",
@@ -74,12 +75,14 @@ export function RegisterFormTutor() {
             console.log("er is een errrr: " + JSON.stringify(error.response))
             console.log(error.response)
             setErrors(error.response)
-            let message = JSON.stringify(error.response).split('[]',)[1]
+            JSON.stringify(error.response.data.map((data: any) => {
+              setMessage(data.msg)
+            }))
             toast({
               title: 'Warning',
-              description: JSON.stringify(error.response.data),
+              description: message,
               status: 'warning',
-              duration: 19000,
+              duration: 49000,
               isClosable: true,
             })
           }
@@ -99,7 +102,6 @@ export function RegisterFormTutor() {
   const createStudent = async (event: React.FormEvent) => {
     event.preventDefault();
     let student = user;
-    console.log(student);
 
     if (student.firstName === "") {
       setvalidFirstName(true);
@@ -118,24 +120,26 @@ export function RegisterFormTutor() {
       numberOfError++
     } 
 
-    if (numberOfError == 0) {
+    if (numberOfError == 0) 
+    {
      
       try {
-       
         axios.post("http://localhost:8000/student", student).then((res) => {
           console.log(res)
           console.log("Student created");
         }).catch((error) => {
           if (error.response) {
-            console.log("er is een errrr: " + JSON.stringify(error.response))
+            console.log("er is een errrr: " + JSON.stringify(error.response.data))
             console.log(error.response)
             setErrors(error.response)
-            let message = JSON.stringify(error.response).split('[]',)[1]
+            JSON.stringify(error.response.data.map((data: any) => {
+              setMessage(data.msg)
+            }))
             toast({
               title: 'Warning',
-              description: JSON.stringify(error.response.data),
+              description: message,
               status: 'warning',
-              duration: 19000,
+              duration: 49000,
               isClosable: true,
             })
           }
@@ -175,7 +179,7 @@ export function RegisterFormTutor() {
   
   return (
 
-    <Flex flexDir="column">
+    <Flex flexDir="column" pb={{base: 8, lg: 0}}>
     <Flex
       minW={{ sm: "330px", lg: "500px" }}
       height="750px"
