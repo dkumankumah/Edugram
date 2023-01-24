@@ -12,7 +12,7 @@ export function isAuthenticated() {
 
 export function logout() {
     console.log('yes')
-    fetch(`${process.env.HOST}/logout`, {
+    fetch(`http://localhost:8000/logout`, {
         method: 'GET',
         credentials: "include",
         mode: "cors"

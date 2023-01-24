@@ -11,7 +11,7 @@ import {GetServerSideProps} from "next";
 import {TutorModel} from "../../models/TutorModel";
 import {decodeJWT} from "../api/api.storage";
 
-const socket = io.connect("https://edugram.azurewebsites.net:3001", { transports: ['websocket', 'polling', 'flashsocket'] });
+const socket = io.connect("ws://localhost:3001", { transports: ['websocket', 'polling', 'flashsocket'] });
 
 interface PageProps {
     accessToken: string,
@@ -79,7 +79,7 @@ export default function ChatApp({tutorData, accessToken}: PageProps) {
 
 export const getServerSideProps: GetServerSideProps = async (ctx) => {
     const accessToken = JSON.stringify(ctx.req.cookies.access_token)
-    const response = await fetch(`${process.env.HOST}/tutor/details`, {
+    const response = await fetch(`http://localhost:8000/tutor/details`, {
         method: "GET",
         credentials: "include",
         mode: 'cors',

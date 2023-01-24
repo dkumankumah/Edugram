@@ -50,7 +50,7 @@ export function LoginModal({
                     credentials: "include",
                     headers: {
                         'Content-Type': 'application/json',
-                        'Access-Control-Allow-Origin': `${process.env.HOST}`,
+                        'Access-Control-Allow-Origin': `http://localhost:8000`,
                     },
                     body: JSON.stringify({email: email, password: password})
 
@@ -146,7 +146,7 @@ export function LoginModal({
                             <Text padding="2" color={'white'} ml={'20px'} mr={'20px'}>Of</Text>
                             <Divider/>
                         </Flex>
-                        <GoogleBtn bg={'white'} borderRadius={30} w='250px' h={'50'} label={'google-button-login'} onClick={() => router.push(`${process.env.HOST}/auth/google`)}>Login
+                        <GoogleBtn bg={'white'} borderRadius={30} w='250px' h={'50'} label={'google-button-login'} onClick={() => router.push(`http://localhost:8000/auth/google`)}>Login
                             met Google</GoogleBtn>
                     </Stack>
                 </ModalFooter>

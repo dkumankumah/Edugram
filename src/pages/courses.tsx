@@ -138,17 +138,16 @@ export default function Courses ({tutorData, accessToken, subjects}: PageProps) 
                 isClosable: true})
         }
 
-        fetch(`${process.env.HOST}/tutor/` + tutor._id, {
+        fetch(`http://localhost:8000/tutor/` + tutor._id, {
             method: 'PATCH',
             credentials: "include",
             headers: {
                 "Content-Type": "application/json",
-                'Access-Control-Allow-Origin': `${process.env.HOST}`,
+                'Access-Control-Allow-Origin': `http://localhost:8000`,
                 Cookie: accessToken
             },
             body: JSON.stringify({course: tutor.course }),
         }).then(response => response.json()).then(result => {
-            console.log(result)
             setTutor(result)}
 
         )
@@ -163,12 +162,12 @@ export default function Courses ({tutorData, accessToken, subjects}: PageProps) 
         const index = tutor.course!.indexOf(subject)
         tutor.course?.splice(index, 1)
 
-        fetch(`${process.env.HOST}/tutor/` + tutor._id, {
+        fetch(`http://localhost:8000/tutor/` + tutor._id, {
             method: 'PATCH',
             credentials: "include",
             headers: {
                 "Content-Type": "application/json",
-                'Access-Control-Allow-Origin': `${process.env.HOST}`,
+                'Access-Control-Allow-Origin': `http://localhost:8000`,
                 Cookie: accessToken
             },
             body: JSON.stringify({course: tutor.course }),
@@ -615,7 +614,7 @@ export default function Courses ({tutorData, accessToken, subjects}: PageProps) 
 
 export const getServerSideProps: GetServerSideProps = async (ctx) => {
     const accessToken = JSON.stringify(ctx.req.cookies.access_token) ?? null
-    const response = await fetch(`${process.env.HOST}/tutor/details`, {
+    const response = await fetch(`http://localhost:8000/tutor/details`, {
         method: "GET",
         credentials: "include",
         mode: 'cors',
@@ -638,7 +637,7 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
         return { props: {tutorData} };
     }
 
-    const res = await fetch(`${process.env.HOST}/subject/`)
+    const res = await fetch(`http://localhost:8000/subject/`)
     const subjects = await res.json()
 
     return {

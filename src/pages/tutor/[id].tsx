@@ -217,7 +217,7 @@ const TutorInfo = ({ tutor }: Pageprops) => {
 };
 
 export const getStaticPaths = async () => {
-  const tutorResult = await fetch(`${process.env.HOST}/tutor`).catch(
+  const tutorResult = await fetch(`http://localhost:8000/tutor`).catch(
     (error) => {
       console.log(error);
       throw new Error("Something went wrong, when fetching data");

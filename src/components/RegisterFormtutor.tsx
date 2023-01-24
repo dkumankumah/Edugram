@@ -66,7 +66,7 @@ export function RegisterFormTutor() {
      
       try {
        
-        axios.post(`${process.env.HOST}/tutor`, tutor).then((res) => {
+        axios.post(`http://localhost:8000/tutor`, tutor).then((res) => {
           console.log(res)
           console.log("tutor created");
         }).catch((error) => {
@@ -122,7 +122,7 @@ export function RegisterFormTutor() {
      
       try {
        
-        axios.post(`${process.env.HOST}/student`, student).then((res) => {
+        axios.post(`http://localhost:8000/student`, student).then((res) => {
           console.log(res)
           console.log("Student created");
         }).catch((error) => {

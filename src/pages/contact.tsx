@@ -99,7 +99,7 @@ const Contact = () => {
     }
 
     function sendMessage() {
-        fetch(`${process.env.HOST_ADMIN}/createTicket`, {
+        fetch(`http://localhost:8000_ADMIN}/createTicket`, {
             method: 'POST',
             body: JSON.stringify({
                 createdBy: email.trim(),

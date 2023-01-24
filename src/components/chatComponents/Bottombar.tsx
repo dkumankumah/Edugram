@@ -7,7 +7,7 @@ import {TutorModel} from "../../models/TutorModel";
 import {decodeJWT} from "../../pages/api/api.storage";
 import {ChatUserModel} from "../../models/ChatModel";
 
-const socket = io.connect("ws://localhost:3001", { transports: ['websocket', 'polling', 'flashsocket'] });
+const socket = io.connect("ws:http", { transports: ['websocket', 'polling', 'flashsocket'] });
 
 interface PageProps {
     accessToken: string,
