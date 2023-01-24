@@ -7,7 +7,6 @@ import * as io from "socket.io-client";
 import {ChatModel} from "../models/ChatModel";
 import {ChatUserModel} from "../models/ChatModel";
 
-import {useLocation} from "react-router";
 import {decodeJWT} from "./api/api.storage";
 import {TutorModel} from "../models/TutorModel";
 import {GetServerSideProps} from "next";
@@ -23,18 +22,15 @@ let chosenUser = "";
 let fullname = "";
 
 function setId(id: string) {
-    console.log("chosen chat to be emitted: " + chosenChatId);
     chosenChatId = id;
+    console.log("chosen chat to be emitted: " + chosenChatId);
+
 }
 
 function chosenChat(chatName: string, chatId: string) {
     setId(chatId)
     chosenUser = chatName;
-    router.push(`/chat/${chatName}`);
-}
-
-function goBack() {
-    router.push('/dashboard');
+    router.push(`/chats`);
 }
 
 const showChats = (data: ChatModel[], accessToken: string) =>
@@ -93,27 +89,29 @@ export default function ChatSidebar({tutorData, accessToken}: PageProps) {
     
     return (
         <Flex
+            borderLeftRadius="10px"
             w="300px"
-            borderEnd="1px solid" borderColor="gray.200"
+            borderEnd="1px solid" borderColor="#4EA4B1"
             direction="column"
+            bg="#4EA4B1"
         >
             <Flex
                 h="81px" w="100%"
                 align="center"
                 justifyContent="space-between"
-                borderBottom="1px solid" borderColor="gray.200"
+                borderBottom="1px solid" borderColor="#4EA4B1"
                 p={3}
             >
                 <Flex align="center">
                     <Avatar src="" margin={3}/>
                     <Text>{fullname}</Text>
                 </Flex>
-                <IconButton onClick={() => goBack()} size="sm" isRound icon={<ArrowLeftIcon/>} aria-label="Close"/>
             </Flex>
             <Flex overflowX="hidden" overflowY="scroll" direction="column"
                   sx={{'::-webkit-scrollbar': {display: 'none'}}}>
+                {showChats(chatList, accessToken)}
             </Flex>
-            {showChats(chatList, accessToken)}
+
         </Flex>
     )
 }
