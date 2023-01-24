@@ -42,7 +42,7 @@ io.on('connection', (socket) => {
     console.log("Message sent by " + sender + " : " + message + " to chatId: " + chatId);
     await Chat.findOneAndUpdate(
       {_id: chatId},
-      {$push: {messages: new Message({message: message, sender: sender})}},
+      {$push: {messages: new Message({message: message, sender: sender, dateTime: Date.now()})}},
     );
     io.to(chatId).emit("update-chat", await Chat.findOne({_id: chatId}));
   });
