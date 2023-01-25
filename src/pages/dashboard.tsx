@@ -54,14 +54,35 @@ const Dashboard = ({tutorData, accessToken}: PageProps) => {
     let [arrayChartData, setArrayChartData] = useState<[]>();
     const [selectedOption, setSelectedOption] = useState(null);
 
+    const [imageUrl, setImageUrl] = useState(null);
+
+
     useEffect(() => {
         setIsAuth(isAdmin(accessToken))
-        // if(isAuth) {
+        if (isAuth){
             socket.on('data', (result: any) => {
                 console.log('Getting Data', result)
                 getChartData(result);
                 setDataa(result);
             });
+        }else {
+            fetch("http://localhost:8000/tutor/get_image", {
+                method: 'GET',
+                credentials: "include",
+            })
+                .then(response => response.json())
+                .then(data => {
+                    if (!data.image) {
+                        throw  new Error('Image not found')
+                    }
+                    const imageSrc = `data:${data.image.contentType};base64,${Buffer.from(data.image.data).toString('base64')}`;
+
+                    setImageUrl(imageSrc);
+                }).catch((error)=>{
+                console.error(error);
+            })
+        }
+
         // }
 
     }, []);
@@ -319,13 +340,21 @@ const Dashboard = ({tutorData, accessToken}: PageProps) => {
                 <Box flex={1}>
                     <Card boxShadow={'xl'} borderRadius={20} >
                         <CardHeader>
-                            <Image
-                                // borderRadius='full'
-                                // boxSize='250px'
-                                src="images/placeholderImage.png"
-                                alt="Placeholder for image of Identity"
-                                fallbackSrc='https://via.placeholder.com/150'
-                            />
+                            {imageUrl ? (
+                                <Image src={imageUrl}
+                                       borderRadius='full'
+                                       boxSize='150px'
+                                       height={{
+                                           base: '50%', // 0-48em
+                                           md: '30%', // 48em-80em,
+                                           xl: '25%', // 80em+
+                                       }} alt="Profile Image" margin="auto"/>
+                            ) : (
+                                <Image src="images/placeholderImage.png"
+                                       alt="Placeholder for image of Identity"
+                                       fallbackSrc='https://via.placeholder.com/150'
+                                       margin="auto"/>
+                            )}
                             <Text
                                 mt={3}
                                 textAlign='center'
