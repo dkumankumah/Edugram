@@ -15,6 +15,7 @@ import axios from "axios";
 import {GetStaticPaths, NextPage} from "next";
 import {Context, useEffect, useState} from "react";
 import {TutorModel} from "../../models/TutorModel";
+import {UserModel} from "../../models/UserModel";
 
 interface Pageprops {
     tutor: TutorModel;
@@ -25,6 +26,7 @@ const TutorInfo = ({tutor}: Pageprops) => {
     const [locationChoiceHome, setLocationChoiceHome] = useState(false);
     const [locationChoiceLibrary, setLocationAtLibrary] = useState(false)
     const [accessToken, setAccessToken] = useState('')
+    const [student, setStudent] = useState<UserModel>();
 
     const lessonLocatonOnline = "online via webcam";
     const lessonLocationHome = "at your home";
@@ -42,6 +44,8 @@ const TutorInfo = ({tutor}: Pageprops) => {
             setAccessToken(r.message)
         })
     }
+
+
 
     const checkLessonLocations = () => {
         {
@@ -70,16 +74,26 @@ const TutorInfo = ({tutor}: Pageprops) => {
 
     const router = useRouter();
     const {data} = router.query
-    console.log(data)
     const {
         query: {subject},
     } = router;
 
     useEffect(() => {
-        console.log(data)
         checkLessonLocations();
         checkIfIsLoggedIn()
-    });
+        fetch('http://localhost:8000/cookie', {
+            method: 'GET',
+            headers: {
+                "Content-Type": "application/json",
+                'Access-Control-Allow-Origin': 'http://localhost:8000/',
+            },
+            credentials: "include",
+        }).then(r => r.json()
+        ).then(response => {
+                setStudent(response)
+            }
+        )
+    }, []);
 
     return (
         <Container
@@ -229,7 +243,7 @@ const TutorInfo = ({tutor}: Pageprops) => {
             </Flex>
 
             <Flex w="100%" justify="center" h="100%" mt="100px">
-                <TutorCard tutor={tutor}/>
+                <TutorCard tutor={tutor} student={student} />
             </Flex>
         </Container>
     );

@@ -34,6 +34,7 @@ import {SubmitButton} from "../shared/Buttons";
 import {wait} from "next/dist/build/output/log";
 import {chosenChat, setId} from "../../pages/ChatSidebar";
 import Bottombar from "../chatComponents/Bottombar";
+import {UserModel} from "../../models/UserModel";
 
 interface PageProps {
     accessToken: string,
@@ -42,13 +43,12 @@ interface PageProps {
 }
 
 interface ComponentProps {
-    accessToken: string,
+    student: UserModel
     tutor: TutorModel,
 }
 
-export function TutorCard({tutor, accessToken}: ComponentProps) {
+export function TutorCard({tutor, student}: ComponentProps) {
     const lessons = ["English", "Maths", "Programming", "French", "Photoshop"];
-    const [checkedItem, setCheckedItem] = React.useState(false)
     const [isVerified, setVerified] = useState(false);
     const [textValue, setTextValue] = useState(
         '');
@@ -56,7 +56,6 @@ export function TutorCard({tutor, accessToken}: ComponentProps) {
     const toast = useToast()
     const router = useRouter()
     const {query: {subject},} = router
-
 
     const checkIfTutorIsVerfied = () => {
         if (tutor.profile?.isVerified == true) {
@@ -66,24 +65,30 @@ export function TutorCard({tutor, accessToken}: ComponentProps) {
 
     useEffect(() => {
         checkIfTutorIsVerfied()
-        fetch('http://localhost:8000/cookie', {
-            method: 'GET',
-            headers: {
-                "Content-Type": "application/json",
-                'Access-Control-Allow-Origin': 'http://localhost:8000/',
-            },
-            credentials: "include",
-        }).then((r) => {
-            console.log('response' + r)
-        })
-        setTextValue(`Dear ${tutor.firstName},\n
-My name is ${'vul naam in'}  and I am looking for a tutor that gives ${subject}.
-The lessons can be the best ${checkedItem ? 'online using the Edugram webapp.' : `at your place (in ${tutor.address?.city ? tutor.address.city : "City unknown"}) or at my place (in ${'eigen adress'}).`}
+        const fetchData = async () => {
+            // get the data from the api
+            const data = await fetch('http://localhost:8000/cookie', {
+                method: 'GET',
+                headers: {
+                    "Content-Type": "application/json",
+                    'Access-Control-Allow-Origin': 'http://localhost:8000/',
+                },
+                credentials: "include",
+            }).then(async r => {
+                    const student = await r.json()
+                    setTextValue(`Dear ${tutor.firstName},\n
+My name is ${student.firstName ? student.firstName : 'name unknown'} and I am looking for a tutor that gives ${subject}.
+The lessons can be the best at your place (in ${tutor.address?.city ? tutor.address.city : "City unknown"}) or at my place (in ${student.address?.city ? student.address.city : 'Unknown City'}) 
 I would like to start my lessons as soon as possible.
 Ideally, would you be able to contact me so we can discuss all the details? \n
 Thank you very much and have a nice day,
-Sincerely, Maria`)
-    })
+Sincerely, ${student.firstName ? student.firstName : 'firstname unknown'} ${student.lastName ? student.lastName : 'lastName unknown'}
+`)
+                }
+            )
+        }
+        fetchData().catch(console.error)
+    }, [])
 
     const bookLesson = () => {
         const redirectToChatPage = (chatName: string, chatId: string) => {
@@ -93,7 +98,6 @@ Sincerely, Maria`)
                 chosenChat(tutor.firstName, chatId)
             })
         }
-        const location = checkedItem ? 'Online' : 'On location'
 
         fetch('http://localhost:8000/student/booking', {
             method: 'POST',
@@ -108,7 +112,8 @@ Sincerely, Maria`)
                     subject: subject,
                     message: textValue,
                     location: location,
-                    firstName: tutor.firstName
+                    firstName: tutor.firstName,
+                    lastName: tutor.lastName
                 },
             }),
         }).then(r => r.json()).then((chatId) => {
@@ -240,7 +245,7 @@ Sincerely, Maria`)
                     <ModalCloseButton/>
                     <ModalBody>
                         <Box>
-                            <Text as={'h2'} color={'white'}> Set up a message to send
+                            <Text as={'h2'} color={'white'}> Set up an editable message to send
                                 to {tutor.firstName} {tutor.lastName} (optional)</Text>
                             <Text as={'em'} fontSize={'sm'} color={'white'}> Leaving it blank will send the auto message
                                 as seen below</Text>
@@ -258,9 +263,6 @@ Sincerely, Maria`)
                         </Box>
                     </ModalBody>
                     <ModalFooter>
-                        <Checkbox color={'white'} colorScheme={'cyan'} textAlign={'left'} mr={'auto'}
-                                  isChecked={checkedItem}
-                                  onChange={(e) => setCheckedItem(e.target.checked)}>Lesson online</Checkbox>
                         <Button color={'white'} colorScheme={'red'} mr={3} onClick={onClose}>
                             cancel
                         </Button>

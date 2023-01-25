@@ -28,6 +28,7 @@ import {ArrowUpDownIcon, CheckCircleIcon, CheckIcon, CloseIcon, EditIcon, PlusSq
 import {TutorModel} from "../models/TutorModel";
 import {GetServerSideProps} from "next";
 import {SubmitButton} from "../components/shared/Buttons";
+import {UserModel} from "../models/UserModel";
 
 Chart.register(CategoryScale);
 
@@ -38,7 +39,7 @@ interface PageProps {
 
 const Dashboard = ({tutorData, accessToken}: PageProps) => {
     const [isAuth, setIsAuth] = useState(false)
-    const [tutor, setTutor] = useState(tutorData as TutorModel)
+    const [tutor, setTutor] = useState(tutorData as UserModel)
     const {isOpen, onToggle} = useDisclosure()
     const baseUrl = "http://localhost:8001/tickets"
     const [map, setMap] = useState(new Map());
@@ -192,7 +193,6 @@ const Dashboard = ({tutorData, accessToken}: PageProps) => {
                 requestId = request._id
                 tutorName = request.firstName
                 tutorEmail = request.email
-                //Email werkt niet op dit helemaal goed
             }
         })
         fetch('http://localhost:8000/tutor/' + tutor._id, {
@@ -413,7 +413,9 @@ const Dashboard = ({tutorData, accessToken}: PageProps) => {
                                 />
                             </CardHeader>
                             <CardBody>
-                                {tutor.request?.map((request) => {
+                                {tutor.request?.sort((a,b) => {
+                                    return new Date(b.created_at).valueOf() - new Date(a.created_at).valueOf() ;
+                                }).map((request) => {
                                     if (request.status === "pending") {
                                         return (
                                             <Card
@@ -425,7 +427,6 @@ const Dashboard = ({tutorData, accessToken}: PageProps) => {
                                                         <Flex flex='1' flexDirection="row"
                                                               justifyContent={"space-between"} gap='4'
                                                               alignItems='center' flexWrap='wrap'>
-
                                                             <Flex alignItems={"center"}>
                                                                 <Avatar
                                                                     name={request.firstName + " " + request.lastName}/>
@@ -438,8 +439,11 @@ const Dashboard = ({tutorData, accessToken}: PageProps) => {
                                                                 <Box
                                                                     alignSelf={'baseline'}
                                                                 >
-                                                                    <Text>
-                                                                        Subject: {request.subject} - {request.location} - {request.email}
+                                                                    <Text fontSize={''}>
+                                                                        Subject: {request.subject} - {request.location}
+                                                                    </Text>
+                                                                    <Text fontSize={'xx-small'}>
+                                                                        Created at: {new Date(request.created_at).toDateString() + ' at ' + new Date(request.created_at).toTimeString().split('G')[0]}
                                                                     </Text>
                                                                 </Box>
 

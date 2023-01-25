@@ -1,3 +1,4 @@
+import {Review} from "./TutorModel";
 
 export interface UserModel {
     _id: string;
@@ -16,6 +17,7 @@ export interface UserModel {
     role: string;
     notification?: Notification[];
     request?: Request[];
+    review?: Review[];
 
 }
 
@@ -53,4 +55,5 @@ export interface Request {
     location: string;
     subject: string;
     status: string;
+    created_at: Date;
 }

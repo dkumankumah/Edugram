@@ -69,19 +69,30 @@ router.post("/", userValidation, async (req, res, next) => {
 });
 
 router.post("/booking", checkCookie, async (req, res, next) => {
-  const currentDate = new Date().toLocaleString()
-  console.log(req.email)
-  const tutorObject = {
+  const tutorRequest = {
     firstName: req.firstName,
     lastName: req.lastName,
-    email: req.email,
+    location: req.body.request.location,
+    subject: req.body.request.subject,
+    status: 'pending',
+    created_at: new Date().toISOString(),
+  }
+
+  console.log(Date.now())
+
+  const studentRequest = {
+    firstName: req.body.request.firstName,
+    lastName: req.body.request.lastName,
     location: req.body.request.location,
     subject: req.body.request.subject,
     status: 'pending',
     created_at: Date.now(),
   }
 
-  console.log(tutorObject)
+  const chatToBeSent = {
+
+  }
+
 
   const chatObject = new Chat(
     {
@@ -93,50 +104,52 @@ router.post("/booking", checkCookie, async (req, res, next) => {
 
   try {
     const updateTutor = await Tutor.findByIdAndUpdate({_id: req.body.request.tutorId},
-      {$push: {request: tutorObject}}, {new: true});
-    //Lets try and check if a chat already exists, else we create a new onw so that we can navigate to it in the frontend
-    try {
-      const addChat = await Chat.findOne(
-        {
-          tutor: {_id: req.body.request.tutorId, firstName: req.body.request.firstName},
-          student: {_id: req.id, firstName: req.firstName}
-        }, {})
-      if (addChat == null) {
-        //Chat does not exist between student and tutor
-        //So, we make a new chat object and insert teacher and student info
-        try {
-          await chatObject.save()
-          //Chat made, now we cycle through the chat again but this time we know it exists!
-          //So, we return the chatId that we have just created along with the object
+      {$push: {request: tutorRequest}}, {new: true});
+      const updateStudent = await Student.findByIdAndUpdate({_id: req.id},
+        {$push: {request: studentRequest}}, {new: true});
+
+      //Lets try and check if a chat already exists, else we create a new onw so that we can navigate to it in the frontend
+      try {
+        const addChat = await Chat.findOne(
+          {
+            tutor: {_id: req.body.request.tutorId, firstName: req.body.request.firstName},
+            student: {_id: req.id, firstName: req.firstName}
+          }, {})
+        if (addChat == null) {
+          //Chat does not exist between student and tutor
+          //So, we make a new chat object and insert teacher and student info
           try {
-            const getNewChatId = await Chat.findOne(
-              {
-                tutor: {_id: req.body.request.tutorId, firstName: req.body.request.firstName},
-                student: {_id: req.id, firstName: req.firstName}
-              }, {})
-            sendRequestMail(updateTutor.email, req.firstName, req.body.request.subject, req.body.request.message)
-            res.json({chatId: getNewChatId._id.valueOf()})
+            await chatObject.save()
+            //Chat made, now we cycle through the chat again but this time we know it exists!
+            //So, we return the chatId that we have just created along with the object
+            try {
+              const getNewChatId = await Chat.findOne(
+                {
+                  tutor: {_id: req.body.request.tutorId, firstName: req.body.request.firstName},
+                  student: {_id: req.id, firstName: req.firstName}
+                }, {})
+              sendRequestMail(updateTutor.email, req.firstName, req.body.request.subject, req.body.request.message)
+              res.json({chatId: getNewChatId._id.valueOf()})
+            } catch (e) {
+              res.status(400).json({error: 'Error fetching newly made chat!'});
+            }  //Check if cookie contains an = and return the token
+            // res.status(201).json({messsage: 'oke'});
           } catch (e) {
-            console.log(e + 'dasdasdsad')
-            res.status(400).json({error: 'Error fetching newly made chat!'});
-          }  //Check if cookie contains an = and return the token
-          // res.status(201).json({messsage: 'oke'});
-        } catch (e) {
-          res.status(400).json({error: 'Could not make new chat!'});
+            res.status(400).json({error: 'Could not make new chat!'});
+          }
+        } else {
+          //Chat does exist
+          //What do we do now?
+          //TODO Find chatobject and push message into it
+          sendRequestMail(updateTutor.email, req.firstName, req.body.request.subject, req.body.request.message)
+          res.json({chatId: addChat._id.valueOf()})
         }
-      } else {
-        //Chat does exist
-        //What do we do now?
-        console.log(req.body.request.message)
-        sendRequestMail(updateTutor.email, req.firstName, req.body.request.subject, req.body.request.message)
-        res.json({chatId: addChat._id.valueOf()})
+      } catch (e) {
+        console.log(e)
+        // res.send(400).json({error: 'Could not add chat between student and teacher!'})
       }
-    } catch (e) {
-      console.log(e)
-      // res.send(400).json({error: 'Could not add chat between student and teacher!'})
-    }
   } catch (e) {
-    res.send(400).json({error: 'Could not book lesson!'})
+    res.status(400).json({error: 'Could not book lesson!'})
   }
 });
 
