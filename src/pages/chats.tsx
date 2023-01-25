@@ -48,6 +48,7 @@ export default function ChatApp({tutorData, accessToken}: PageProps) {
         console.log("Chat updated")
         setChat(chat);
     });
+
     useEffect(() => {
         if (decodeJWT(accessToken).role === "student") {
             console.log("Role is student")
@@ -75,7 +76,7 @@ export default function ChatApp({tutorData, accessToken}: PageProps) {
                     direction="column">
                     <Topbar/>
 
-                    <Flex borderRightRadius="10px" bg="#F5F5F5" flex={1} direction="column" pt={4} overflowX="scroll" overflowY="scroll"
+                    <Flex bg="#F5F5F5" flex={1} direction="column" pt={4} overflowX="scroll" overflowY="scroll"
                           sx={{'::-webkit-scrollbar': {display: 'none'}}}>
                         {getMessages(chat!, {tutorData, accessToken})}
                     </Flex>
