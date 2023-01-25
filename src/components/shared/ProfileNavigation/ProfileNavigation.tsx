@@ -16,7 +16,7 @@ const ProfileNavigation = ({role}: propsForNav) => {
                 <ProfileLinkNavigation path={'dashboard'}/>
                 <ProfileLinkNavigation path={'profile'}/>
                 {role === 'tutor' ? <ProfileLinkNavigation path={'courses'}/> : ''}
-                <ProfileLinkNavigation path={'chat/Chats'}/>
+                <ProfileLinkNavigation path={'chats'}/>
                 <ProfileLinkNavigation path={'invoices'}/>
             </HStack>
         </Box>

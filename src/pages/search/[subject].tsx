@@ -149,7 +149,6 @@ export default function Overview ({ tutors, subject }: PageProps) {
                                     </CardHeader>
                                     <CardBody>
                                         <Stack>
-                                            <Text>{tutor.firstName}</Text>
                                             <Text>{tutor.profile?.bio}</Text>
                                         </Stack>
                                     </CardBody>
@@ -160,7 +159,7 @@ export default function Overview ({ tutors, subject }: PageProps) {
                                                 borderRadius='20'
                                                 py = "5px"
                                                 px = "18px">
-                                                <Text color="#F5F5F5">${getFee(tutor)}/u</Text>
+                                                <Text color="#F5F5F5">${getFee(tutor)}/hr</Text>
                                             </Box>
                                             <Box
                                                 bg= "#107385"

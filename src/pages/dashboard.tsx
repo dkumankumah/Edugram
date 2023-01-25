@@ -29,6 +29,7 @@ import {TutorModel} from "../models/TutorModel";
 import {GetServerSideProps} from "next";
 import {SubmitButton} from "../components/shared/Buttons";
 import DashboardTable from "../components/admin/container/dashboardTable";
+import {Router, useRouter} from "next/router";
 import * as io from "socket.io-client";
 Chart.register(CategoryScale);
 
@@ -46,10 +47,11 @@ const Dashboard = ({tutorData, accessToken}: PageProps) => {
     const [isEditing, setIsEditing] = useState(false)
     const [textValue, setValue] = useState("")
     const [isInvalidArea, setIsInvalidArea] = useState(true);
+    const router = useRouter()
 
     const [chartMap, setChartMap] = useState(new Map());
     const [dataa, setDataa] = useState([]);
-    let [arrayChartData, setArrayChartData] = useState([]);
+    let [arrayChartData, setArrayChartData] = useState<[]>();
     const [selectedOption, setSelectedOption] = useState(null);
 
     useEffect(() => {
@@ -66,7 +68,7 @@ const Dashboard = ({tutorData, accessToken}: PageProps) => {
 
     const getChartData = (fromSocket: any) => {
         let myMap = new Map();
-        let array: any[] = [];
+        let array: any = [];
         let ticket: string;
         try {
             console.log("The following data is: ", fromSocket)
@@ -373,22 +375,25 @@ const Dashboard = ({tutorData, accessToken}: PageProps) => {
                                 Mobile number
                             </Text>
 
-                            <Divider
-                                mt={3}
-                                mb={3}
-                            />
-                            <SimpleGrid columns={2} spacing={12}>
-                                <Text
-                                    fontSize={'large'}
-                                    fontWeight='bold'>
-                                    Reviews
-                                </Text>
-                                <Text
-                                    fontSize={'large'}
-                                    fontWeight='bold'>
-                                    ({tutor.review?.length})
-                                </Text>
-                            </SimpleGrid>
+                            <Box
+                                display={tutor.role === 'student' ? 'none' : 'block'}>
+                                <Divider
+                                    mt={3}
+                                    mb={3}
+                                />
+                                <SimpleGrid columns={2} spacing={12}>
+                                    <Text
+                                        fontSize={'large'}
+                                        fontWeight='bold'>
+                                        Reviews
+                                    </Text>
+                                    <Text
+                                        fontSize={'large'}
+                                        fontWeight='bold'>
+                                        ({tutor.review?.length})
+                                    </Text>
+                                </SimpleGrid>
+                            </Box>
 
                         </CardBody>
                     </Card>
@@ -398,6 +403,7 @@ const Dashboard = ({tutorData, accessToken}: PageProps) => {
                         flex={3}
                         pl={2}>
                         <Card
+                            display={tutor.role === 'student' ? 'none' : 'block'}
                             mb={5}
                             borderRadius={20}
                             boxShadow={'xl'}
@@ -505,7 +511,8 @@ const Dashboard = ({tutorData, accessToken}: PageProps) => {
                                                                 </Box>
 
                                                             </Flex>
-                                                            <Flex>
+                                                            <Flex
+                                                                display={tutor.role === 'student' ? 'none' : 'block'}>
                                                                 <Button
                                                                     alignSelf={'baseline'}
                                                                     size='sm'
@@ -615,7 +622,7 @@ const Dashboard = ({tutorData, accessToken}: PageProps) => {
 }
 
 export const getServerSideProps: GetServerSideProps = async (ctx) => {
-    const accessToken = JSON.stringify(ctx.req.cookies.access_token)
+    const accessToken = JSON.stringify(ctx.req.cookies.access_token) ?? null
     const response = await fetch('http://localhost:8000/tutor/details', {
         method: "GET",
         credentials: "include",
@@ -626,8 +633,13 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
         }
     });
 
+    if (response.status !== 200) {
+        ctx.res.writeHead(302, { Location: '/notFoundPage' });
+        ctx.res.end();
+        return { props: {} };
+    }
+
     const tutorData = await response.json()
-    console.log(tutorData)
 
     return {
         props: {tutorData, accessToken},

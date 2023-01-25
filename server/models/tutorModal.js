@@ -26,6 +26,10 @@ const extend = (Schema, obj) => (
 );
 
 const tutorSchema = extend(UserSchema, {
+  googleId: {
+    type: String,
+    required: false,
+  },
   profile: {
     type: TutorProfile,
     required: false

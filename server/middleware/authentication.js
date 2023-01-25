@@ -2,22 +2,36 @@ const express = require('express')
 const router = express.Router()
 const jwt = require('jsonwebtoken')
 const bcrypt = require("bcrypt");
+const {createToken} = require("./token");
 
 module.exports.checkCookie = (req, res, next) => {
   let authcookie = req.headers.cookie
+  console.log(authcookie)
 
   if (!authcookie) {
     return res.status(403).send({error: 'Cookie does not exist'});
   }
 
+  //Check if cookie contains an 'access_token' and return the token
+  if (authcookie.indexOf('access_token') >= 0 ) {
+    authcookie = req.headers.cookie.split('access_token')[1]
+    console.log("GOOGLE 1 => " + authcookie)
+    authcookie = authcookie.split('=')[1]
+    console.log("GOOGLE 2 => " + authcookie)
+    authcookie = authcookie.split(';')[0]
+    console.log("GOOGLE 3 => " + authcookie)
+  }
+
   //Check if cookie contains an = and return the token
   if (authcookie.indexOf('=') >= 0 ) {
     authcookie = req.headers.cookie.split('=')[1]
+    console.log("First if => " + authcookie)
   }
 
   //Check if cookie is stringified and return it without strings
   if (authcookie.indexOf('"') >= 0 ) {
     authcookie = req.headers.cookie.split('"')[1]
+    console.log("Second if => " + authcookie)
   }
 
   if (!jwt) {
@@ -87,13 +101,4 @@ const createCookie = (id, firstName, lastName, role, res, next) => {
   next();
 }
 
-const createToken = (id, firstName, lastName, role) => {
-  return jwt.sign(
-    {
-      id: id,
-      firstName: firstName,
-      lastName: lastName,
-      role: role
-    }, process.env.ACCES_TOKEN_SECRET
-  )
-}
+

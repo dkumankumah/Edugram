@@ -10,6 +10,7 @@ import {
 } from "@chakra-ui/react";
 import {InputField} from "../InputField/InputField";
 import {GoogleBtn} from "../GoogleBtn/index";
+import {useRouter} from "next/router";
 
 export interface ModalProps extends UseModalProps {
     isOpen: boolean,
@@ -34,6 +35,8 @@ export function LoginModal({
     const [success, setSuccess] = useState('');
     const [show, setShow] = React.useState(false)
     const handleShowPassword = () => setShow(!show)
+
+    const router = useRouter();
 
     function login(email: string, password: string) {
         if (error) {
@@ -143,7 +146,7 @@ export function LoginModal({
                             <Text padding="2" color={'white'} ml={'20px'} mr={'20px'}>Of</Text>
                             <Divider/>
                         </Flex>
-                        <GoogleBtn bg={'white'} borderRadius={30} w='250px' h={'50'} label={'google-button-login'}>Login
+                        <GoogleBtn bg={'white'} borderRadius={30} w='250px' h={'50'} label={'google-button-login'} onClick={() => router.push("http://localhost:8000/auth/google")}>Login
                             met Google</GoogleBtn>
                     </Stack>
                 </ModalFooter>
