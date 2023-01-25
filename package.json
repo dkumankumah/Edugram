@@ -207,6 +207,7 @@
     "natural-compare": "^1.4.0",
     "negotiator": "^0.6.3",
     "next": "^13.0.3",
+    "nodemailer": "^6.9.0",
     "nodemon": "^2.0.20",
     "object-assign": "^4.1.1",
     "object-inspect": "^1.12.2",

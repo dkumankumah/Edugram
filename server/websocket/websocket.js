@@ -53,7 +53,9 @@ io.on('connection', (socket) => {
       socket.join(chosenChatId);
       console.log("Chosen chat Id in socket: " + chosenChatId);
       console.log(chosenChatId.chatId)
-      io.to(chosenChatId).emit("update-chat", await Chat.findOne({_id: chosenChatId.chatId}).catch((error)=> {
+      io.to(chosenChatId).emit("update-chat", await Chat.findOne({_id: chosenChatId.chatId}).then((result)=> {
+        console.log(result)
+      }).catch((error)=> {
         console.log(error)
       }));
     }

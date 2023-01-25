@@ -28,6 +28,7 @@ import {ArrowUpDownIcon, CheckCircleIcon, CheckIcon, CloseIcon, EditIcon, PlusSq
 import {TutorModel} from "../models/TutorModel";
 import {GetServerSideProps} from "next";
 import {SubmitButton} from "../components/shared/Buttons";
+
 Chart.register(CategoryScale);
 
 interface PageProps {
@@ -38,7 +39,7 @@ interface PageProps {
 const Dashboard = ({tutorData, accessToken}: PageProps) => {
     const [isAuth, setIsAuth] = useState(false)
     const [tutor, setTutor] = useState(tutorData as TutorModel)
-    const { isOpen, onToggle } = useDisclosure()
+    const {isOpen, onToggle} = useDisclosure()
     const baseUrl = "http://localhost:8001/tickets"
     const [map, setMap] = useState(new Map());
     const [isEditing, setIsEditing] = useState(false)
@@ -46,8 +47,9 @@ const Dashboard = ({tutorData, accessToken}: PageProps) => {
     const [isInvalidArea, setIsInvalidArea] = useState(true);
 
     useEffect(() => {
+        console.log(tutor)
         setIsAuth(isAdmin(accessToken))
-        if(isAuth) {
+        if (isAuth) {
             let myMap = new Map();
             let ticket: string;
             const elementCounts: any = {};
@@ -156,7 +158,7 @@ const Dashboard = ({tutorData, accessToken}: PageProps) => {
         setIsInvalidArea(true)
     }
 
-    const handleChangeEvent = (event:any) => {
+    const handleChangeEvent = (event: any) => {
         setValue(event.target.value);
         setIsInvalidArea(!(event.target.value.length > 15))
 
@@ -173,35 +175,41 @@ const Dashboard = ({tutorData, accessToken}: PageProps) => {
                 'Access-Control-Allow-Origin': 'http://localhost:8000',
                 'Authorization': 'Bearer ' + getToken()
             },
-            body: JSON.stringify({profile: tutor.profile }),
+            body: JSON.stringify({profile: tutor.profile}),
         }).then(response => response.json()).then(result =>
             setTutor(result)
-
         )
     }
 
-    function handleAccept(input : string, id: string): void {
-        tutor.request?.map((request)=>{
-            if(request.id === id) {
+    function handleAccept(input: string, id: string): void {
+        let requestId: any;
+        let tutorEmail: any;
+        let tutorName: any;
+        tutor.request?.map((request) => {
+            console.log("id = " + id + " - " + "requestID = " + request.email)
+            if (request._id === id) {
                 request.status = input
+                requestId = request._id
+                tutorName = request.firstName
+                tutorEmail = request.email
+                //Email werkt niet op dit helemaal goed
             }
         })
-
         fetch('http://localhost:8000/tutor/' + tutor._id, {
             method: 'PATCH',
             headers: {
                 "Content-Type": "application/json",
                 'Access-Control-Allow-Origin': 'http://localhost:8000',
-                'Authorization': 'Bearer ' + getToken()
             },
-            body: JSON.stringify({request: tutor.request }),
+            mode: "cors",
+            credentials: "include",
+            body: JSON.stringify({request: tutor.request, data: {requestId, tutorName, tutorEmail}}),
         }).then(response => response.json()).then(result =>
             setTutor(result)
-
         )
     }
 
-    function getAge(birthdate?: string) : number {
+    function getAge(birthdate?: string): number {
         const currentDate = new Date()
         const formattedDateString = birthdate?.substr(6, 4) + '-' + birthdate?.substr(3, 2) + '-' + birthdate?.substr(0, 2)
         const date = new Date(formattedDateString)
@@ -218,7 +226,7 @@ const Dashboard = ({tutorData, accessToken}: PageProps) => {
         return tutor.phoneNumber?.toLocaleString().length == 10;
     }
 
-    if(isAuth) {
+    if (isAuth) {
         return (
             <AdminContainer>
                 <h1>Dashboard is here Page</h1>
@@ -238,13 +246,12 @@ const Dashboard = ({tutorData, accessToken}: PageProps) => {
                 </Card>
             </AdminContainer>
         )
-    }
-    else return (
+    } else return (
         <Box>
             <ProfileNavigation role={tutor.role}/>
-            <Box p={5} display={{ lg: 'flex' }}>
+            <Box p={5} display={{lg: 'flex'}}>
                 <Box flex={1}>
-                    <Card boxShadow={'xl'} borderRadius={20} >
+                    <Card boxShadow={'xl'} borderRadius={20}>
                         <CardHeader>
                             <Image
                                 // borderRadius='full'
@@ -281,15 +288,15 @@ const Dashboard = ({tutorData, accessToken}: PageProps) => {
                                 <Icon
                                     display={!isVerified() ? 'block' : 'none'}
                                     as={CloseIcon}
-                                      boxSize={4}
-                                      alignSelf={'center'}
-                                      color='red.500'/>
+                                    boxSize={4}
+                                    alignSelf={'center'}
+                                    color='red.500'/>
                                 <Icon
                                     display={isVerified() ? 'block' : 'none'}
                                     as={CheckCircleIcon}
-                                      boxSize={5}
-                                      alignSelf={'center'}
-                                      color='green.500'/>
+                                    boxSize={5}
+                                    alignSelf={'center'}
+                                    color='green.500'/>
                             </SimpleGrid>
                             <Text
                                 fontSize={'medium'}
@@ -339,7 +346,7 @@ const Dashboard = ({tutorData, accessToken}: PageProps) => {
                                     gap='4'
                                     flexWrap='wrap'>
                                     <Text
-                                        as = "h2"
+                                        as="h2"
                                         color='blueGreen'
                                         mt={3}
                                         fontWeight='bold'>
@@ -393,9 +400,9 @@ const Dashboard = ({tutorData, accessToken}: PageProps) => {
                             mb={5}
                             borderRadius={20}
                             boxShadow={'xl'}
-                            >
+                        >
                             <CardHeader>
-                                <Text as = "h2"
+                                <Text as="h2"
                                       color='blueGreen'
                                       mt={3}
                                       fontWeight='bold'>
@@ -407,18 +414,21 @@ const Dashboard = ({tutorData, accessToken}: PageProps) => {
                             </CardHeader>
                             <CardBody>
                                 {tutor.request?.map((request) => {
-                                    if(request.status === "pending") {
+                                    if (request.status === "pending") {
                                         return (
                                             <Card
-                                                key={request.id}
+                                                key={request._id}
                                                 mt={4}
                                                 p={2}>
                                                 <CardBody>
-                                                    <Flex key={request.id} alignItems="center">
-                                                        <Flex   flex='1' flexDirection="row" justifyContent={"space-between"} gap='4' alignItems='center' flexWrap='wrap'>
+                                                    <Flex key={request._id} alignItems="center">
+                                                        <Flex flex='1' flexDirection="row"
+                                                              justifyContent={"space-between"} gap='4'
+                                                              alignItems='center' flexWrap='wrap'>
 
-                                                            <Flex alignItems={"center"} >
-                                                                <Avatar name={request.firstName + " " + request.lastName} />
+                                                            <Flex alignItems={"center"}>
+                                                                <Avatar
+                                                                    name={request.firstName + " " + request.lastName}/>
                                                                 <Text
                                                                     ml={2}
                                                                     fontWeight={'bold'}
@@ -429,7 +439,7 @@ const Dashboard = ({tutorData, accessToken}: PageProps) => {
                                                                     alignSelf={'baseline'}
                                                                 >
                                                                     <Text>
-                                                                        Subject: {request.subject} - {request.location}
+                                                                        Subject: {request.subject} - {request.location} - {request.email}
                                                                     </Text>
                                                                 </Box>
 
@@ -439,15 +449,15 @@ const Dashboard = ({tutorData, accessToken}: PageProps) => {
                                                                     alignSelf={'baseline'}
                                                                     size='sm'
                                                                     colorScheme='teal' mr={2}
-                                                                    onClick={()=> handleAccept("accepted", request.id)}>
+                                                                    onClick={() => handleAccept("accepted", request._id)}>
                                                                     Accept
                                                                 </Button>
                                                                 <Button
                                                                     alignSelf={'baseline'}
                                                                     size='sm'
                                                                     colorScheme='red' mr={2}
-                                                                    onClick={()=> handleAccept("rejected", request.id)}>
-                                                                Reject
+                                                                    onClick={() => handleAccept("rejected", request._id)}>
+                                                                    Reject
                                                                 </Button>
                                                             </Flex>
                                                         </Flex>
@@ -474,8 +484,9 @@ const Dashboard = ({tutorData, accessToken}: PageProps) => {
                             <CardHeader
                                 cursor='pointer'
                                 onClick={onToggle}>
-                                <Flex flex='1' flexDirection="row" justifyContent={"space-between"} gap='4' alignItems='center' flexWrap='wrap'>
-                                    <Text as = "h2"
+                                <Flex flex='1' flexDirection="row" justifyContent={"space-between"} gap='4'
+                                      alignItems='center' flexWrap='wrap'>
+                                    <Text as="h2"
                                           color='blueGreen'
                                           mt={3}
                                           fontWeight='bold'>
@@ -494,45 +505,48 @@ const Dashboard = ({tutorData, accessToken}: PageProps) => {
                             </CardHeader>
                             <Collapse in={isOpen} animateOpacity>
                                 <CardBody>
-                                {tutor.request?.map((request) => {
-                                    if(request.status === "accepted") {
-                                        return (
-                                            <Card
-                                                key={request.id}
-                                                pt={2}
-                                                mt={4}>
-                                                <CardBody>
-                                                    <Flex key={request.id} alignItems="center">
-                                                        <Flex   flex='1' flexDirection="row" justifyContent={"space-between"} gap='4' alignItems='center' flexWrap='wrap'>
+                                    {tutor.request?.map((request) => {
+                                        if (request.status === "accepted") {
+                                            return (
+                                                <Card
+                                                    key={request._id}
+                                                    pt={2}
+                                                    mt={4}>
+                                                    <CardBody>
+                                                        <Flex key={request._id} alignItems="center">
+                                                            <Flex flex='1' flexDirection="row"
+                                                                  justifyContent={"space-between"} gap='4'
+                                                                  alignItems='center' flexWrap='wrap'>
 
-                                                            <Flex alignItems={"center"} >
-                                                                <Avatar name={request.firstName + " " + request.lastName} />
-                                                                <Text
-                                                                    ml={2}
-                                                                    fontWeight={'bold'}
-                                                                    fontSize={'large'}>{request.firstName + " " + request.lastName}</Text>
-                                                            </Flex>
-                                                            <Flex>
-                                                                <Box
-                                                                    alignSelf={'baseline'}>
-                                                                    <Text>
-                                                                        Subject: {request.subject} - {request.location}
-                                                                    </Text>
-                                                                </Box>
+                                                                <Flex alignItems={"center"}>
+                                                                    <Avatar
+                                                                        name={request.firstName + " " + request.lastName}/>
+                                                                    <Text
+                                                                        ml={2}
+                                                                        fontWeight={'bold'}
+                                                                        fontSize={'large'}>{request.firstName + " " + request.lastName}</Text>
+                                                                </Flex>
+                                                                <Flex>
+                                                                    <Box
+                                                                        alignSelf={'baseline'}>
+                                                                        <Text>
+                                                                            Subject: {request.subject} - {request.location}
+                                                                        </Text>
+                                                                    </Box>
 
+                                                                </Flex>
+                                                                <Icon
+                                                                    as={CheckIcon}
+                                                                    boxSize={6}
+                                                                    color='green'/>
                                                             </Flex>
-                                                            <Icon
-                                                                as={CheckIcon}
-                                                                boxSize={6}
-                                                                color='green'/>
                                                         </Flex>
-                                                    </Flex>
-                                                </CardBody>
-                                            </Card>
-                                        );
-                                    }
-                                })}
-                            </CardBody>
+                                                    </CardBody>
+                                                </Card>
+                                            );
+                                        }
+                                    })}
+                                </CardBody>
                             </Collapse>
                         </Card>
                     </Box>

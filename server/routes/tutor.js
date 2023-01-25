@@ -8,6 +8,7 @@ const {check, validationResult, body} = require("express-validator");
 const {verifyToken} = require("../middleware/authentication");
 const {JsonWebTokenError} = require("jsonwebtoken");
 const {checkPassword} = require('../middleware/authentication')
+const { sendAcceptMail} = require("../middleware/mail");
 
 const userValidation = [
   check("firstName")
@@ -223,11 +224,18 @@ router.put('/password/:tutorId', checkCookie, async (req, res, next) => {
   }
 })
 
-
 //Update a specific tutor
-router.patch('/:tutorId', async (req, res) => {
+router.patch('/:tutorId', checkCookie, async (req, res) => {
   try {
-    const updatedTutor = await Tutor.findByIdAndUpdate(req.params.tutorId, req.body, {new: true})
+    const updatedTutor = await Tutor.findByIdAndUpdate(req.params.tutorId, req.body, {new: true}).lean()
+    delete updatedTutor.email
+    delete updatedTutor.password
+
+    console.log(req.body)
+
+    if (req.body.request && req.body.data){
+      sendAcceptMail(req.body.data.tutorEmail, req.params.subject, req.body.request.firstName, req.body.data.firstName)
+    }
     res.send(updatedTutor);
   } catch (err) {
     res.json({message: err})
@@ -239,6 +247,7 @@ router.get('/search/:subject', async (req, res) => {
   try {
     const query = {"course.subject": req.params.subject}
     const tutors = await Tutor.find(query);
+
     res.json(tutors);
   } catch (err) {
     res.json({message: err})

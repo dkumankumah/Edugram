@@ -1,3 +1,4 @@
+
 export interface UserModel {
     _id: string;
     firstName: string;
@@ -14,6 +15,8 @@ export interface UserModel {
     averageResponseTime?: number;
     role: string;
     notification?: Notification[];
+    request?: Request[];
+
 }
 
 export interface Address {
@@ -40,4 +43,14 @@ export interface LessonLocation {
     locationId: number;
     locationName: string;
     chosen: boolean
+}
+
+export interface Request {
+    _id: string;
+    firstName: string;
+    lastName: string;
+    email: string,
+    location: string;
+    subject: string;
+    status: string;
 }

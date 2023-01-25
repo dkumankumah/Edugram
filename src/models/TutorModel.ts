@@ -5,7 +5,6 @@ export interface TutorModel extends UserModel {
     course?: Course[];
     review?: Review[];
     responses?: Response[];
-    request?: Request[];
 
 }
 
@@ -24,11 +23,4 @@ export interface ResponseTime {
     $timestamp: string;
 }
 
-export interface Request {
-    id: string;
-    firstName: string;
-    lastName: string;
-    location: string;
-    subject: string;
-    status: string;
-}
+

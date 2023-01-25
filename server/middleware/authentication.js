@@ -1,3 +1,6 @@
+/**
+ * @author Danny Nansink, 500821004, mailer
+ **/
 const express = require('express')
 const router = express.Router()
 const jwt = require('jsonwebtoken')
@@ -32,6 +35,7 @@ module.exports.checkCookie = (req, res, next) => {
       req.id = data.id
       req.firstName= data.firstName
       req.lastName = data.lastName
+      req.email = data.email
       req.role = data.role
       next()
     } else {
@@ -67,14 +71,14 @@ module.exports.checkCookieForChat = (socket) => {
 
 module.exports.checkPassword = (data, password, res, next) => {
   bcrypt.compare(password, data[0].password).then(result => {
-    result ? createCookie(data[0].id, data[0].firstName, data[0].lastName, data[0].role, res, next) : res.status(400).send({
+    result ? createCookie(data[0].id, data[0].firstName, data[0].lastName, data[0].email,data[0].role, res, next) : res.status(400).send({
       error: 'Invalid credentials'
     })
   })
 }
 
-const createCookie = (id, firstName, lastName, role, res, next) => {
-  const token = createToken(id, firstName, lastName, role);
+const createCookie = (id, firstName, lastName, email, role, res, next) => {
+  const token = createToken(id, firstName, email, lastName, role);
   try {
     res.cookie("access_token", token, {
       //HttpOnly = true meaning we cannot access the token via the javascript aka frontend/google chrome console
@@ -89,12 +93,13 @@ const createCookie = (id, firstName, lastName, role, res, next) => {
   next();
 }
 
-const createToken = (id, firstName, lastName, role) => {
+const createToken = (id, firstName, email, lastName, role) => {
   return jwt.sign(
     {
       id: id,
       firstName: firstName,
       lastName: lastName,
+      email: email,
       role: role
     }, process.env.ACCES_TOKEN_SECRET
   )

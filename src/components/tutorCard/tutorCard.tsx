@@ -77,12 +77,12 @@ export function TutorCard({tutor, accessToken}: ComponentProps) {
             console.log('response' + r)
         })
         setTextValue(`Dear ${tutor.firstName},\n
-My name is ${'vul naam in'}  en ik zoek een leraar voor ${subject}.
-De lessen kunnen het liefst ${checkedItem ? 'online via de Edugram webapp.' : `bij u thuis (in ${tutor.address?.city ? tutor.address.city : "City unknown"}) of bij mij thuis (in ${'eigen adress'}).`}
-Het liefst zou ik mijn lessen zo snel mogelijk beginnen.
-Zou u contact met me op kunnen nemen zodat we alle details kunnen doorspreken? \n
-Hartelijk bedankt en een fijne dag toegewenst,
-Met vriendelijke groet, Maria`)
+My name is ${'vul naam in'}  and I am looking for a tutor that gives ${subject}.
+The lessons can be the best ${checkedItem ? 'online using the Edugram webapp.' : `at your place (in ${tutor.address?.city ? tutor.address.city : "City unknown"}) or at my place (in ${'eigen adress'}).`}
+I would like to start my lessons as soon as possible.
+Ideally, would you be able to contact me so we can discuss all the details? \n
+Thank you very much and have a nice day,
+Sincerely, Maria`)
     })
 
     const bookLesson = () => {

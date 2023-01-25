@@ -1,3 +1,6 @@
+/**
+ * @author Danny Nansink, 500821004, booking
+ **/
 const express = require("express");
 const router = express.Router();
 const Student = require("../models/studentModal");
@@ -6,6 +9,7 @@ const bcrypt = require("bcrypt");
 const {check, validationResult} = require("express-validator");
 const Tutor = require("../models/tutorModal");
 const {checkCookie} = require("../middleware/authentication");
+const {sendRequestMail} = require("../middleware/mail");
 
 const userValidation = [
   check("firstName")
@@ -66,27 +70,26 @@ router.post("/", userValidation, async (req, res, next) => {
 
 router.post("/booking", checkCookie, async (req, res, next) => {
   const currentDate = new Date().toLocaleString()
+  console.log(req.email)
   const tutorObject = {
     firstName: req.firstName,
     lastName: req.lastName,
+    email: req.email,
     location: req.body.request.location,
     subject: req.body.request.subject,
     status: 'pending',
-    created_at: currentDate,
+    created_at: Date.now(),
   }
+
+  console.log(tutorObject)
 
   const chatObject = new Chat(
     {
-      messages: [{  message: req.body.request.message, sender: req.id, dateTime: currentDate}],
+      messages: [{  message: req.body.request.message, sender: req.id, dateTime: Date.now()}],
       student: {_id: req.id, firstName: req.firstName},
       tutor: {_id: req.body.request.tutorId, firstName: req.body.request.firstName}
     }
   )
-
-  const messages = {
-
-  }
-
 
   try {
     const updateTutor = await Tutor.findByIdAndUpdate({_id: req.body.request.tutorId},
@@ -111,7 +114,8 @@ router.post("/booking", checkCookie, async (req, res, next) => {
                 tutor: {_id: req.body.request.tutorId, firstName: req.body.request.firstName},
                 student: {_id: req.id, firstName: req.firstName}
               }, {})
-             res.json({chatId: getNewChatId._id.valueOf()})
+            sendRequestMail(updateTutor.email, req.firstName, req.body.request.subject, req.body.request.message)
+            res.json({chatId: getNewChatId._id.valueOf()})
           } catch (e) {
             console.log(e + 'dasdasdsad')
             res.status(400).json({error: 'Error fetching newly made chat!'});
@@ -123,6 +127,8 @@ router.post("/booking", checkCookie, async (req, res, next) => {
       } else {
         //Chat does exist
         //What do we do now?
+        console.log(req.body.request.message)
+        sendRequestMail(updateTutor.email, req.firstName, req.body.request.subject, req.body.request.message)
         res.json({chatId: addChat._id.valueOf()})
       }
     } catch (e) {

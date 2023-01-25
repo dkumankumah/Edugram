@@ -1,6 +1,7 @@
 /**
  * @author Bugra Karaaslan, 500830631, connection to MongoDB
  * @author Daniel Kumankumah, 500811456, Routes from MongoDB
+ * @author Danny Nansink, 500821004, login and logout
  * To run the server write command 'node server' in the terminal.
  **/
 require("dotenv").config({path: require('find-config')('.env')})
@@ -80,15 +81,6 @@ app.get('/logout', checkCookie, function (req, res) {
   res.end()
 })
 
-// app.get('/getCookie', checkCookie, function (req, res) {
-//   const cookie = req
-//   if (cookie) {
-//     res.status(201).json({message: cookie})
-//   } else {
-//     res.status(404).json({error: 'bad request'})
-//
-//   }
-// })
 app.listen(8000, () => {
   console.log("Server started on port 8000");
 });
