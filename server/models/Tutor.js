@@ -12,8 +12,8 @@ const Profile = new Schema({
     required: false,
   },
   image: {
-    type: String,
-    required: false,
+    data: Buffer,
+    contentType: String
   }
 })
 

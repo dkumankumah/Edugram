@@ -6,9 +6,13 @@ const TutorProfile = {
     type: String,
     required: false,
   },
+  // imageName: {
+  //   type: String,
+  //   required: true,
+  // },
   image: {
-    type: String,
-    required: false
+    data: Buffer,
+    contentType: String
   }
 }
 

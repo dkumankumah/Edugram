@@ -1,0 +1,18 @@
+
+utypescript:S4325*"RThis assertion is unnecessary since it does not change the type of the expression.(ï­Üº8ãïàÏÛ0
+]typescript:S1854,"5Remove this useless assignment to variable "baseUrl".(÷€’¨üÿÿÿÿ8ãïàÏÛ0
+Ytypescript:S1854-"1Remove this useless assignment to variable "map".(ì€¶¸ÿÿÿÿÿ8äïàÏÛ0
+\typescript:S1854-"4Remove this useless assignment to variable "setMap".(ì€¶¸ÿÿÿÿÿ8äïàÏÛ0
+^typescript:S18544"<Remove this useless assignment to variable "arrayChartData".(³Ûèj8äïàÏÛ0
+_typescript:S18545"<Remove this useless assignment to variable "selectedOption".(ÉæÒÛ8åïàÏÛ0
+btypescript:S18545"?Remove this useless assignment to variable "setSelectedOption".(ÉæÒÛ8åïàÏÛ0
+Atypescript:S1259"Remove this commented out code.(İ¬°–8åïàÏÛ0
+Ktypescript:S1940¦"'Use the opposite operator (<=) instead.(ïê¶×8åïàÏÛ0
+ktypescript:S1874Ó"B'substr' is deprecated. A legacy feature for browser compatibility(ëÓ†Çùÿÿÿÿ8æïàÏÛ0
+ktypescript:S1874Ó"B'substr' is deprecated. A legacy feature for browser compatibility(ëÓ†Çùÿÿÿÿ8æïàÏÛ0
+ktypescript:S1874Ó"B'substr' is deprecated. A legacy feature for browser compatibility(ëÓ†Çùÿÿÿÿ8çïàÏÛ0
+Qtypescript:S6480©"(JSX props should not use arrow functions(ÎÖûşÿÿÿÿ8çïàÏÛ0
+Ltypescript:S6480¼"(JSX props should not use arrow functions(Ãå±Î8çïàÏÛ0
+Ktypescript:S6480Ä"(JSX props should not use arrow functions(ıİÒL8çïàÏÛ0
+Ltypescript:S6480"(JSX props should not use arrow functions(§Ş÷¿8çïàÏÛ0
+Ltypescript:S6480ˆ"(JSX props should not use arrow functions(×îõ…8èïàÏÛ0
