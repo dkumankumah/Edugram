@@ -95,7 +95,7 @@ export const Profile = ({data, accessToken}: PageProps) => {
 
             const data = await response.json();
             if (!data.image) {
-                 new Error('Image not found')
+              throw  new Error('Image not found')
             }
             const imageSrc = `data:${data.image.contentType};base64,${Buffer.from(data.image.data).toString('base64')}`;
 
