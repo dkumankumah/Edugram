@@ -136,6 +136,7 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
             ["etag", "npm:1.8.1"],\
             ["express", "npm:4.18.2"],\
             ["express-healthcheck", "npm:0.1.0"],\
+            ["express-session", "npm:1.17.3"],\
             ["express-validator", "npm:6.14.2"],\
             ["fast-deep-equal", "npm:3.1.3"],\
             ["fast-glob", "npm:3.2.12"],\
@@ -261,6 +262,9 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
             ["parent-module", "npm:1.0.1"],\
             ["parse-json", "npm:5.2.0"],\
             ["parseurl", "npm:1.3.3"],\
+            ["passport", "npm:0.6.0"],\
+            ["passport-google-oauth2", "npm:0.2.0"],\
+            ["passport-google-oauth20", "npm:2.0.0"],\
             ["path-exists", "npm:4.0.0"],\
             ["path-is-absolute", "npm:1.0.1"],\
             ["path-key", "npm:3.1.1"],\
@@ -9145,6 +9149,15 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
           "linkType": "HARD"\
         }]\
       ]],\
+      ["base64url", [\
+        ["npm:3.0.1", {\
+          "packageLocation": "./.yarn/cache/base64url-npm-3.0.1-4c171c4917-a77b2a3a52.zip/node_modules/base64url/",\
+          "packageDependencies": [\
+            ["base64url", "npm:3.0.1"]\
+          ],\
+          "linkType": "HARD"\
+        }]\
+      ]],\
       ["basic-auth", [\
         ["npm:2.0.1", {\
           "packageLocation": "./.yarn/cache/basic-auth-npm-2.0.1-f1627ef330-3419b805d5.zip/node_modules/basic-auth/",\
@@ -11521,6 +11534,23 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
           "packageLocation": "./.yarn/cache/express-healthcheck-npm-0.1.0-1d218725e4-075874d49a.zip/node_modules/express-healthcheck/",\
           "packageDependencies": [\
             ["express-healthcheck", "npm:0.1.0"]\
+          ],\
+          "linkType": "HARD"\
+        }]\
+      ]],\
+      ["express-session", [\
+        ["npm:1.17.3", {\
+          "packageLocation": "./.yarn/cache/express-session-npm-1.17.3-0819dbe06c-1021a79343.zip/node_modules/express-session/",\
+          "packageDependencies": [\
+            ["express-session", "npm:1.17.3"],\
+            ["cookie", "npm:0.4.2"],\
+            ["cookie-signature", "npm:1.0.6"],\
+            ["debug", "virtual:759fd14db92b54abdb7afb3d21dbf8d50f1a5c59c96cd3f963ce3e3ed063bdb801142fae5f01cc81fb79f7ddc13b7c31a9deb9d5a9cfa48ec107f83de8f7f40e#npm:2.6.9"],\
+            ["depd", "npm:2.0.0"],\
+            ["on-headers", "npm:1.0.2"],\
+            ["parseurl", "npm:1.3.3"],\
+            ["safe-buffer", "npm:5.2.1"],\
+            ["uid-safe", "npm:2.1.5"]\
           ],\
           "linkType": "HARD"\
         }]\
@@ -14893,6 +14923,15 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
           "linkType": "HARD"\
         }]\
       ]],\
+      ["oauth", [\
+        ["npm:0.9.15", {\
+          "packageLocation": "./.yarn/cache/oauth-npm-0.9.15-a6aae972bc-957c0d8d85.zip/node_modules/oauth/",\
+          "packageDependencies": [\
+            ["oauth", "npm:0.9.15"]\
+          ],\
+          "linkType": "HARD"\
+        }]\
+      ]],\
       ["object-assign", [\
         ["npm:4.1.1", {\
           "packageLocation": "./.yarn/cache/object-assign-npm-4.1.1-1004ad6dec-fcc6e4ea8c.zip/node_modules/object-assign/",\
@@ -15178,6 +15217,61 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
           "linkType": "HARD"\
         }]\
       ]],\
+      ["passport", [\
+        ["npm:0.6.0", {\
+          "packageLocation": "./.yarn/cache/passport-npm-0.6.0-0a57682d5b-ef932ad671.zip/node_modules/passport/",\
+          "packageDependencies": [\
+            ["passport", "npm:0.6.0"],\
+            ["passport-strategy", "npm:1.0.0"],\
+            ["pause", "npm:0.0.1"],\
+            ["utils-merge", "npm:1.0.1"]\
+          ],\
+          "linkType": "HARD"\
+        }]\
+      ]],\
+      ["passport-google-oauth2", [\
+        ["npm:0.2.0", {\
+          "packageLocation": "./.yarn/cache/passport-google-oauth2-npm-0.2.0-9c74db66df-b65c7b954c.zip/node_modules/passport-google-oauth2/",\
+          "packageDependencies": [\
+            ["passport-google-oauth2", "npm:0.2.0"],\
+            ["passport-oauth2", "npm:1.6.1"]\
+          ],\
+          "linkType": "HARD"\
+        }]\
+      ]],\
+      ["passport-google-oauth20", [\
+        ["npm:2.0.0", {\
+          "packageLocation": "./.yarn/cache/passport-google-oauth20-npm-2.0.0-4187da29c8-1d34f4c2da.zip/node_modules/passport-google-oauth20/",\
+          "packageDependencies": [\
+            ["passport-google-oauth20", "npm:2.0.0"],\
+            ["passport-oauth2", "npm:1.6.1"]\
+          ],\
+          "linkType": "HARD"\
+        }]\
+      ]],\
+      ["passport-oauth2", [\
+        ["npm:1.6.1", {\
+          "packageLocation": "./.yarn/cache/passport-oauth2-npm-1.6.1-2799fe66c7-2a5b01a884.zip/node_modules/passport-oauth2/",\
+          "packageDependencies": [\
+            ["passport-oauth2", "npm:1.6.1"],\
+            ["base64url", "npm:3.0.1"],\
+            ["oauth", "npm:0.9.15"],\
+            ["passport-strategy", "npm:1.0.0"],\
+            ["uid2", "npm:0.0.4"],\
+            ["utils-merge", "npm:1.0.1"]\
+          ],\
+          "linkType": "HARD"\
+        }]\
+      ]],\
+      ["passport-strategy", [\
+        ["npm:1.0.0", {\
+          "packageLocation": "./.yarn/cache/passport-strategy-npm-1.0.0-5648a82a66-5086693f25.zip/node_modules/passport-strategy/",\
+          "packageDependencies": [\
+            ["passport-strategy", "npm:1.0.0"]\
+          ],\
+          "linkType": "HARD"\
+        }]\
+      ]],\
       ["path-exists", [\
         ["npm:4.0.0", {\
           "packageLocation": "./.yarn/cache/path-exists-npm-4.0.0-e9e4f63eb0-505807199d.zip/node_modules/path-exists/",\
@@ -15228,6 +15322,15 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
           "packageLocation": "./.yarn/cache/path-type-npm-4.0.0-10d47fc86a-5b1e2daa24.zip/node_modules/path-type/",\
           "packageDependencies": [\
             ["path-type", "npm:4.0.0"]\
+          ],\
+          "linkType": "HARD"\
+        }]\
+      ]],\
+      ["pause", [\
+        ["npm:0.0.1", {\
+          "packageLocation": "./.yarn/cache/pause-npm-0.0.1-0c421a299d-e96ee581b6.zip/node_modules/pause/",\
+          "packageDependencies": [\
+            ["pause", "npm:0.0.1"]\
           ],\
           "linkType": "HARD"\
         }]\
@@ -15542,6 +15645,15 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
           "packageLocation": "./.yarn/cache/queue-microtask-npm-1.2.3-fcc98e4e2d-b676f8c040.zip/node_modules/queue-microtask/",\
           "packageDependencies": [\
             ["queue-microtask", "npm:1.2.3"]\
+          ],\
+          "linkType": "HARD"\
+        }]\
+      ]],\
+      ["random-bytes", [\
+        ["npm:1.0.0", {\
+          "packageLocation": "./.yarn/cache/random-bytes-npm-1.0.0-5a886b8827-09faa25639.zip/node_modules/random-bytes/",\
+          "packageDependencies": [\
+            ["random-bytes", "npm:1.0.0"]\
           ],\
           "linkType": "HARD"\
         }]\
@@ -17131,6 +17243,7 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
             ["etag", "npm:1.8.1"],\
             ["express", "npm:4.18.2"],\
             ["express-healthcheck", "npm:0.1.0"],\
+            ["express-session", "npm:1.17.3"],\
             ["express-validator", "npm:6.14.2"],\
             ["fast-deep-equal", "npm:3.1.3"],\
             ["fast-glob", "npm:3.2.12"],\
@@ -17256,6 +17369,9 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
             ["parent-module", "npm:1.0.1"],\
             ["parse-json", "npm:5.2.0"],\
             ["parseurl", "npm:1.3.3"],\
+            ["passport", "npm:0.6.0"],\
+            ["passport-google-oauth2", "npm:0.2.0"],\
+            ["passport-google-oauth20", "npm:2.0.0"],\
             ["path-exists", "npm:4.0.0"],\
             ["path-is-absolute", "npm:1.0.1"],\
             ["path-key", "npm:3.1.1"],\
@@ -17659,6 +17775,25 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
           "packageLocation": "./.yarn/cache/typescript-patch-b74a6ef84c-37f6e2c3c5.zip/node_modules/typescript/",\
           "packageDependencies": [\
             ["typescript", "patch:typescript@npm%3A4.9.4#~builtin<compat/typescript>::version=4.9.4&hash=d73830"]\
+          ],\
+          "linkType": "HARD"\
+        }]\
+      ]],\
+      ["uid-safe", [\
+        ["npm:2.1.5", {\
+          "packageLocation": "./.yarn/cache/uid-safe-npm-2.1.5-2f400e5dbd-07536043da.zip/node_modules/uid-safe/",\
+          "packageDependencies": [\
+            ["uid-safe", "npm:2.1.5"],\
+            ["random-bytes", "npm:1.0.0"]\
+          ],\
+          "linkType": "HARD"\
+        }]\
+      ]],\
+      ["uid2", [\
+        ["npm:0.0.4", {\
+          "packageLocation": "./.yarn/cache/uid2-npm-0.0.4-cd02831b83-e92325ce2e.zip/node_modules/uid2/",\
+          "packageDependencies": [\
+            ["uid2", "npm:0.0.4"]\
           ],\
           "linkType": "HARD"\
         }]\

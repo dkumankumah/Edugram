@@ -69,13 +69,28 @@ export default function Courses ({tutorData, accessToken, subjects}: PageProps) 
     const [isInvalidTextArea, setIsInvalidTextArea] = useState(true);
 
     const [isInvalidOption, setIsInvalidOption] = useState(true);
-
+    const [imageUrl, setImageUrl] = useState(null);
     const toast = useToast()
 
     useEffect(() => {
         if(tutor.role !== "tutor") {
             router.back()
         }
+        fetch("http://localhost:8000/tutor/get_image", {
+            method: 'GET',
+            credentials: "include",
+        })
+            .then(response => response.json())
+            .then(data => {
+                if (!data.image) {
+                    throw  new Error('Image not found')
+                }
+                const imageSrc = `data:${data.image.contentType};base64,${Buffer.from(data.image.data).toString('base64')}`;
+
+                setImageUrl(imageSrc);
+            }).catch((error)=>{
+            console.error(error);
+        })
     }, []);
 
     const handleChangeEvent = (event:any) => {
@@ -415,13 +430,22 @@ export default function Courses ({tutorData, accessToken, subjects}: PageProps) 
                     <Box flex={1.3}>
                         <Card borderRadius={20} >
                             <CardHeader>
-                                <Image
-                                    // borderRadius='full'
-                                    // boxSize='250px'
-                                    src="images/placeholderImage.png"
-                                    alt="Placeholder for image of Identity"
-                                    fallbackSrc='https://via.placeholder.com/150'
-                                />
+
+                                {imageUrl ? (
+                                    <Image src={imageUrl}
+                                           borderRadius='full'
+                                           boxSize='150px'
+                                           height={{
+                                               base: '50%', // 0-48em
+                                               md: '30%', // 48em-80em,
+                                               xl: '25%', // 80em+
+                                           }} alt="Profile Image" margin="auto"/>
+                                ) : (
+                                    <Image src="images/placeholderImage.png"
+                                           alt="Placeholder for image of Identity"
+                                           fallbackSrc='https://via.placeholder.com/150'
+                                           margin="auto"/>
+                                )}
                                 <Text
                                     mt={3}
                                     textAlign='center'

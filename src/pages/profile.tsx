@@ -63,7 +63,21 @@ export const Profile = ({data, accessToken}: PageProps) => {
         console.log(data)
         console.log(isTutor(accessToken))
         console.log(isAdmin(accessToken))
-        // setTutor(data)
+        fetch("http://localhost:8000/tutor/get_image", {
+            method: 'GET',
+            credentials: "include",
+        })
+            .then(response => response.json())
+            .then(data => {
+                if (!data.image) {
+                    throw  new Error('Image not found')
+                }
+                const imageSrc = `data:${data.image.contentType};base64,${Buffer.from(data.image.data).toString('base64')}`;
+
+                setImageUrl(imageSrc);
+            }).catch((error)=>{
+            console.error(error);
+        })
     }, [])
 
     const handleFile = async (imageFile: File) => {
@@ -276,10 +290,15 @@ export const Profile = ({data, accessToken}: PageProps) => {
                             {/*       src="images/placeholderImage.png"*/}
                             {/*       alt="Placeholder for image of Identity"*/}
                             {/*/>*/}
-
-
                             {imageUrl ? (
-                                <Image src={imageUrl} alt="Profile Image" margin="auto"/>
+                                <Image src={imageUrl}
+                                       borderRadius='full'
+                                       boxSize='150px'
+                                       height={{
+                                    base: '100%', // 0-48em
+                                    md: '30%', // 48em-80em,
+                                    xl: '25%', // 80em+
+                                }} alt="Profile Image" margin="auto"/>
                             ) : (
                                 <Image src="images/placeholderImage.png" alt="Placeholder for image of Identity"
                                        margin="auto"/>

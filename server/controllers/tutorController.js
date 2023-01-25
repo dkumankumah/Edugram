@@ -21,13 +21,6 @@ const uploadProfileImage = async (req, res) => {
       throw new Error('Tutor not found')
     }
 
-    // const obj = {
-    //   img: {
-    //     data: req.file.filename,
-    //     contentType:req.file.mimetype
-    //   }
-    // }
-
     // tutor.profile.image =  obj.img
     tutor.profile.image.data = req.file.buffer;
     tutor.profile.image.contentType = req.file.mimetype

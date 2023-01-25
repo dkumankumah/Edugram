@@ -1,6 +1,4 @@
 
-F
-src/pages/messages.tsx,b\2\b22f64d5131ef41a3f12fa073a2a6ba0df762aea
 b
 2src/components/admin/container/profileUserPage.tsx,f\f\ffd707a0b91bbecd8d3e6cd0a6baf778f3bed204
 H
@@ -15,8 +13,6 @@ J
 server/models/userModal.js,1\b\1bd23cfbe45d1f7666a799e59f3b21e241992823
 O
 src/components/ProfileImage.tsx,d\9\d9435f1e86f7fb2ee40611771d33bc4438dab3b0
-G
-src/pages/dashboard.tsx,b\a\ba0fbe69235c39e0fa5b915b0e351aacf36b39fc
 M
 server/websocket/websocket.js,e\4\e41147e47c1bcc2583e46972e65f582af00fbbdb
 E
@@ -33,8 +29,6 @@ U
 %server/controllers/adminController.js,f\c\fc446637327612a44099dadfa5a83bd2c302f499
 <
 package.json,7\0\7030d0b2f71b999ff89a343de08c414af32fc93a
-G
-src/pages/chat/[id].tsx,0\4\04aea0d595e9cb7a3e501819b61b18c4aade1a4d
 @
 server/server.js,9\3\93c47de4314a8bf1f5f5dc34593df407f5ceebf9
 M
@@ -45,3 +39,7 @@ $server/backendTesting/tutors.test.js,f\7\f7432815fc37a18a18bdd56d1e65850eed426
 server/index.js,e\1\e1a504bc36c43a5b06e18911fe39381356468d7f
 U
 %server/backendTesting/tickets.test.js,3\2\32e90cb2c5196e489f2f1f207048b8addb68bcba
+W
+'server/controllers/ticketsController.js,f\2\f26236eb9ab63c886bf7e4f3324dae90d9416915
+K
+server/models/tutorModal.js,b\f\bfc1726d9c78882a47be7ff52d3d76f563ce0bce
