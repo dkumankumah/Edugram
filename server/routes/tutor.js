@@ -116,7 +116,7 @@ router.get('/:tutorId', async (req, res) => {
   }
 });
 
-router.delete('/:tutorId', async (req, res) => {
+router.delete('/:tutorId', checkCookie, async (req, res) => {
   try {
     const updateTutor = await Tutor.deleteOne(
       {_id: req.params.tutorId},
@@ -182,7 +182,6 @@ router.put('/:tutorId', checkCookie, async (req, res, next) => {
             "address.postalCode": profile.postalCode,
           }
         }, {new: true})
-      console.log(updateTutor)
       res.json({message: updateTutor});
     } catch (err) {
       res.json({error: err})
@@ -193,7 +192,6 @@ router.put('/:tutorId', checkCookie, async (req, res, next) => {
 })
 
 router.put('/password/:tutorId', checkCookie, async (req, res, next) => {
-  console.log(req.body.password)
   const password = req.body.password.oldPassword
   const newPassword = await bcrypt.hash(req.body.password.newPassword, 10);
 
@@ -255,8 +253,6 @@ router.get('/search/:subject', async (req, res) => {
 router.post('/tutor', async (req, res) => {
   const email = req.body.email;
   const password = req.body.password;
-  console.log(email)
-  console.log(password)
 
   Tutor.findOne({email: req.body.email}, function (err, user) {
     if (!user) {

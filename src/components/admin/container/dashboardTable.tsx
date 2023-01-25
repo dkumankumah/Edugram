@@ -6,12 +6,18 @@ export default function DashboardTable({data}: any) {
 
     const allChecked = checkedItems.every(Boolean)
     const isIndeterminate = checkedItems.some(Boolean) && !allChecked
-
-    const sortedData = data
+    console.log(data)
+    const sortedData = data && data
         .slice(0, 5)
         .sort((a: any, b: any) => {
             return new Date(a.dateCreated).getTime() - new Date(b.dateCreated).getTime();
         });
+
+    // const sortedData = data
+    //     .slice(0, 5)
+    //     .sort((a: any, b: any) => {
+    //         return new Date(a.dateCreated).getTime() - new Date(b.dateCreated).getTime();
+    //     });
         // .sort((a: any, b: any) => {
         //     new Date(a.dateCreated) - new Date(b.dateCreated)
         // });

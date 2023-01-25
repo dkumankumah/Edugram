@@ -145,12 +145,12 @@ export const Profile = ({data, accessToken}: PageProps) => {
                 duration: 5000,
                 isClosable: true
             }) :
-            await fetch('http://localhost:8000/tutor/password/' + tutor._id, {
+            await fetch(`http://localhost:8000/tutor/password/` + tutor._id, {
                 method: 'PUT',
                 body: JSON.stringify({password: password}),
                 headers: {
                     "Content-Type": "application/json",
-                    'Access-Control-Allow-Origin': 'http://localhost:8000',
+                    'Access-Control-Allow-Origin': `http://localhost:8000`,
                     Cookie: accessToken
                 },
                 credentials: "include",
@@ -199,12 +199,12 @@ export const Profile = ({data, accessToken}: PageProps) => {
                 isClosable: true
             }) :
 
-            fetch('http://localhost:8000/tutor/' + tutor._id, {
+            fetch(`http://localhost:8000/tutor/` + tutor._id, {
                 method: 'PUT',
                 body: JSON.stringify({user: user}),
                 headers: {
                     "Content-Type": "application/json",
-                    'Access-Control-Allow-Origin': 'http://localhost:8000',
+                    'Access-Control-Allow-Origin': `http://localhost:8000`,
                     Cookie: accessToken
                 },
                 credentials: "include",
@@ -236,12 +236,12 @@ export const Profile = ({data, accessToken}: PageProps) => {
                 isClosable: true
             }) :
 
-            fetch('http://localhost:8000/tutor/' + tutor._id, {
+            fetch(`http://localhost:8000/tutor/` + tutor._id, {
                 method: 'PUT',
                 body: JSON.stringify({user: address}),
                 headers: {
                     "Content-Type": "application/json",
-                    'Access-Control-Allow-Origin': 'http://localhost:8000',
+                    'Access-Control-Allow-Origin': `http://localhost:8000`,
                     Cookie: accessToken
                 },
                 credentials: "include",
@@ -265,11 +265,11 @@ export const Profile = ({data, accessToken}: PageProps) => {
 
     const handleConfirmAction = () => {
         const confirmAction = confirm('Are you really really really sure about this? \n This action cannot be undone')
-        confirmAction ? fetch('http://localhost:8000/tutor/' + tutor._id, {
+        confirmAction ? fetch(`http://localhost:8000/tutor/` + tutor._id, {
             method: 'DELETE',
             headers: {
                 "Content-Type": "application/json",
-                'Access-Control-Allow-Origin': 'http://localhost:8000',
+                'Access-Control-Allow-Origin': `http://localhost:8000`,
                 Cookie: accessToken
             }
         }).then(response => response.json()).then(() =>
@@ -524,7 +524,7 @@ export const Profile = ({data, accessToken}: PageProps) => {
 }
 export const getServerSideProps: GetServerSideProps = async (ctx) => {
     const accessToken = JSON.stringify(ctx.req.cookies.access_token)
-    const response = await fetch('http://localhost:8000/tutor/details', {
+    const response = await fetch(`http://localhost:8000/tutor/details`, {
         method: "GET",
         credentials: "include",
         mode: 'cors',

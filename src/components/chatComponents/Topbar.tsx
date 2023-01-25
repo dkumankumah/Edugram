@@ -8,7 +8,7 @@ import {chosenUser} from "../../pages/ChatSidebar";
 export default function Topbar() {
     return (
         <Flex
-            borderRightRadius="10px"
+            borderTopRightRadius="10px"
             bg="#4EA4B1"
             h="81px"
             w="100%"

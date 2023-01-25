@@ -217,7 +217,7 @@ const TutorInfo = ({ tutor }: Pageprops) => {
 };
 
 export const getStaticPaths = async () => {
-  const tutorResult = await fetch("http://localhost:8000/tutor").catch(
+  const tutorResult = await fetch(`http://localhost:8000/tutor`).catch(
     (error) => {
       console.log(error);
       throw new Error("Something went wrong, when fetching data");
@@ -240,7 +240,7 @@ export const getStaticPaths = async () => {
 
 export const getStaticProps = async (context: any) => {
   const id = context.params.id;
-  const data = await fetch(`http://localhost:8000/tutor/` + id).then(response => response.json()
+  const data = await fetch(`https://edugram.onrender.com/tutor/` + id).then(response => response.json()
   ).catch(error => console.log("Some problem(s) encountered when fetching data, " + error))
 
   return {
