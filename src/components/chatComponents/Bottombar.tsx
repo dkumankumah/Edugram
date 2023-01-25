@@ -28,11 +28,17 @@ export default function Bottombar({tutorData, accessToken}: PageProps) {
 
     }
     return (
-        <FormControl onSubmit={sendMessage} p={3} as="form">
-            <Flex alignItems="center">
-                <Input bg="#F5F5F5" autoComplete="off" placeholder="Type a message..." onChange={e => setInput(e.target.value)} value={input} w="95%" mr={2}/>
-                <Button type="submit" bg="#4EA4B1" color="#FFFFFF" fontSize="16px">SEND</Button>
-            </Flex>
-        </FormControl>
+        <Flex
+        bg={'white'}
+        borderBottomRightRadius = "md">
+            <FormControl onSubmit={sendMessage} p={3} as="form">
+                <Flex
+                    alignItems="center">
+                    <Input bg="#F5F5F5" autoComplete="off" placeholder="Type a message..." onChange={e => setInput(e.target.value)} value={input} w="95%" mr={2}/>
+                    <Button type="submit" bg="#4EA4B1" color="#FFFFFF" fontSize="16px">SEND</Button>
+                </Flex>
+            </FormControl>
+        </Flex>
+
     )
 }

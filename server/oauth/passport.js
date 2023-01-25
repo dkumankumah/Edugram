@@ -14,10 +14,13 @@ module.exports = function(passport) {
         firstName: profile.name.givenName,
         lastName: profile.name.familyName,
         email: profile.emails.at(0).value,
-        role: "tutor"
+        role: "tutor",
+        profile: {
+          bio: "",
+          image: profile.photos.at(0).value
+        }
       }
 
-      console.log(newTutor)
       try {
         let tutor = await Tutor.findOne({googleId: profile.id})
 

@@ -138,17 +138,16 @@ export default function Courses ({tutorData, accessToken, subjects}: PageProps) 
                 isClosable: true})
         }
 
-        fetch('http://localhost:8000/tutor/' + tutor._id, {
+        fetch(`http://localhost:8000/tutor/` + tutor._id, {
             method: 'PATCH',
             credentials: "include",
             headers: {
                 "Content-Type": "application/json",
-                'Access-Control-Allow-Origin': 'http://localhost:8000',
+                'Access-Control-Allow-Origin': `http://localhost:8000`,
                 Cookie: accessToken
             },
             body: JSON.stringify({course: tutor.course }),
         }).then(response => response.json()).then(result => {
-            console.log(result)
             setTutor(result)}
 
         )
@@ -163,12 +162,12 @@ export default function Courses ({tutorData, accessToken, subjects}: PageProps) 
         const index = tutor.course!.indexOf(subject)
         tutor.course?.splice(index, 1)
 
-        fetch('http://localhost:8000/tutor/' + tutor._id, {
+        fetch(`http://localhost:8000/tutor/` + tutor._id, {
             method: 'PATCH',
             credentials: "include",
             headers: {
                 "Content-Type": "application/json",
-                'Access-Control-Allow-Origin': 'http://localhost:8000',
+                'Access-Control-Allow-Origin': `http://localhost:8000`,
                 Cookie: accessToken
             },
             body: JSON.stringify({course: tutor.course }),
@@ -615,7 +614,7 @@ export default function Courses ({tutorData, accessToken, subjects}: PageProps) 
 
 export const getServerSideProps: GetServerSideProps = async (ctx) => {
     const accessToken = JSON.stringify(ctx.req.cookies.access_token) ?? null
-    const response = await fetch('http://localhost:8000/tutor/details', {
+    const response = await fetch(`http://localhost:8000/tutor/details`, {
         method: "GET",
         credentials: "include",
         mode: 'cors',
@@ -632,14 +631,13 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
     }
 
     const tutorData = await response.json()
-    console.log(tutorData.role)
     if(tutorData.role === 'student') {
         ctx.res.writeHead(302, { Location: '/dashboard' });
         ctx.res.end();
         return { props: {tutorData} };
     }
 
-    const res = await fetch('http://localhost:8000/subject/' )
+    const res = await fetch(`http://localhost:8000/subject/`)
     const subjects = await res.json()
 
     return {

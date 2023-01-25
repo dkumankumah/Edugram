@@ -56,6 +56,15 @@ io.on('connection', (socket) => {
     }
 
   })
+  socket.on("delete-chat", async (chosenChatId) => {
+    try {
+      await Chat.deleteOne({_id: chosenChatId});
+      socket.emit("chat-deleted", chosenChatId);
+    } catch (err) {
+      console.log(err);
+    }
+
+  })
 
   //This Renders at the start of visiting the page
   Tickets.find({}).then(result => {

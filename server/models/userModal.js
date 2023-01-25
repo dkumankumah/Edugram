@@ -59,7 +59,10 @@ const userSchema = new mongoose.Schema({
   blocked: {
     type: Boolean,
     required: false
-  }
+  },
+  request: [
+    {id: String, firstName: String, lastName: String, location: String, subject: String, status: String}
+  ]
 });
 
 const User = mongoose.model("User", userSchema);

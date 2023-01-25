@@ -11,7 +11,6 @@ export interface UserModel {
     educationLevel?: string;
     phoneNumber?: string;
     verified?: boolean;
-    averageResponseTime?: number;
     role: string;
     notification?: Notification[];
 }
