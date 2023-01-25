@@ -7,8 +7,10 @@ const bcrypt = require("bcrypt");
 const {check, validationResult, body} = require("express-validator");
 const {verifyToken} = require("../middleware/authentication");
 const {JsonWebTokenError} = require("jsonwebtoken");
-const {checkPassword} = require('../middleware/authentication')
-
+const {checkPassword} = require('../middleware/authentication');
+// const upload = require("multer")({ dest: "uploads/" });
+const tutorController = require('../controllers/tutorController');
+const upload = require("../middleware/multer");
 const userValidation = [
   check("firstName")
     .exists()
@@ -38,6 +40,9 @@ const userValidation = [
     .matches("[A-Z]")
     .withMessage("Password must contain uppercase"),
 ];
+
+router.get('/get_image', checkCookie, tutorController.getProfileImage)
+router.post('/upload', upload, checkCookie, tutorController.uploadProfileImage)
 
 // Get all tutors
 router.get('/', async (req, res, next) => {
@@ -259,9 +264,10 @@ router.post('/tutor', async (req, res) => {
         console.log('invalid password')
       }
     }
-
   })
 
 })
+
+
 
 module.exports = router;

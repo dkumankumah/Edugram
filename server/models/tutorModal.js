@@ -2,8 +2,18 @@ const mongoose = require('mongoose')
 const User = require("./userModal")
 
 const TutorProfile = {
-  bio: String,
-  image: String
+  bio: {
+    type: String,
+    required: false,
+  },
+  // imageName: {
+  //   type: String,
+  //   required: true,
+  // },
+  image: {
+    data: Buffer,
+    contentType: String
+  }
 }
 
 const UserSchema = User.schema
@@ -21,8 +31,8 @@ const tutorSchema = extend(UserSchema, {
     required: false,
   },
   profile: {
-    bio: String,
-    image: String
+    type: TutorProfile,
+    required: false
   },
   course: [
     {subject: String, fee: Number, courseDescription: String}

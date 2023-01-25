@@ -54,15 +54,36 @@ const Dashboard = ({tutorData, accessToken}: PageProps) => {
     let [arrayChartData, setArrayChartData] = useState<[]>();
     const [selectedOption, setSelectedOption] = useState(null);
 
+    const [imageUrl, setImageUrl] = useState(null);
+
+
     useEffect(() => {
         setIsAuth(isAdmin(accessToken))
-        if(isAuth) {
+        if (isAuth){
             socket.on('data', (result: any) => {
                 console.log('Getting Data', result)
                 getChartData(result);
                 setDataa(result);
             });
+        }else {
+            fetch("http://localhost:8000/tutor/get_image", {
+                method: 'GET',
+                credentials: "include",
+            })
+                .then(response => response.json())
+                .then(data => {
+                    if (!data.image) {
+                        throw  new Error('Image not found')
+                    }
+                    const imageSrc = `data:${data.image.contentType};base64,${Buffer.from(data.image.data).toString('base64')}`;
+
+                    setImageUrl(imageSrc);
+                }).catch((error)=>{
+                console.error(error);
+            })
         }
+
+        // }
 
     }, []);
 
@@ -173,13 +194,12 @@ const Dashboard = ({tutorData, accessToken}: PageProps) => {
         setIsEditing(!isEditing)
         tutor.profile.bio = textValue
 
-        fetch(`http://localhost:8000/tutor/` + tutor._id, {
+        fetch('http://localhost:8000/tutor/' + tutor._id, {
             method: 'PATCH',
-            credentials: "include",
             headers: {
                 "Content-Type": "application/json",
-                'Access-Control-Allow-Origin': `http://localhost:8000`,
-                Cookie: accessToken
+                'Access-Control-Allow-Origin': 'http://localhost:8000',
+                'Authorization': 'Bearer ' + getToken()
             },
             body: JSON.stringify({profile: tutor.profile }),
         }).then(response => response.json()).then(result =>
@@ -195,13 +215,12 @@ const Dashboard = ({tutorData, accessToken}: PageProps) => {
             }
         })
 
-        fetch(`http://localhost:8000/tutor/` + tutor._id, {
+        fetch('http://localhost:8000/tutor/' + tutor._id, {
             method: 'PATCH',
-            credentials: "include",
             headers: {
                 "Content-Type": "application/json",
-                'Access-Control-Allow-Origin': `http://localhost:8000`,
-                Cookie: accessToken
+                'Access-Control-Allow-Origin': 'http://localhost:8000',
+                'Authorization': 'Bearer ' + getToken()
             },
             body: JSON.stringify({request: tutor.request }),
         }).then(response => response.json()).then(result =>
@@ -230,7 +249,6 @@ const Dashboard = ({tutorData, accessToken}: PageProps) => {
     if(isAuth) {
         return (
             <AdminContainer>
-
                 <Flex color='black' minWidth='max-content' gap='20'>
                     <Card
                         maxW='md'
@@ -322,17 +340,21 @@ const Dashboard = ({tutorData, accessToken}: PageProps) => {
                 <Box flex={1}>
                     <Card boxShadow={'xl'} borderRadius={20} >
                         <CardHeader>
-                            <Flex justifyContent={'center'}>
-                                <Image
-                                    borderRadius='full'
-                                    // boxSize='250px'
-                                    src={tutor.profile.image ? tutor.profile.image : 'images/placeholderImage.png'}
-                                    // src="images/placeholderImage.png"
-                                    alt="Placeholder for image of Identity"
-                                    fallbackSrc='https://via.placeholder.com/150'
-                                />
-                            </Flex>
-
+                            {imageUrl ? (
+                                <Image src={imageUrl}
+                                       borderRadius='full'
+                                       boxSize='150px'
+                                       height={{
+                                           base: '50%', // 0-48em
+                                           md: '30%', // 48em-80em,
+                                           xl: '25%', // 80em+
+                                       }} alt="Profile Image" margin="auto"/>
+                            ) : (
+                                <Image src="images/placeholderImage.png"
+                                       alt="Placeholder for image of Identity"
+                                       fallbackSrc='https://via.placeholder.com/150'
+                                       margin="auto"/>
+                            )}
                             <Text
                                 mt={3}
                                 textAlign='center'
@@ -490,64 +512,61 @@ const Dashboard = ({tutorData, accessToken}: PageProps) => {
                                 />
                             </CardHeader>
                             <CardBody>
-                                <Box
-                                    maxHeight="430" overflowY="scroll">
-                                    {tutor.request?.map((request) => {
-                                        if(request.status === "pending") {
-                                            return (
-                                                <Card
-                                                    key={request.id}
-                                                    mt={4}
-                                                    p={2}>
-                                                    <CardBody>
-                                                        <Flex key={request.id} alignItems="center">
-                                                            <Flex   flex='1' flexDirection="row" justifyContent={"space-between"} gap='4' alignItems='center' flexWrap='wrap'>
+                                {tutor.request?.map((request) => {
+                                    if(request.status === "pending") {
+                                        return (
+                                            <Card
+                                                key={request.id}
+                                                mt={4}
+                                                p={2}>
+                                                <CardBody>
+                                                    <Flex key={request.id} alignItems="center">
+                                                        <Flex   flex='1' flexDirection="row" justifyContent={"space-between"} gap='4' alignItems='center' flexWrap='wrap'>
 
-                                                                <Flex alignItems={"center"} >
-                                                                    <Avatar name={request.firstName + " " + request.lastName} />
-                                                                    <Text
-                                                                        ml={2}
-                                                                        fontWeight={'bold'}
-                                                                        fontSize={'large'}>{request.firstName + " " + request.lastName}</Text>
-                                                                </Flex>
-                                                                <Flex>
-                                                                    <Box
-                                                                        alignSelf={'baseline'}
-                                                                    >
-                                                                        <Text>
-                                                                            Subject: {request.subject} - {request.location}
-                                                                        </Text>
-                                                                    </Box>
+                                                            <Flex alignItems={"center"} >
+                                                                <Avatar name={request.firstName + " " + request.lastName} />
+                                                                <Text
+                                                                    ml={2}
+                                                                    fontWeight={'bold'}
+                                                                    fontSize={'large'}>{request.firstName + " " + request.lastName}</Text>
+                                                            </Flex>
+                                                            <Flex>
+                                                                <Box
+                                                                    alignSelf={'baseline'}
+                                                                >
+                                                                    <Text>
+                                                                        Subject: {request.subject} - {request.location}
+                                                                    </Text>
+                                                                </Box>
 
-                                                                </Flex>
-                                                                <Flex
-                                                                    display={tutor.role === 'student' ? 'none' : 'block'}>
-                                                                    <Button
-                                                                        alignSelf={'baseline'}
-                                                                        size='sm'
-                                                                        colorScheme='teal' mr={2}
-                                                                        onClick={()=> handleAccept("accepted", request.id)}>
-                                                                        Accept
-                                                                    </Button>
-                                                                    <Button
-                                                                        alignSelf={'baseline'}
-                                                                        size='sm'
-                                                                        colorScheme='red' mr={2}
-                                                                        onClick={()=> handleAccept("rejected", request.id)}>
-                                                                        Reject
-                                                                    </Button>
-                                                                </Flex>
+                                                            </Flex>
+                                                            <Flex
+                                                                display={tutor.role === 'student' ? 'none' : 'block'}>
+                                                                <Button
+                                                                    alignSelf={'baseline'}
+                                                                    size='sm'
+                                                                    colorScheme='teal' mr={2}
+                                                                    onClick={()=> handleAccept("accepted", request.id)}>
+                                                                    Accept
+                                                                </Button>
+                                                                <Button
+                                                                    alignSelf={'baseline'}
+                                                                    size='sm'
+                                                                    colorScheme='red' mr={2}
+                                                                    onClick={()=> handleAccept("rejected", request.id)}>
+                                                                    Reject
+                                                                </Button>
                                                             </Flex>
                                                         </Flex>
-                                                    </CardBody>
+                                                    </Flex>
+                                                </CardBody>
 
-                                                </Card>
+                                            </Card>
 
-                                            );
-                                        }
+                                        );
+                                    }
 
-                                    })}
-                                </Box>
+                                })}
 
                             </CardBody>
                         </Card>
@@ -582,47 +601,44 @@ const Dashboard = ({tutorData, accessToken}: PageProps) => {
                             </CardHeader>
                             <Collapse in={isOpen} animateOpacity>
                                 <CardBody>
-                                    <Box
-                                        maxHeight="430" overflowY="scroll">
-                                        {tutor.request?.map((request) => {
-                                            if(request.status === "accepted") {
-                                                return (
-                                                    <Card
-                                                        key={request.id}
-                                                        pt={2}
-                                                        mt={4}>
-                                                        <CardBody>
-                                                            <Flex key={request.id} alignItems="center">
-                                                                <Flex   flex='1' flexDirection="row" justifyContent={"space-between"} gap='4' alignItems='center' flexWrap='wrap'>
+                                    {tutor.request?.map((request) => {
+                                        if(request.status === "accepted") {
+                                            return (
+                                                <Card
+                                                    key={request.id}
+                                                    pt={2}
+                                                    mt={4}>
+                                                    <CardBody>
+                                                        <Flex key={request.id} alignItems="center">
+                                                            <Flex   flex='1' flexDirection="row" justifyContent={"space-between"} gap='4' alignItems='center' flexWrap='wrap'>
 
-                                                                    <Flex alignItems={"center"} >
-                                                                        <Avatar name={request.firstName + " " + request.lastName} />
-                                                                        <Text
-                                                                            ml={2}
-                                                                            fontWeight={'bold'}
-                                                                            fontSize={'large'}>{request.firstName + " " + request.lastName}</Text>
-                                                                    </Flex>
-                                                                    <Flex>
-                                                                        <Box
-                                                                            alignSelf={'baseline'}>
-                                                                            <Text>
-                                                                                Subject: {request.subject} - {request.location}
-                                                                            </Text>
-                                                                        </Box>
-
-                                                                    </Flex>
-                                                                    <Icon
-                                                                        as={CheckIcon}
-                                                                        boxSize={6}
-                                                                        color='green'/>
+                                                                <Flex alignItems={"center"} >
+                                                                    <Avatar name={request.firstName + " " + request.lastName} />
+                                                                    <Text
+                                                                        ml={2}
+                                                                        fontWeight={'bold'}
+                                                                        fontSize={'large'}>{request.firstName + " " + request.lastName}</Text>
                                                                 </Flex>
+                                                                <Flex>
+                                                                    <Box
+                                                                        alignSelf={'baseline'}>
+                                                                        <Text>
+                                                                            Subject: {request.subject} - {request.location}
+                                                                        </Text>
+                                                                    </Box>
+
+                                                                </Flex>
+                                                                <Icon
+                                                                    as={CheckIcon}
+                                                                    boxSize={6}
+                                                                    color='green'/>
                                                             </Flex>
-                                                        </CardBody>
-                                                    </Card>
-                                                );
-                                            }
-                                        })}
-                                    </Box>
+                                                        </Flex>
+                                                    </CardBody>
+                                                </Card>
+                                            );
+                                        }
+                                    })}
                                 </CardBody>
                             </Collapse>
                         </Card>
@@ -636,7 +652,7 @@ const Dashboard = ({tutorData, accessToken}: PageProps) => {
 
 export const getServerSideProps: GetServerSideProps = async (ctx) => {
     const accessToken = JSON.stringify(ctx.req.cookies.access_token) ?? null
-    const response = await fetch(`http://localhost:8000/tutor/details`, {
+    const response = await fetch('http://localhost:8000/tutor/details', {
         method: "GET",
         credentials: "include",
         mode: 'cors',

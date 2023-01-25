@@ -3,19 +3,19 @@ const mongoose = require('mongoose')
 const AddressSchema = {
   street: {
     type: String,
-    required: true
+    required: false
   },
   city: {
     type: String,
-    required: true
+    required: false
   },
   state: {
     type: String,
-    required: true
+    required: false
   },
   postalCode: {
     type: String,
-    required: true
+    required: false
   }
 };
 
@@ -66,5 +66,4 @@ const userSchema = new mongoose.Schema({
 });
 
 const User = mongoose.model("User", userSchema);
-
 module.exports = User;
