@@ -28,13 +28,17 @@ io.on('connection', (socket) => {
       await Chat.find({tutor: user}).then(result => {
         socket.emit("user-chats", result)
         console.log("Gevonden chats voor tutor " + user.firstName + ": " + result);
-      });
+      }).catch(function () {
+        console.log("Something went wrong with finding chats for tutor")
+      })
     }
 
     if (socket.request.role === "student")
       await Chat.find({student: user}).then(result => {
         socket.emit("user-chats", result)
         console.log("Gevonden chats voor student " + user.firstName + ": " + result);
+      }).catch(function () {
+        console.log("Something went wrong with finding chats for tutor")
       });
   });
 
@@ -50,16 +54,17 @@ io.on('connection', (socket) => {
     if (chosenChatId.length < 3) {
 
     } else {
-      socket.join(chosenChatId);
       console.log("Chosen chat Id in socket: " + chosenChatId);
       io.to(chosenChatId).emit("update-chat", await Chat.findOne({_id: chosenChatId}));
+      socket.join(chosenChatId);
     }
 
   })
-
   //This Renders at the start of visiting the page
   Tickets.find({}).then(result => {
     socket.emit('data', result)
+  }).catch(function () {
+    console.log("Something went wrong with finding tickets")
   });
 
   const changeStream = Tickets.watch();
@@ -69,6 +74,8 @@ io.on('connection', (socket) => {
     // Fetch the updated data from the database
     Tickets.find().then(result => {
       socket.emit('update-tickets', result)
+    }).catch(function () {
+      console.log("Something went wrong updating the tickets")
     });
   });
 });

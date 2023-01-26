@@ -28,7 +28,7 @@ const createTicket = async (req, res) => {
 // Retrieve a task by ticketId
 const getTicketById = (req, res) => {
 
-  Tickets.findById(req.params.id, function (err, task) {
+  Tickets.findById(req.params.id.toString(), function (err, task) {
     if (err) {
       res.status(404).send({
         error: {
