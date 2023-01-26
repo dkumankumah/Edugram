@@ -32,9 +32,6 @@ const TutorInfo = ({tutor}: Pageprops) => {
     const lessonLocationHome = "at your home";
     const lessonLocationLibrary = "library";
 
-
-
-
     const checkLessonLocations = () => {
         {
             tutor.profile?.lessonLocation?.map((lesson) => {
