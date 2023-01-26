@@ -11,17 +11,19 @@ import {GetServerSideProps} from "next";
 import {TutorModel} from "../models/TutorModel";
 import {decodeJWT} from "./api/api.storage";
 import ProfileNavigation from "../components/shared/ProfileNavigation/ProfileNavigation";
+import {UserModel} from "../models/UserModel";
 
 const socket = io.connect("ws://localhost:3001", { transports: ['websocket', 'polling', 'flashsocket'] });
 
 interface PageProps {
     accessToken: string,
-    tutorData: TutorModel,
+    tutorData: UserModel,
 }
 
-const getMessages = (chat: ChatModel, {tutorData, accessToken}: PageProps) =>
+ const getMessages = (chat: ChatModel, {tutorData}: PageProps) =>
     chat?.messages.map(msg => {
-        const sender = msg.sender === decodeJWT(accessToken).id;
+        console.log(chat)
+        const sender = msg.sender === tutorData._id;
         const today = new Date();
         const date = new Date(msg.dateTime);
         let stringDate = "";
@@ -101,7 +103,7 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
     });
 
     const tutorData = await response.json()
-    console.log(tutorData)
+    // console.log(tutorData)
 
     return {
         props: {tutorData, accessToken},

@@ -47,24 +47,22 @@ export default function ChatSidebar({tutorData, accessToken}: PageProps) {
             firstName: decodeJWT(accessToken).firstName
         }
         fullname = decodeJWT(accessToken).firstName + " " + decodeJWT(accessToken).lastName;
-        console.log("Ingelogde user chat model: " + user.firstName + ": " + user._id);
+        // console.log("Ingelogde user chat model: " + user.firstName + ": " + user._id);
         socket.emit('get-chats', user);
         socket.on("user-chats", (data) => {
             const tempArray: ChatModel[] = [];
             data.forEach(function (value: ChatModel) {
                 if (value.tutor != null) {
-                    console.log("Chat: " + value)
+                    // console.log("Chat: " + value)
                     tempArray.push(value)
                 }
             });
-            console.log("This is tempArray: " + tempArray)
+            // console.log("This is tempArray: " + tempArray)
             setChatlist(tempArray);
-            
         });
     },[chosenChatId]);
 
     const deleteChat = () => {
-        console.log("WERKT HET?")
         const temp = chatList
         let idx = 0;
         chatList.map(chat => {
@@ -178,7 +176,7 @@ const getServerSideProps: GetServerSideProps = async (ctx) => {
     });
 
     const data = await response.json()
-    console.log(data)
+    // console.log(data)
 
     return {
         props: {data, accessToken},

@@ -10,7 +10,7 @@ const upload = multer({storage});
 // tutorController.js
 const uploadProfileImage = async (req, res) => {
 
-  console.log(req.file);
+  // console.log(req.file);
   try {
     const {file} = req
     if (!file) {
@@ -34,14 +34,14 @@ const uploadProfileImage = async (req, res) => {
 
 
 const getProfileImage = async (req, res) => {
-  console.log("Log", req.id)
+  // console.log("Log", req.id)
   try {
     const tutor = await Tutor.findById(req.id)
     if (!tutor || !tutor.profile.image) {
       throw new Error('Image not found')
     }
 
-    console.log("GET: ",tutor.profile)
+    // console.log("GET: ",tutor.profile)
     // res.contentType(tutor.profile.image.contentType);
     res.send(tutor.profile);
   } catch (error) {

@@ -35,6 +35,7 @@ import {wait} from "next/dist/build/output/log";
 import {chosenChat, setId} from "../../pages/ChatSidebar";
 import Bottombar from "../chatComponents/Bottombar";
 import {UserModel} from "../../models/UserModel";
+import {getMessages} from "../../pages/chats";
 
 interface PageProps {
     accessToken: string,
@@ -92,8 +93,9 @@ Sincerely, ${student.firstName ? student.firstName : 'firstname unknown'} ${stud
 
     const bookLesson = () => {
         const redirectToChatPage = (chatName: string, chatId: string) => {
+            console.log(chatId)
             router.push({
-                pathname: `http://localhost:3000/chat/Chats`,
+                pathname: `http://localhost:3000/chats`,
             }).then(() => {
                 chosenChat(tutor.firstName, chatId)
             })
@@ -118,6 +120,7 @@ Sincerely, ${student.firstName ? student.firstName : 'firstname unknown'} ${stud
             }),
         }).then(r => r.json()).then((chatId) => {
             if (chatId) {
+                console.log(chatId)
                 toast({
                     title: 'Success',
                     description: 'Successfully sent request',
@@ -125,11 +128,11 @@ Sincerely, ${student.firstName ? student.firstName : 'firstname unknown'} ${stud
                     duration: 3000,
                     isClosable: true,
                 })
-                redirectToChatPage(tutor.firstName, chatId)
+                redirectToChatPage(tutor.firstName, chatId.chatId)
                 // setTimeout(() => ), 2000)
             }
         }).catch((error) => {
-            console.log(error)
+            // console.log(error)
             alert(error)
         })
     }

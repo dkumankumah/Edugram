@@ -101,8 +101,8 @@ app.get('/logout', checkCookie, function (req, res) {
 })
 
 app.get('/cookie', checkCookie, async function (req, res) {
-  console.log('yes')
-  console.log(req.id)
+  // console.log('yes')
+  // console.log(req.id)
 
   if (req.role === 'tutor'){
     res.status(404).send({error: 'Tutors cannot make this request!'})

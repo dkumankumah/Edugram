@@ -9,8 +9,6 @@ const {verifyToken} = require("../middleware/authentication");
 const {JsonWebTokenError} = require("jsonwebtoken");
 const {checkPassword} = require('../middleware/authentication')
 const { sendAcceptMail} = require("../middleware/mail");
-
-const {checkPassword} = require('../middleware/authentication');
 // const upload = require("multer")({ dest: "uploads/" });
 const tutorController = require('../controllers/tutorController');
 const upload = require("../middleware/multer");

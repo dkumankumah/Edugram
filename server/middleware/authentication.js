@@ -71,7 +71,7 @@ module.exports.checkCookieForChat = (socket) => {
     } else if (data) {
       socket.request.id = data.id
       socket.request.role = data.role
-      console.log("Role: " + socket.request.role)
+      // console.log("Role: " + socket.request.role)
       // next()
     } else {
       res.send({message: 'something else in check jwt'})
@@ -101,16 +101,4 @@ const createCookie = (id, firstName, lastName, email, role, res, next) => {
     throw e
   }
   next();
-}
-
-const createToken = (id, firstName, email, lastName, role) => {
-  return jwt.sign(
-    {
-      id: id,
-      firstName: firstName,
-      lastName: lastName,
-      email: email,
-      role: role
-    }, process.env.ACCES_TOKEN_SECRET
-  )
 }
