@@ -91,6 +91,7 @@ const createCookie = (id, firstName, lastName, role, res, next) => {
     res.cookie("access_token", token, {
       //HttpOnly = true meaning we cannot access the token via the javascript aka frontend/google chrome console
       httpOnly: true,
+      secure: true,
       //Set timer on 1 hour
       expires: new Date(Date.now() + 10 * 24 * 60 * 60 * 1000),
     }).status(200)

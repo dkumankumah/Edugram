@@ -18,7 +18,7 @@ const cors = require('cors');
 // const cache = apiCache.middleware;
 // const { swaggerDocs: V1SwaggerDocs } = require("src/v1/swagger");
 const PORT = process.env.PORT || 8001
-const http = require('http');
+const http = require('https');
 const app = express();
 const server = http.createServer(app);
 
