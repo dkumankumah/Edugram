@@ -149,6 +149,7 @@ export default function Overview ({ tutors, subject }: PageProps) {
                                     </CardHeader>
                                     <CardBody>
                                         <Stack>
+                                            <Text>{tutor.firstName}</Text>
                                             <Text>{tutor.profile?.bio}</Text>
                                         </Stack>
                                     </CardBody>
@@ -159,7 +160,7 @@ export default function Overview ({ tutors, subject }: PageProps) {
                                                 borderRadius='20'
                                                 py = "5px"
                                                 px = "18px">
-                                                <Text color="#F5F5F5">${getFee(tutor)}/hr</Text>
+                                                <Text color="#F5F5F5">${getFee(tutor)}/u</Text>
                                             </Box>
                                             <Box
                                                 bg= "#107385"
@@ -243,7 +244,7 @@ export function RadioCard(props: any) {
 export const getServerSideProps: GetServerSideProps = async (context) => {
     const subject = context.params?.subject
 
-    const res = await fetch(`http://localhost:8000/tutor/search/` + subject)
+    const res = await fetch('http://localhost:8000/tutor/search/' + subject)
     const tutors = await res.json()
 
     return {

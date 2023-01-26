@@ -20,10 +20,12 @@ interface Pageprops {
   tutor: TutorModel;
 }
 
-const TutorInfo = ({ tutor }: Pageprops) => {
-  const [locationChoiceOnline, setLocationChoiceOnline] = useState(false);
-  const [locationChoiceHome, setLocationChoiceHome] = useState(false);
-  const [locationChoiceLibrary, setLocationAtLibrary] = useState(false);
+const TutorInfo = ({tutor}: Pageprops) => {
+    const [locationChoiceOnline, setLocationChoiceOnline] = useState(false);
+    const [locationChoiceHome, setLocationChoiceHome] = useState(false);
+    const [locationChoiceLibrary, setLocationAtLibrary] = useState(false)
+    const [accessToken, setAccessToken] = useState('')
+    const [student, setStudent] = useState<UserModel>();
 
   const lessonLocatonOnline = "online via webcam";
   const lessonLocationHome = "at your home";
@@ -59,9 +61,21 @@ const TutorInfo = ({ tutor }: Pageprops) => {
     query: { subject },
   } = router;
 
-  useEffect(() => {
-    checkLessonLocations();
-  });
+    useEffect(() => {
+        checkLessonLocations();
+        fetch('http://localhost:8000/cookie', {
+            method: 'GET',
+            headers: {
+                "Content-Type": "application/json",
+                'Access-Control-Allow-Origin': 'http://localhost:8000/',
+            },
+            credentials: "include",
+        }).then(r => r.json()
+        ).then(response => {
+                setStudent(response)
+            }
+        )
+    }, []);
 
   return (
     <Container
@@ -209,15 +223,15 @@ const TutorInfo = ({ tutor }: Pageprops) => {
         </Flex>
       </Flex>
 
-      <Flex w="100%" justify="center" h="100%" mt="100px">
-        <TutorCard tutor={tutor} />
-      </Flex>
-    </Container>
-  );
+            <Flex w="100%" justify="center" h="100%" mt="100px">
+                <TutorCard tutor={tutor} student={student} />
+            </Flex>
+        </Container>
+    );
 };
 
 export const getStaticPaths = async () => {
-  const tutorResult = await fetch(`http://localhost:8000/tutor`).catch(
+  const tutorResult = await fetch("http://localhost:8000/tutor").catch(
     (error) => {
       console.log(error);
       throw new Error("Something went wrong, when fetching data");
@@ -240,7 +254,7 @@ export const getStaticPaths = async () => {
 
 export const getStaticProps = async (context: any) => {
   const id = context.params.id;
-  const data = await fetch(`https://edugram.onrender.com/tutor/` + id).then(response => response.json()
+  const data = await fetch(`http://localhost:8000/tutor/` + id).then(response => response.json()
   ).catch(error => console.log("Some problem(s) encountered when fetching data, " + error))
 
   return {

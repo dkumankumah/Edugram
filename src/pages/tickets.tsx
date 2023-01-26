@@ -14,7 +14,7 @@ const Tickets = () => {
 
     useEffect(() => {
         socket.on('data', (result: any) => {
-            console.log('Getting Data', result)
+            // console.log('Getting Data', result)
             setData(result);
         });
     }, []);

@@ -1,3 +1,6 @@
+/**
+ * @author Danny Nansink, 500821004, allowed request methods
+ **/
 module.exports.allowedMethods =(req, res, next) => {
   // NOTE: Exclude TRACE and TRACK methods to avoid XST attacks.
   const allowedMethods = [

@@ -22,24 +22,25 @@ io.on('connection', (socket) => {
   });
 
   socket.on("get-chats", async (user) => {
-    console.log("Chats gevraagd voor: " + user.firstName + ": " + user._id);
+    // console.log("Chats gevraagd voor: " + user.firstName + ": " + user._id);
     checkCookieForChat(socket);
     if (socket.request.role === "tutor") {
       await Chat.find({tutor: user}).then(result => {
         socket.emit("user-chats", result)
-        console.log("Gevonden chats voor tutor " + user.firstName + ": " + result);
+        // console.log("Gevonden chats voor tutor " + user.firstName + ": " + result);
       });
     }
 
     if (socket.request.role === "student")
       await Chat.find({student: user}).then(result => {
         socket.emit("user-chats", result)
-        console.log("Gevonden chats voor student " + user.firstName + ": " + result);
+        // console.log("Gevonden chats voor student " + user.firstName + ": " + result);
       });
   });
 
   socket.on("send-message", async (message, sender, chatId) => {
-    console.log("Message sent by " + sender + " : " + message + " to chatId: " + chatId);
+    console.log('hier begint de ellende')
+    // console.log("Message sent by " + sender + " : " + message + " to chatId: " + chatId);
     await Chat.findOneAndUpdate(
       {_id: chatId},
       {$push: {messages: new Message({message: message, sender: sender, dateTime: Date.now()})}},
@@ -47,14 +48,22 @@ io.on('connection', (socket) => {
     io.to(chatId).emit("update-chat", await Chat.findOne({_id: chatId}));
   });
   socket.on("join-chat", async (chosenChatId) => {
+    console.log('join chat')
+    console.log(chosenChatId)
     if (chosenChatId.length < 3) {
-
+      console.log('NOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO')
     } else {
       socket.join(chosenChatId);
-      console.log("Chosen chat Id in socket: " + chosenChatId);
       io.to(chosenChatId).emit("update-chat", await Chat.findOne({_id: chosenChatId}));
-    }
 
+      // console.log("Chosen chat Id in socket: " + chosenChatId);
+          // console.log(chosenChatId)
+          // io.to(chosenChatId).emit("update-chat", await Chat.findOne({_id: chosenChatId.chatId}).then((result)=> {
+          //   console.log(result)
+          // }).catch((error)=> {
+          //   console.log(error)
+          // }));
+    }
   })
   socket.on("delete-chat", async (chosenChatId) => {
     try {
@@ -66,6 +75,16 @@ io.on('connection', (socket) => {
 
   })
 
+  // const changeChatStream = Chat.watch();
+  // changeChatStream.on('change', (change) => {
+  //   console.log('Change detected in the tickets collection:', change);
+  //
+  //   // Fetch the updated data from the database
+  //   Chat.find().then(result => {
+  //     socket.emit('update-chat', result)
+  //   });
+  // });
+
   //This Renders at the start of visiting the page
   Tickets.find({}).then(result => {
     socket.emit('data', result)
@@ -73,12 +92,17 @@ io.on('connection', (socket) => {
 
   const changeStream = Tickets.watch();
   changeStream.on('change', (change) => {
-    console.log('Change detected in the tickets collection:', change);
+    // console.log('Change detected in the tickets collection:', change);
 
     // Fetch the updated data from the database
     Tickets.find().then(result => {
       socket.emit('update-tickets', result)
     });
   });
+
+  // Notification.find({}).then(result => {
+  //   console.log(result)
+  //   // socket.emit('getPersonalNotification', result)
+  // });
 });
 

@@ -10,7 +10,7 @@ router.get('/google', passport.authenticate('google', { scope: ['email','profile
 router.get('/google/callback',
   passport.authenticate('google', { failureRedirect: '/' }),
   (req, res) => {
-    res.cookie("access_token", createToken(req.user._id, req.user.firstName, req.user.lastName, req.user.role), {
+    res.cookie("access_token", createToken(req.user._id, req.user.firstName, req.email, req.user.lastName, req.user.role), {
       httpOnly: true,
       expires: new Date(Date.now() + 10 * 24 * 60 * 60 * 1000),
     });

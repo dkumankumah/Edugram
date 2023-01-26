@@ -7,6 +7,7 @@ import * as io from "socket.io-client";
 import {ChatModel} from "../models/ChatModel";
 import {ChatUserModel} from "../models/ChatModel";
 
+import {useLocation} from "react-router";
 import {decodeJWT} from "./api/api.storage";
 import {TutorModel} from "../models/TutorModel";
 import {GetServerSideProps} from "next";
@@ -21,13 +22,11 @@ let chosenUser = "";
 
 let fullname = "";
 
-function setId(id: string) {
+export function setId(id: string) {
     chosenChatId = id;
-    console.log("chosen chat to be emitted: " + chosenChatId);
-
 }
 
-function chosenChat(chatName: string, chatId: string) {
+export function chosenChat(chatName: string, chatId: string) {
     setId(chatId)
     chosenUser = chatName;
     router.push(`/chats`);
@@ -48,24 +47,22 @@ export default function ChatSidebar({tutorData, accessToken}: PageProps) {
             firstName: decodeJWT(accessToken).firstName
         }
         fullname = decodeJWT(accessToken).firstName + " " + decodeJWT(accessToken).lastName;
-        console.log("Ingelogde user chat model: " + user.firstName + ": " + user._id);
+        // console.log("Ingelogde user chat model: " + user.firstName + ": " + user._id);
         socket.emit('get-chats', user);
         socket.on("user-chats", (data) => {
             const tempArray: ChatModel[] = [];
             data.forEach(function (value: ChatModel) {
                 if (value.tutor != null) {
-                    console.log("Chat: " + value)
+                    // console.log("Chat: " + value)
                     tempArray.push(value)
                 }
             });
-            console.log("This is tempArray: " + tempArray)
+            // console.log("This is tempArray: " + tempArray)
             setChatlist(tempArray);
-            
         });
     },[chosenChatId]);
 
     const deleteChat = () => {
-        console.log("WERKT HET?")
         const temp = chatList
         let idx = 0;
         chatList.map(chat => {
@@ -80,7 +77,7 @@ export default function ChatSidebar({tutorData, accessToken}: PageProps) {
         chosenChat("", "")
         window.location.reload()
     }
-    
+
     return (
         <Flex
             borderLeftRadius="10px"
@@ -179,7 +176,7 @@ const getServerSideProps: GetServerSideProps = async (ctx) => {
     });
 
     const data = await response.json()
-    console.log(data)
+    // console.log(data)
 
     return {
         props: {data, accessToken},

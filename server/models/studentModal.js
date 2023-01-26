@@ -11,6 +11,9 @@ const extend = (Schema, obj) => (
 );
 
 const studentSchema = extend(UserSchema, {
+  request: [
+    {firstName: String, lastName: String, location: String, subject: String, status: String, created_at: {type: Date, default: Date.now()}}
+  ]
 })
 
 const Student = mongoose.model("Student", studentSchema);

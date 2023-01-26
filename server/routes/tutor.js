@@ -7,7 +7,8 @@ const bcrypt = require("bcrypt");
 const {check, validationResult, body} = require("express-validator");
 const {verifyToken} = require("../middleware/authentication");
 const {JsonWebTokenError} = require("jsonwebtoken");
-const {checkPassword} = require('../middleware/authentication');
+const {checkPassword} = require('../middleware/authentication')
+const { sendAcceptMail} = require("../middleware/mail");
 // const upload = require("multer")({ dest: "uploads/" });
 const tutorController = require('../controllers/tutorController');
 const upload = require("../middleware/multer");
@@ -67,7 +68,7 @@ router.post("/", userValidation, async (req, res, next) => {
   
   try {
     const errors = validationResult(req);
-    if (Object.keys(errors.errors).length > 0) {
+    if (Object.keys(errors).length > 0) {
       res.status(404).send(errors.array())
     } else {
       tutor.save();
@@ -232,6 +233,10 @@ router.patch('/:tutorId', checkCookie, async (req, res) => {
     const updatedTutor = await Tutor.findByIdAndUpdate(req.params.tutorId, req.body, {new: true}).lean()
     delete updatedTutor.password
     delete updatedTutor.email
+
+    if (req.body.request && req.body.data){
+      sendAcceptMail(req.body.data.tutorEmail, req.params.subject, req.body.request.firstName, req.body.data.firstName)
+    }
     res.send(updatedTutor);
   } catch (err) {
     res.json({message: err})
@@ -243,6 +248,7 @@ router.get('/search/:subject', async (req, res) => {
   try {
     const query = {"course.subject": req.params.subject}
     const tutors = await Tutor.find(query).select('_id firstName lastName profile course');
+
     res.json(tutors);
   } catch (err) {
     res.json({message: err})
@@ -264,10 +270,9 @@ router.post('/tutor', async (req, res) => {
         console.log('invalid password')
       }
     }
+
   })
 
 })
-
-
 
 module.exports = router;

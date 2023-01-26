@@ -56,7 +56,7 @@ const TutorSchema = new Schema({
     {subject: String, fee: Number, courseDescription: String}
   ],
   request: [
-    {id: String, firstName: String, lastName: String, location: String, subject: String, status: String}
+    {firstName: String, lastName: String, location: String, subject: String, status: String, created_at: {type: Date, default: Date.now()}}
   ]
 });
 

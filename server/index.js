@@ -100,6 +100,23 @@ app.get('/logout', checkCookie, function (req, res) {
   res.end()
 })
 
+app.get('/cookie', checkCookie, async function (req, res) {
+  // console.log('yes')
+  // console.log(req.id)
+
+  if (req.role === 'tutor'){
+    res.status(404).send({error: 'Tutors cannot make this request!'})
+  }
+  const findStudent = await Student.findById({_id: req.id}).lean()
+  delete findStudent.password
+  delete findStudent.request
+  delete findStudent.requests
+
+  res.send(findStudent)
+
+})
+
+
 app.listen(8000, () => {
   console.log("Server started on port 8000");
 });
