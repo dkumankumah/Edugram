@@ -32,18 +32,6 @@ const TutorInfo = ({tutor}: Pageprops) => {
     const lessonLocationHome = "at your home";
     const lessonLocationLibrary = "library";
 
-    const checkIfIsLoggedIn = () => {
-        fetch('http://localhost:8000/getCookie', {
-            method: 'GET',
-            headers: {
-                "Content-Type": "application/json",
-                'Access-Control-Allow-Origin': 'http://localhost:8000/',
-            },
-            credentials: "include",
-        }).then((r) => {
-            setAccessToken(r.message)
-        })
-    }
 
 
 
@@ -80,7 +68,6 @@ const TutorInfo = ({tutor}: Pageprops) => {
 
     useEffect(() => {
         checkLessonLocations();
-        checkIfIsLoggedIn()
         fetch('http://localhost:8000/cookie', {
             method: 'GET',
             headers: {

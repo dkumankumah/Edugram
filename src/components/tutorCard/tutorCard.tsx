@@ -111,7 +111,7 @@ Sincerely, ${student.firstName ? student.firstName : 'firstname unknown'} ${stud
                     tutorId: tutor._id,
                     subject: subject,
                     message: textValue,
-                    location: location,
+                    location: tutor.address?.city,
                     firstName: tutor.firstName,
                     lastName: tutor.lastName
                 },
