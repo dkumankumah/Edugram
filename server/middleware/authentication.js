@@ -1,16 +1,21 @@
-/**
- * @author Danny Nansink, 500821004, mailer
- **/
 const express = require('express')
 const router = express.Router()
 const jwt = require('jsonwebtoken')
 const bcrypt = require("bcrypt");
+const {createToken} = require("./token");
 
 module.exports.checkCookie = (req, res, next) => {
   let authcookie = req.headers.cookie
 
   if (!authcookie) {
     return res.status(403).send({error: 'Cookie does not exist'});
+  }
+
+  //Check if cookie contains an 'access_token' and return the token
+  if (authcookie.indexOf('access_token') >= 0 ) {
+    authcookie = req.headers.cookie.split('access_token')[1]
+    authcookie = authcookie.split('=')[1]
+    authcookie = authcookie.split(';')[0]
   }
 
   //Check if cookie contains an = and return the token
@@ -46,7 +51,12 @@ module.exports.checkCookie = (req, res, next) => {
 
 module.exports.checkCookieForChat = (socket) => {
   // console.log("Dit is cookie: " + socket.request.headers.cookie)
-  const authcookie = socket.request.headers.cookie.split("=")[1]
+  let authcookie = socket.request.headers.cookie.split("=")[1]
+  //Check if cookie contains a 'connect.sid' and return the token
+  if (authcookie.indexOf('connect.sid') >= 0 ) {
+    authcookie = authcookie.split('connect.sid')[0]
+    authcookie = authcookie.split(";")[0]
+  }
   if (!authcookie) {
     return res.status(403).send({error: 'Cookie does not exist'});
   }

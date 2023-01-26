@@ -6,9 +6,13 @@ const TutorProfile = {
     type: String,
     required: false,
   },
+  // imageName: {
+  //   type: String,
+  //   required: true,
+  // },
   image: {
-    type: String,
-    required: false
+    data: Buffer,
+    contentType: String
   }
 }
 
@@ -22,6 +26,10 @@ const extend = (Schema, obj) => (
 );
 
 const tutorSchema = extend(UserSchema, {
+  googleId: {
+    type: String,
+    required: false,
+  },
   profile: {
     type: TutorProfile,
     required: false

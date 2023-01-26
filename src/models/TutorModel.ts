@@ -5,7 +5,7 @@ export interface TutorModel extends UserModel {
     course?: Course[];
     review?: Review[];
     responses?: Response[];
-
+    averageResponseTime?: number;
 }
 
 export interface Review {

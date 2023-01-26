@@ -29,7 +29,7 @@ const AdminContainer = ({children}: { children: ReactNode }) => {
             {/* mobilenav */}
             {/*<MobileNav onOpen={onOpen}/>*/}
             <Navbar/>
-            <Box ml={{base: 0, md: 60}} p="4">
+            <Box ml={{base: 0, md: 60}} p="5">
                 {children}
                 {/*Hier komen de childs*/}
             </Box>

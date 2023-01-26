@@ -1,7 +1,6 @@
 /**
  * @author Bugra Karaaslan, 500830631, connection to MongoDB
  * @author Daniel Kumankumah, 500811456, Routes from MongoDB
- * @author Danny Nansink, 500821004, login and logout
  * To run the server write command 'node server' in the terminal.
  **/
 require("dotenv").config({path: require('find-config')('.env')})
@@ -18,6 +17,11 @@ const Student = require("./models/studentModal");
 const Tutor = require("./models/tutorModal");
 const Admin = require("./models/Admin");
 const bcrypt = require('bcrypt')
+const passport = require('passport')
+const session = require('express-session')
+
+// Passport config
+require('./oauth/passport')(passport)
 
 /**
  * URI of the database, The username and password are in the .env file.
@@ -27,12 +31,22 @@ mongoose.connect(uri, {useNewUrlParser: true, useUnifiedTopology: true})
   .then((result) => console.log('connected to db'))
   .catch((err) => console.log(err));
 
+// Sessions
+app.use(session({
+  secret: 'keyboard cat',
+  resave: false,
+  saveUninitialized: false,
+}))
+
 //Middlewares
 app.use(cookieParser())
 app.use(cors({origin: "http://localhost:3000", credentials: true}))
 app.use(bodyParser.json())
 const {allowedMethods} = require("./middleware/requestMethod");
-const {checkCookie, checkPassword, createToken, createCookie} = require("./middleware/authentication")
+const {checkCookie, checkPassword, createToken, createCookie}= require("./middleware/authentication")
+// Passport middleware
+app.use(passport.initialize())
+app.use(passport.session())
 
 //Import routes
 const tutorRouter = require('./routes/tutor')
@@ -42,6 +56,10 @@ const subjectRouter = require('./routes/subject')
 app.use('/subject', allowedMethods, subjectRouter);
 
 const studentRouter = require('./routes/studentRoute')
+
+const authRouter = require('./routes/auth')
+app.use('/auth', authRouter)
+
 const {cookies} = require("next/headers");
 app.use('/student', studentRouter)
 
@@ -63,21 +81,22 @@ app.post('/login', (req, res, next) => {
                 error: 'Invalid Credentials'
               })
               if (error) {
-                throw error;
+                console.log(error);
               }
             })
           if (error) {
-            throw error;
+            console.log(error);
           }
         })
       if (error) {
-        throw error;
+        console.log(error);
       }
     })
 })
 
 app.get('/logout', checkCookie, function (req, res) {
-  res.clearCookie('access_token').status(201).send({message: 'Succesfully logged out!'})
+  res.clearCookie('connect.sid')
+  res.clearCookie('access_token').status(201).send({message:'Succesfully logged out!'})
   res.end()
 })
 

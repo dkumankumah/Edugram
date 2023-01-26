@@ -41,7 +41,7 @@ import {AddIcon, EditIcon} from "@chakra-ui/icons";
 import React, {useEffect, useState} from "react";
 import {TutorModel} from "../models/TutorModel";
 import {Course} from "../models/CourseModel";
-import {decodeJWT, getToken, isAuthenticated, isTutor} from "./api/api.storage";
+import {getToken} from "./api/api.storage";
 import {useRouter} from "next/router";
 import {GetServerSideProps} from "next";
 import { SubmitButton } from "../components/shared/Buttons";
@@ -53,7 +53,7 @@ interface PageProps {
     subjects: SubjectModel[]
 }
 
-export default function courses ({tutorData, accessToken, subjects}: PageProps) {
+export default function Courses ({tutorData, accessToken, subjects}: PageProps) {
     const [tutor, setTutor] = useState(tutorData as TutorModel)
     const router = useRouter()
     const [isEditing, setIsEditing] = useState(false)
@@ -69,8 +69,29 @@ export default function courses ({tutorData, accessToken, subjects}: PageProps) 
     const [isInvalidTextArea, setIsInvalidTextArea] = useState(true);
 
     const [isInvalidOption, setIsInvalidOption] = useState(true);
-
+    const [imageUrl, setImageUrl] = useState(null);
     const toast = useToast()
+
+    useEffect(() => {
+        if(tutor.role !== "tutor") {
+            router.back()
+        }
+        fetch("http://localhost:8000/tutor/get_image", {
+            method: 'GET',
+            credentials: "include",
+        })
+            .then(response => response.json())
+            .then(data => {
+                if (!data.image) {
+                    throw  new Error('Image not found')
+                }
+                const imageSrc = `data:${data.image.contentType};base64,${Buffer.from(data.image.data).toString('base64')}`;
+
+                setImageUrl(imageSrc);
+            }).catch((error)=>{
+            console.error(error);
+        })
+    }, []);
 
     const handleChangeEvent = (event:any) => {
         setValue(event.target.value);
@@ -132,22 +153,23 @@ export default function courses ({tutorData, accessToken, subjects}: PageProps) 
                 isClosable: true})
         }
 
-        fetch('http://localhost:8000/tutor/' + tutor._id, {
+        fetch(`http://localhost:8000/tutor/` + tutor._id, {
             method: 'PATCH',
+            credentials: "include",
             headers: {
                 "Content-Type": "application/json",
-                'Access-Control-Allow-Origin': 'http://localhost:8000',
-                'Authorization': 'Bearer ' + getToken()
+                'Access-Control-Allow-Origin': `http://localhost:8000`,
+                Cookie: accessToken
             },
             body: JSON.stringify({course: tutor.course }),
-        }).then(response => response.json()).then(result =>
-            setTutor(result)
+        }).then(response => response.json()).then(result => {
+            setTutor(result)}
 
         )
-        console.log(tutor.course)
         setIsInvalidArea(true);
         setIsInvalidOption(true);
         setSelectedValue("")
+        setFeeValue(20)
         onClose()
     }
 
@@ -155,12 +177,13 @@ export default function courses ({tutorData, accessToken, subjects}: PageProps) 
         const index = tutor.course!.indexOf(subject)
         tutor.course?.splice(index, 1)
 
-        fetch('http://localhost:8000/tutor/' + tutor._id, {
+        fetch(`http://localhost:8000/tutor/` + tutor._id, {
             method: 'PATCH',
+            credentials: "include",
             headers: {
                 "Content-Type": "application/json",
-                'Access-Control-Allow-Origin': 'http://localhost:8000',
-                'Authorization': 'Bearer ' + getToken()
+                'Access-Control-Allow-Origin': `http://localhost:8000`,
+                Cookie: accessToken
             },
             body: JSON.stringify({course: tutor.course }),
         }).then(response => response.json()).then(result => {
@@ -406,13 +429,22 @@ export default function courses ({tutorData, accessToken, subjects}: PageProps) 
                     <Box flex={1.3}>
                         <Card borderRadius={20} >
                             <CardHeader>
-                                <Image
-                                    // borderRadius='full'
-                                    // boxSize='250px'
-                                    src="images/placeholderImage.png"
-                                    alt="Placeholder for image of Identity"
-                                    fallbackSrc='https://via.placeholder.com/150'
-                                />
+
+                                {imageUrl ? (
+                                    <Image src={imageUrl}
+                                           borderRadius='full'
+                                           boxSize='150px'
+                                           height={{
+                                               base: '50%', // 0-48em
+                                               md: '30%', // 48em-80em,
+                                               xl: '25%', // 80em+
+                                           }} alt="Profile Image" margin="auto"/>
+                                ) : (
+                                    <Image src="images/placeholderImage.png"
+                                           alt="Placeholder for image of Identity"
+                                           fallbackSrc='https://via.placeholder.com/150'
+                                           margin="auto"/>
+                                )}
                                 <Text
                                     mt={3}
                                     textAlign='center'
@@ -524,7 +556,7 @@ export default function courses ({tutorData, accessToken, subjects}: PageProps) 
                                         onChange={(e) => {
                                             setSelectedValue(e.target.value)
                                             if(e.target.value !== ""){
-                                                setIsInvalidOption(!isInvalidOption)
+                                                setIsInvalidOption(false)
                                             } else setIsInvalidOption(true)
                                         }}
                                         fontSize={'sm'}
@@ -571,8 +603,12 @@ export default function courses ({tutorData, accessToken, subjects}: PageProps) 
                                 <InputGroup>
                                     <InputLeftAddon fontSize={'xs'}>€</InputLeftAddon>
                                     <NumberInput defaultValue={20} min={10} max={99} fontSize={'xs'}>
-                                        <NumberInputField value={feeValue} fontSize={'sm'} onChange={(event) => {
-                                            setFeeValue(event.target.value as unknown as number);
+                                        <NumberInputField fontSize={'sm'} onChange={(event) => {
+                                            if(event.target.value as unknown as number > 99) {
+                                                setFeeValue(99)
+                                            } else if(event.target.value as unknown as number < 10) {
+                                                setFeeValue(10)
+                                            } else setFeeValue(event.target.value as unknown as number);
                                         }}/>
                                         <NumberInputStepper>
                                             <NumberIncrementStepper />
@@ -601,8 +637,8 @@ export default function courses ({tutorData, accessToken, subjects}: PageProps) 
 }
 
 export const getServerSideProps: GetServerSideProps = async (ctx) => {
-    const accessToken = JSON.stringify(ctx.req.cookies.access_token)
-    const response = await fetch('http://localhost:8000/tutor/details', {
+    const accessToken = JSON.stringify(ctx.req.cookies.access_token) ?? null
+    const response = await fetch(`http://localhost:8000/tutor/details`, {
         method: "GET",
         credentials: "include",
         mode: 'cors',
@@ -611,10 +647,23 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
             Cookie: accessToken
         }
     });
-    const res = await fetch('http://localhost:8000/subject/' )
-    const subjects = await res.json()
+
+    if (response.status !== 200) {
+        ctx.res.writeHead(302, { Location: '/notFoundPage' });
+        ctx.res.end();
+        return { props: {} };
+    }
 
     const tutorData = await response.json()
+    if(tutorData.role === 'student') {
+        ctx.res.writeHead(302, { Location: '/dashboard' });
+        ctx.res.end();
+        return { props: {tutorData} };
+    }
+
+    const res = await fetch(`http://localhost:8000/subject/`)
+    const subjects = await res.json()
+
     return {
         props: {tutorData, accessToken, subjects},
     };

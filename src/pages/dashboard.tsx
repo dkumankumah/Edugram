@@ -1,42 +1,45 @@
 import React, {useEffect, useState} from "react";
 import ProfileNavigation from "../components/shared/ProfileNavigation/ProfileNavigation";
 import {
+    Avatar,
     Box,
+    Button,
     Card,
     CardBody,
     CardHeader,
-    Avatar,
-    SimpleGrid,
+    Collapse,
+    Divider,
+    Flex,
+    FormControl,
+    FormHelperText,
     Icon,
     Image,
-    Divider,
+    SimpleGrid,
     Text,
-    Flex,
-    Button,
-    Collapse,
-    useDisclosure,
-    FormControl,
     Textarea,
-    FormHelperText
+    useDisclosure
 } from "@chakra-ui/react";
 import AdminContainer from "../components/admin/container/adminContainer";
-import {decodeJWT, getToken, isAdmin, isTutor} from "./api/api.storage";
+import {getToken, isAdmin} from "./api/api.storage";
 import Chart from "chart.js/auto";
 import {Bar} from 'react-chartjs-2'
 import {CategoryScale} from 'chart.js';
-import {ArrowUpDownIcon, CheckCircleIcon, CheckIcon, CloseIcon, EditIcon, PlusSquareIcon} from "@chakra-ui/icons";
+import {ArrowUpDownIcon, CheckCircleIcon, CheckIcon, CloseIcon, EditIcon} from "@chakra-ui/icons";
 import {TutorModel} from "../models/TutorModel";
 import {GetServerSideProps} from "next";
 import {SubmitButton} from "../components/shared/Buttons";
 import {UserModel} from "../models/UserModel";
 
+import DashboardTable from "../components/admin/container/dashboardTable";
+import {Router, useRouter} from "next/router";
+import * as io from "socket.io-client";
 Chart.register(CategoryScale);
 
 interface PageProps {
     accessToken: string,
     tutorData: TutorModel,
 }
-
+const socket = io.connect("ws://localhost:3001", {transports: ['websocket', 'polling', 'flashsocket']});
 const Dashboard = ({tutorData, accessToken}: PageProps) => {
     const [isAuth, setIsAuth] = useState(false)
     const [tutor, setTutor] = useState(tutorData as UserModel)
@@ -46,59 +49,103 @@ const Dashboard = ({tutorData, accessToken}: PageProps) => {
     const [isEditing, setIsEditing] = useState(false)
     const [textValue, setValue] = useState("")
     const [isInvalidArea, setIsInvalidArea] = useState(true);
+    const router = useRouter()
+
+    const [chartMap, setChartMap] = useState(new Map());
+    const [dataa, setDataa] = useState([]);
+    let [arrayChartData, setArrayChartData] = useState<[]>();
+    const [selectedOption, setSelectedOption] = useState(null);
+
+    const [imageUrl, setImageUrl] = useState(null);
+
 
     useEffect(() => {
-        console.log(tutor)
         setIsAuth(isAdmin(accessToken))
-        if (isAuth) {
-            let myMap = new Map();
-            let ticket: string;
-            const elementCounts: any = {};
-            const getTickets = async () => {
-                await fetch(
-                    baseUrl, {
-                        method: 'GET',
-                        headers: {
-                            'Content-Type': 'application/json',
-                            'Access-Control-Allow-Origin': 'http://localhost:8001',
-                        },
-                    }
-                )
-                    .then((response) => response.json())
-                    .then((data) => {
-                        data.sort((a: any, b: any) => {
-                            const dateA = new Date(a.dateCreated);
-                            const dateB = new Date(b.dateCreated);
-                            if (dateA < dateB) {
-                                return -1;
-                            }
-                            if (dateA > dateB) {
-                                return 1;
-                            }
-                            return 0;
-                        }).map((obj: any) => {
-                            console.log('test: ', ticket = new Date(obj.dateCreated).toLocaleDateString('en-us', {
-                                year: "numeric",
-                                month: "short",
-                                day: "numeric"
-                            }))
-                            elementCounts[ticket] = (elementCounts[ticket] || 0) + 1;
-                            myMap.set(ticket, myMap.get(ticket) + 1 || 1);
-                            setMap(myMap)
-                            //Add date to an Array of
-                            //Check if there are similar dates, sum to the date that is already in the Array
-                        })
-                    });
-            };
-            getTickets().then(r => {
-                console.log('MAP: ', myMap);
+        if (isAuth){
+            socket.on('data', (result: any) => {
+                console.log('Getting Data', result)
+                getChartData(result);
+                setDataa(result);
             });
+        }else {
+            fetch("http://localhost:8000/tutor/get_image", {
+                method: 'GET',
+                credentials: "include",
+            })
+                .then(response => response.json())
+                .then(data => {
+                    if (!data.image) {
+                        throw  new Error('Image not found')
+                    }
+                    const imageSrc = `data:${data.image.contentType};base64,${Buffer.from(data.image.data).toString('base64')}`;
+
+                    setImageUrl(imageSrc);
+                }).catch((error)=>{
+                console.error(error);
+            })
         }
+
+        // }
 
     }, []);
 
-    const options1 = {
+    const getChartData = (fromSocket: any) => {
+        let myMap = new Map();
+        let array: any = [];
+        let ticket: string;
+        try {
+            console.log("The following data is: ", fromSocket)
+            fromSocket.sort((a: any, b: any) => {
+                const dateA = new Date(a.dateCreated);
+                const dateB = new Date(b.dateCreated);
+                if (dateA < dateB) {
+                    return -1;
+                }
+                if (dateA > dateB) {
+                    return 1;
+                }
+                console.log("Im here in sortFunction.")
+                return 0;
+            }).map((obj: any) => {
 
+
+                ticket = new Date(obj.dateCreated).toLocaleDateString('en-us', {
+                    year: "numeric",
+                    month: "short",
+                    day: "numeric"
+                })
+                myMap.set(ticket, myMap.get(ticket) + 1 || 1);
+                setChartMap(myMap)
+                array.push(obj)
+                setArrayChartData(array)
+                console.log("Im here in mapFunction.")
+                //Add date to an Array of
+                //Check if there are similar dates, sum to the date that is already in the Array
+
+
+            })
+        } catch (err) {
+            throw new Error()
+        }
+
+    const chartData = {
+        labels: Array.from(chartMap.keys()),
+        // labels : chart.map(obj=>()),
+        datasets: [
+            {
+                label: 'Dataset 2',
+                // data: [0, 10, 20, 30, 93, 60, 80, 110, 65],
+                data: Array.from(chartMap.values()),
+                // data: [0, 10, 20, 30, 93, 60, 80, 110, 65],
+                backgroundColor: '#4EA4B1',
+                borderRadius: 10,
+                barThickness: 30,
+                // borderWidth: 2,
+                borderSkipped: false, // To make all side rounded
+            },
+        ],
+    };
+    const options = {
         responsive: true,
         plugins: {
             legend: {
@@ -132,34 +179,13 @@ const Dashboard = ({tutorData, accessToken}: PageProps) => {
         }
     };
 
-
-    const labels = Array.from(map.keys());
-
-    const data = {
-        labels,
-        // labels : chart.map(obj=>()),
-        datasets: [
-            {
-                label: 'Dataset 2',
-                // data: [0, 10, 20, 30, 93, 60, 80, 110, 65],
-                data: Array.from(map.values()),
-                // data: [0, 10, 20, 30, 93, 60, 80, 110, 65],
-                backgroundColor: '#4EA4B1',
-                borderRadius: 10,
-                barThickness: 30,
-                // borderWidth: 2,
-                borderSkipped: false, // To make all side rounded
-            },
-        ],
-    };
-
     const handleEdit = () => {
         setValue("")
         setIsEditing(!isEditing)
         setIsInvalidArea(true)
     }
 
-    const handleChangeEvent = (event: any) => {
+    const handleChangeEvent = (event:any) => {
         setValue(event.target.value);
         setIsInvalidArea(!(event.target.value.length > 15))
 
@@ -176,9 +202,10 @@ const Dashboard = ({tutorData, accessToken}: PageProps) => {
                 'Access-Control-Allow-Origin': 'http://localhost:8000',
                 'Authorization': 'Bearer ' + getToken()
             },
-            body: JSON.stringify({profile: tutor.profile}),
+            body: JSON.stringify({profile: tutor.profile }),
         }).then(response => response.json()).then(result =>
             setTutor(result)
+
         )
     }
 
@@ -206,10 +233,11 @@ const Dashboard = ({tutorData, accessToken}: PageProps) => {
             body: JSON.stringify({request: tutor.request, data: {requestId, tutorName, tutorEmail}}),
         }).then(response => response.json()).then(result =>
             setTutor(result)
+
         )
     }
 
-    function getAge(birthdate?: string): number {
+    function getAge(birthdate?: string) : number {
         const currentDate = new Date()
         const formattedDateString = birthdate?.substr(6, 4) + '-' + birthdate?.substr(3, 2) + '-' + birthdate?.substr(0, 2)
         const date = new Date(formattedDateString)
@@ -226,40 +254,115 @@ const Dashboard = ({tutorData, accessToken}: PageProps) => {
         return tutor.phoneNumber?.toLocaleString().length == 10;
     }
 
-    if (isAuth) {
+    if(isAuth) {
         return (
             <AdminContainer>
-                <h1>Dashboard is here Page</h1>
-                <Card
-                    maxW='md'
-                    maxH="md"
-                    cursor='pointer'
-                    bg="#FFFFFF"
-                    borderRadius='10'>
-                    <CardBody>
-                        {/*<Text as='b'>Daily Tickets</Text>*/}
-                        <Bar
-                            options={options1}
-                            data={data}
-                        />
-                    </CardBody>
-                </Card>
+                <Flex color='black' minWidth='max-content' gap='20'>
+                    <Card
+                        maxW='md'
+                        maxH="md"
+                        h=''
+                        w='40%'
+                        // cursor='pointer'
+                        bg="#FFFFFF"
+                        borderRadius='10'>
+                        <CardBody>
+                            <Text as='b'>Daily Tickets</Text>
+                            <Bar
+                                data={chartData}
+                                options={options}
+                            />
+                        </CardBody>
+                    </Card>
+
+                    <Card
+                        // maxW='md'
+                        maxH="md"
+                        w='45%'
+                        // cursor='pointer'
+                        bg="#FFFFFF"
+                        borderRadius='10'>
+                        <CardBody>
+                            <Text as='b'>Tickets By Status</Text>
+                            {/*<Bar*/}
+                            {/*    data={chartData}*/}
+                            {/*    options={options}*/}
+                            {/*/>*/}
+                        </CardBody>
+                    </Card>
+                    <Card
+                        maxW='45%'
+                        maxH="md"
+                        w='40%'
+                        // cursor='pointer'
+                        bg="#FFFFFF"
+                        borderRadius='10'>
+                        <CardBody>
+                            <Text as='b'>Activity</Text>
+                        </CardBody>
+                    </Card>
+                </Flex>
+
+
+                <Flex color='black' minWidth='max-content' gap='20'>
+                    <Card
+                        mt={5}
+                        minH="100%"
+                        w='66%'
+                        bg="#FFFFFF"
+                        borderRadius='10'
+                        variant={'elevated'}>
+                        <CardBody>
+                            <Text as='b'>Recent Tickets</Text>
+                            <DashboardTable  data={dataa} />
+                        </CardBody>
+                    </Card>
+
+                    <Card
+                        mt={5}
+                        // minH="100%"
+                        w='30%'
+                        bg="#FFFFFF"
+                        borderRadius='10'
+                        variant={'elevated'}>
+                        <CardBody>
+                            <Text as='b'>Last Updates</Text>
+                            <Box
+                                bg="#107385"
+                                borderRadius='20'
+                                py="5px"
+                                px="18px">
+                                <Text color="#F5F5F5">/u</Text>
+                            </Box>
+                            {/*<DashboardTable/>*/}
+                        </CardBody>
+                    </Card>
+                </Flex>
             </AdminContainer>
         )
-    } else return (
+    }
+    else return (
         <Box>
             <ProfileNavigation role={tutor.role}/>
-            <Box p={5} display={{lg: 'flex'}}>
+            <Box p={5} display={{ lg: 'flex' }}>
                 <Box flex={1}>
-                    <Card boxShadow={'xl'} borderRadius={20}>
+                    <Card boxShadow={'xl'} borderRadius={20} >
                         <CardHeader>
-                            <Image
-                                // borderRadius='full'
-                                // boxSize='250px'
-                                src="images/placeholderImage.png"
-                                alt="Placeholder for image of Identity"
-                                fallbackSrc='https://via.placeholder.com/150'
-                            />
+                            {imageUrl ? (
+                                <Image src={imageUrl}
+                                       borderRadius='full'
+                                       boxSize='150px'
+                                       height={{
+                                           base: '50%', // 0-48em
+                                           md: '30%', // 48em-80em,
+                                           xl: '25%', // 80em+
+                                       }} alt="Profile Image" margin="auto"/>
+                            ) : (
+                                <Image src="images/placeholderImage.png"
+                                       alt="Placeholder for image of Identity"
+                                       fallbackSrc='https://via.placeholder.com/150'
+                                       margin="auto"/>
+                            )}
                             <Text
                                 mt={3}
                                 textAlign='center'
@@ -288,15 +391,15 @@ const Dashboard = ({tutorData, accessToken}: PageProps) => {
                                 <Icon
                                     display={!isVerified() ? 'block' : 'none'}
                                     as={CloseIcon}
-                                    boxSize={4}
-                                    alignSelf={'center'}
-                                    color='red.500'/>
+                                      boxSize={4}
+                                      alignSelf={'center'}
+                                      color='red.500'/>
                                 <Icon
                                     display={isVerified() ? 'block' : 'none'}
                                     as={CheckCircleIcon}
-                                    boxSize={5}
-                                    alignSelf={'center'}
-                                    color='green.500'/>
+                                      boxSize={5}
+                                      alignSelf={'center'}
+                                      color='green.500'/>
                             </SimpleGrid>
                             <Text
                                 fontSize={'medium'}
@@ -309,22 +412,25 @@ const Dashboard = ({tutorData, accessToken}: PageProps) => {
                                 Mobile number
                             </Text>
 
-                            <Divider
-                                mt={3}
-                                mb={3}
-                            />
-                            <SimpleGrid columns={2} spacing={12}>
-                                <Text
-                                    fontSize={'large'}
-                                    fontWeight='bold'>
-                                    Reviews
-                                </Text>
-                                <Text
-                                    fontSize={'large'}
-                                    fontWeight='bold'>
-                                    ({tutor.review?.length})
-                                </Text>
-                            </SimpleGrid>
+                            <Box
+                                display={tutor.role === 'student' ? 'none' : 'block'}>
+                                <Divider
+                                    mt={3}
+                                    mb={3}
+                                />
+                                <SimpleGrid columns={2} spacing={12}>
+                                    <Text
+                                        fontSize={'large'}
+                                        fontWeight='bold'>
+                                        Reviews
+                                    </Text>
+                                    <Text
+                                        fontSize={'large'}
+                                        fontWeight='bold'>
+                                        ({tutor.review?.length})
+                                    </Text>
+                                </SimpleGrid>
+                            </Box>
 
                         </CardBody>
                     </Card>
@@ -334,6 +440,7 @@ const Dashboard = ({tutorData, accessToken}: PageProps) => {
                         flex={3}
                         pl={2}>
                         <Card
+                            display={tutor.role === 'student' ? 'none' : 'block'}
                             mb={5}
                             borderRadius={20}
                             boxShadow={'xl'}
@@ -346,7 +453,7 @@ const Dashboard = ({tutorData, accessToken}: PageProps) => {
                                     gap='4'
                                     flexWrap='wrap'>
                                     <Text
-                                        as="h2"
+                                        as = "h2"
                                         color='blueGreen'
                                         mt={3}
                                         fontWeight='bold'>
@@ -400,9 +507,9 @@ const Dashboard = ({tutorData, accessToken}: PageProps) => {
                             mb={5}
                             borderRadius={20}
                             boxShadow={'xl'}
-                        >
+                            >
                             <CardHeader>
-                                <Text as="h2"
+                                <Text as = "h2"
                                       color='blueGreen'
                                       mt={3}
                                       fontWeight='bold'>
@@ -439,16 +546,14 @@ const Dashboard = ({tutorData, accessToken}: PageProps) => {
                                                                 <Box
                                                                     alignSelf={'baseline'}
                                                                 >
-                                                                    <Text fontSize={''}>
+                                                                    <Text>
                                                                         Subject: {request.subject} - {request.location}
-                                                                    </Text>
-                                                                    <Text fontSize={'xx-small'}>
-                                                                        Created at: {new Date(request.created_at).toDateString() + ' at ' + new Date(request.created_at).toTimeString().split('G')[0]}
                                                                     </Text>
                                                                 </Box>
 
                                                             </Flex>
-                                                            <Flex>
+                                                            <Flex
+                                                                display={tutor.role === 'student' ? 'none' : 'block'}>
                                                                 <Button
                                                                     alignSelf={'baseline'}
                                                                     size='sm'
@@ -488,9 +593,8 @@ const Dashboard = ({tutorData, accessToken}: PageProps) => {
                             <CardHeader
                                 cursor='pointer'
                                 onClick={onToggle}>
-                                <Flex flex='1' flexDirection="row" justifyContent={"space-between"} gap='4'
-                                      alignItems='center' flexWrap='wrap'>
-                                    <Text as="h2"
+                                <Flex flex='1' flexDirection="row" justifyContent={"space-between"} gap='4' alignItems='center' flexWrap='wrap'>
+                                    <Text as = "h2"
                                           color='blueGreen'
                                           mt={3}
                                           fontWeight='bold'>
@@ -509,48 +613,45 @@ const Dashboard = ({tutorData, accessToken}: PageProps) => {
                             </CardHeader>
                             <Collapse in={isOpen} animateOpacity>
                                 <CardBody>
-                                    {tutor.request?.map((request) => {
-                                        if (request.status === "accepted") {
-                                            return (
-                                                <Card
-                                                    key={request._id}
-                                                    pt={2}
-                                                    mt={4}>
-                                                    <CardBody>
-                                                        <Flex key={request._id} alignItems="center">
-                                                            <Flex flex='1' flexDirection="row"
-                                                                  justifyContent={"space-between"} gap='4'
-                                                                  alignItems='center' flexWrap='wrap'>
+                                {tutor.request?.map((request) => {
+                                    if(request.status === "accepted") {
+                                        return (
+                                            <Card
+                                                key={request.id}
+                                                pt={2}
+                                                mt={4}>
+                                                <CardBody>
+                                                    <Flex key={request.id} alignItems="center">
+                                                        <Flex   flex='1' flexDirection="row" justifyContent={"space-between"} gap='4' alignItems='center' flexWrap='wrap'>
 
-                                                                <Flex alignItems={"center"}>
-                                                                    <Avatar
-                                                                        name={request.firstName + " " + request.lastName}/>
-                                                                    <Text
-                                                                        ml={2}
-                                                                        fontWeight={'bold'}
-                                                                        fontSize={'large'}>{request.firstName + " " + request.lastName}</Text>
-                                                                </Flex>
-                                                                <Flex>
-                                                                    <Box
-                                                                        alignSelf={'baseline'}>
-                                                                        <Text>
-                                                                            Subject: {request.subject} - {request.location}
-                                                                        </Text>
-                                                                    </Box>
-
-                                                                </Flex>
-                                                                <Icon
-                                                                    as={CheckIcon}
-                                                                    boxSize={6}
-                                                                    color='green'/>
+                                                            <Flex alignItems={"center"} >
+                                                                <Avatar name={request.firstName + " " + request.lastName} />
+                                                                <Text
+                                                                    ml={2}
+                                                                    fontWeight={'bold'}
+                                                                    fontSize={'large'}>{request.firstName + " " + request.lastName}</Text>
                                                             </Flex>
+                                                            <Flex>
+                                                                <Box
+                                                                    alignSelf={'baseline'}>
+                                                                    <Text>
+                                                                        Subject: {request.subject} - {request.location}
+                                                                    </Text>
+                                                                </Box>
+
+                                                            </Flex>
+                                                            <Icon
+                                                                as={CheckIcon}
+                                                                boxSize={6}
+                                                                color='green'/>
                                                         </Flex>
-                                                    </CardBody>
-                                                </Card>
-                                            );
-                                        }
-                                    })}
-                                </CardBody>
+                                                    </Flex>
+                                                </CardBody>
+                                            </Card>
+                                        );
+                                    }
+                                })}
+                            </CardBody>
                             </Collapse>
                         </Card>
                     </Box>

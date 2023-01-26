@@ -10,6 +10,10 @@ const {JsonWebTokenError} = require("jsonwebtoken");
 const {checkPassword} = require('../middleware/authentication')
 const { sendAcceptMail} = require("../middleware/mail");
 
+const {checkPassword} = require('../middleware/authentication');
+// const upload = require("multer")({ dest: "uploads/" });
+const tutorController = require('../controllers/tutorController');
+const upload = require("../middleware/multer");
 const userValidation = [
   check("firstName")
     .exists()
@@ -40,10 +44,13 @@ const userValidation = [
     .withMessage("Password must contain uppercase"),
 ];
 
+router.get('/get_image', checkCookie, tutorController.getProfileImage)
+router.post('/upload', upload, checkCookie, tutorController.uploadProfileImage)
+
 // Get all tutors
 router.get('/', async (req, res, next) => {
   try {
-    const tutors = await Tutor.find()
+    const tutors = await Tutor.find().select('_id')
     res.json(tutors);
   } catch (err) {
     res.json({message: err})
@@ -104,7 +111,6 @@ router.get('/details', checkCookie, async (req, res, next) => {
 
 //Gets a specific tutor
 router.get('/:tutorId', async (req, res) => {
-  console.log(req.headers)
   try {
     const tutor = await Tutor.findById(req.params.tutorId);
     res.send(tutor);
@@ -113,7 +119,7 @@ router.get('/:tutorId', async (req, res) => {
   }
 });
 
-router.delete('/:tutorId', async (req, res) => {
+router.delete('/:tutorId', checkCookie, async (req, res) => {
   try {
     const updateTutor = await Tutor.deleteOne(
       {_id: req.params.tutorId},
@@ -179,7 +185,6 @@ router.put('/:tutorId', checkCookie, async (req, res, next) => {
             "address.postalCode": profile.postalCode,
           }
         }, {new: true})
-      console.log(updateTutor)
       res.json({message: updateTutor});
     } catch (err) {
       res.json({error: err})
@@ -190,7 +195,6 @@ router.put('/:tutorId', checkCookie, async (req, res, next) => {
 })
 
 router.put('/password/:tutorId', checkCookie, async (req, res, next) => {
-  console.log(req.body.password)
   const password = req.body.password.oldPassword
   const newPassword = await bcrypt.hash(req.body.password.newPassword, 10);
 
@@ -224,14 +228,13 @@ router.put('/password/:tutorId', checkCookie, async (req, res, next) => {
   }
 })
 
+
 //Update a specific tutor
 router.patch('/:tutorId', checkCookie, async (req, res) => {
   try {
     const updatedTutor = await Tutor.findByIdAndUpdate(req.params.tutorId, req.body, {new: true}).lean()
-    delete updatedTutor.email
     delete updatedTutor.password
-
-    console.log(req.body)
+    delete updatedTutor.email
 
     if (req.body.request && req.body.data){
       sendAcceptMail(req.body.data.tutorEmail, req.params.subject, req.body.request.firstName, req.body.data.firstName)
@@ -246,7 +249,7 @@ router.patch('/:tutorId', checkCookie, async (req, res) => {
 router.get('/search/:subject', async (req, res) => {
   try {
     const query = {"course.subject": req.params.subject}
-    const tutors = await Tutor.find(query);
+    const tutors = await Tutor.find(query).select('_id firstName lastName profile course');
 
     res.json(tutors);
   } catch (err) {
@@ -258,8 +261,6 @@ router.get('/search/:subject', async (req, res) => {
 router.post('/tutor', async (req, res) => {
   const email = req.body.email;
   const password = req.body.password;
-  console.log(email)
-  console.log(password)
 
   Tutor.findOne({email: req.body.email}, function (err, user) {
     if (!user) {

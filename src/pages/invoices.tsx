@@ -5,8 +5,7 @@ const Invoices = () => {
     return (
         <Box>
             {/*Tutor by default please change to right role if needed*/}
-            <ProfileNavigation/>
-
+            <ProfileNavigation role={'tutor'}/>
             Invoices page
         </Box>
     )

@@ -32,18 +32,22 @@ export default function ChatApp({tutorData, accessToken}: PageProps) {
     const [chat, setChat] = useState();
 
     socket.on("update-chat", (chat) => {
+        console.log("Chat updated")
         setChat(chat);
     });
     useEffect(() => {
         if (decodeJWT(accessToken).role === "student") {
+            console.log("Role is student")
             socket.emit('join-chat', chosenChatId);
         } else if (decodeJWT(accessToken).role === "tutor") {
+            console.log("Role is tutor")
             socket.emit('join-chat', chosenChatId);
         }
     }, [chosenChatId]);
 
     useEffect(() => {
         socket.on("update-chat", (chat) => {
+            
             setChat(chat);
         });
     }, []);
@@ -86,6 +90,7 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
     });
 
     const tutorData = await response.json()
+    console.log(tutorData)
 
     return {
         props: {tutorData, accessToken},

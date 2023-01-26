@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from "react";
+import React, {useEffect, useRef, useState} from "react";
 import ProfileNavigation from "../components/shared/ProfileNavigation/ProfileNavigation";
 import {
     Box,
@@ -17,11 +17,12 @@ import {
 import {SubmitButton} from "../components/shared/Buttons";
 import {DashboardCard} from "../components/shared/DashboardCard";
 import {InputField} from "../components/shared/InputField/InputField";
-import {isAdmin, isTutor} from "./api/api.storage";
+import {getToken, isAdmin, isTutor} from "./api/api.storage";
 import {TutorModel} from "../models/TutorModel";
 import {useRouter} from "next/router";
 import {GetServerSideProps} from "next";
 import {wait} from "next/dist/build/output/log";
+import FileUploader from "../components/FileUploader";
 
 interface PageProps {
     accessToken: string,
@@ -51,17 +52,73 @@ export const Profile = ({data, accessToken}: PageProps) => {
     const [user, setUser] = useState(INITIAL_STATE_PROFILE)
     const [address, setAddress] = useState(INITIAL_STATE_ADDRESS)
     const [password, setPassword] = useState(INITIAL_STATE_PASSWORD)
+    const [imageUrl, setImageUrl] = useState(null);
     const router = useRouter()
     const toast = useToast()
     const [show, setShow] = React.useState(false)
     const handleShowPassword = () => setShow(!show)
 
+
     useEffect(() => {
         console.log(data)
         console.log(isTutor(accessToken))
         console.log(isAdmin(accessToken))
-        // setTutor(data)
+        fetch("http://localhost:8000/tutor/get_image", {
+            method: 'GET',
+            credentials: "include",
+        })
+            .then(response => response.json())
+            .then(data => {
+                if (!data.image) {
+                    throw  new Error('Image not found')
+                }
+                const imageSrc = `data:${data.image.contentType};base64,${Buffer.from(data.image.data).toString('base64')}`;
+
+                setImageUrl(imageSrc);
+            }).catch((error)=>{
+            console.error(error);
+        })
     }, [])
+
+    const handleFile = async (imageFile: File) => {
+        let formdata = new FormData();
+        formdata.append("image", imageFile);
+        formdata.append("contentType", "image/jpg");
+
+        const response = await fetch("http://localhost:8000/tutor/upload", {
+            method: 'POST',
+            body: formdata,
+            credentials: "include",
+        })
+
+        try {
+            const data = await response.json();
+            await getProfileImage();
+            console.log(data);
+        } catch (err) {
+            console.error(err);
+        }
+    };
+
+    const getProfileImage = async () => {
+        try {
+            const response = await fetch('http://localhost:8000/tutor/get_image', {
+                method: 'GET',
+                credentials: "include",
+            })
+
+            const data = await response.json();
+            if (!data.image) {
+              throw  new Error('Image not found')
+            }
+            const imageSrc = `data:${data.image.contentType};base64,${Buffer.from(data.image.data).toString('base64')}`;
+
+            setImageUrl(imageSrc);
+        } catch (error) {
+            console.error(error);
+        }
+    };
+
 
     const handleInput = (e: any) => {
         setUser({...user, [e.target.name]: e.target.value});
@@ -88,12 +145,12 @@ export const Profile = ({data, accessToken}: PageProps) => {
                 duration: 5000,
                 isClosable: true
             }) :
-            await fetch('http://localhost:8000/tutor/password/' + tutor._id, {
+            await fetch(`http://localhost:8000/tutor/password/` + tutor._id, {
                 method: 'PUT',
                 body: JSON.stringify({password: password}),
                 headers: {
                     "Content-Type": "application/json",
-                    'Access-Control-Allow-Origin': 'http://localhost:8000',
+                    'Access-Control-Allow-Origin': `http://localhost:8000`,
                     Cookie: accessToken
                 },
                 credentials: "include",
@@ -142,12 +199,12 @@ export const Profile = ({data, accessToken}: PageProps) => {
                 isClosable: true
             }) :
 
-            fetch('http://localhost:8000/tutor/' + tutor._id, {
+            fetch(`http://localhost:8000/tutor/` + tutor._id, {
                 method: 'PUT',
                 body: JSON.stringify({user: user}),
                 headers: {
                     "Content-Type": "application/json",
-                    'Access-Control-Allow-Origin': 'http://localhost:8000',
+                    'Access-Control-Allow-Origin': `http://localhost:8000`,
                     Cookie: accessToken
                 },
                 credentials: "include",
@@ -179,12 +236,12 @@ export const Profile = ({data, accessToken}: PageProps) => {
                 isClosable: true
             }) :
 
-            fetch('http://localhost:8000/tutor/' + tutor._id, {
+            fetch(`http://localhost:8000/tutor/` + tutor._id, {
                 method: 'PUT',
                 body: JSON.stringify({user: address}),
                 headers: {
                     "Content-Type": "application/json",
-                    'Access-Control-Allow-Origin': 'http://localhost:8000',
+                    'Access-Control-Allow-Origin': `http://localhost:8000`,
                     Cookie: accessToken
                 },
                 credentials: "include",
@@ -208,11 +265,11 @@ export const Profile = ({data, accessToken}: PageProps) => {
 
     const handleConfirmAction = () => {
         const confirmAction = confirm('Are you really really really sure about this? \n This action cannot be undone')
-        confirmAction ? fetch('http://localhost:8000/tutor/' + tutor._id, {
+        confirmAction ? fetch(`http://localhost:8000/tutor/` + tutor._id, {
             method: 'DELETE',
             headers: {
                 "Content-Type": "application/json",
-                'Access-Control-Allow-Origin': 'http://localhost:8000',
+                'Access-Control-Allow-Origin': `http://localhost:8000`,
                 Cookie: accessToken
             }
         }).then(response => response.json()).then(() =>
@@ -229,11 +286,25 @@ export const Profile = ({data, accessToken}: PageProps) => {
                 <Box w={{md: '600px'}} padding={'10px'}>
                     <Card boxShadow={'xl'} borderRadius={20} bg={'white'}>
                         <CardHeader>
-                            <Image margin={'auto'}
-                                   src="images/placeholderImage.png"
-                                   alt="Placeholder for image of Identity"
-                            />
+                            {/*<Image margin={'auto'}*/}
+                            {/*       src="images/placeholderImage.png"*/}
+                            {/*       alt="Placeholder for image of Identity"*/}
+                            {/*/>*/}
+                            {imageUrl ? (
+                                <Image src={imageUrl}
+                                       borderRadius='full'
+                                       boxSize='150px'
+                                       height={{
+                                    base: '100%', // 0-48em
+                                    md: '30%', // 48em-80em,
+                                    xl: '25%', // 80em+
+                                }} alt="Profile Image" margin="auto"/>
+                            ) : (
+                                <Image src="images/placeholderImage.png" alt="Placeholder for image of Identity"
+                                       margin="auto"/>
+                            )}
                         </CardHeader>
+                        <FileUploader handleFile={handleFile}/>
                         <CardBody>
                             <FormControl>
                                 <FormLabel fontSize={'xs'}>Firstname</FormLabel>
@@ -396,7 +467,7 @@ export const Profile = ({data, accessToken}: PageProps) => {
                                            label={'save-changes-password'} buttonText={'Save changes'}
                                            headerName={'Change Password'} cardWidth={'320px'}
                                            optionalBodyOne={<><FormLabel margin={'0px'}
-                                                                       fontSize={'xs'}>Old
+                                                                         fontSize={'xs'}>Old
                                                Password</FormLabel><InputField placeholder={'Previous password'}
                                                                                type={show ? 'text' : 'password'}
                                                                                name={'oldPassword'}
@@ -417,30 +488,30 @@ export const Profile = ({data, accessToken}: PageProps) => {
                                                <FormLabel margin={'0px'}
                                                           fontSize={'xs'}>New Password</FormLabel>
                                                <InputGroup size='md'>
-                                               <InputRightElement width='4.5rem'>
-                                                   <Button h='1.75rem' size='sm' onClick={handleShowPassword}
-                                                           fontSize={"xs"}>
-                                                       {show ? 'Hide' : 'Show'}
-                                                   </Button>
-                                               </InputRightElement>
-                                               <InputField placeholder={'New password'}
-                                                           name={'newPassword'}
-                                                           type={show ? 'text' : 'password'}
+                                                   <InputRightElement width='4.5rem'>
+                                                       <Button h='1.75rem' size='sm' onClick={handleShowPassword}
+                                                               fontSize={"xs"}>
+                                                           {show ? 'Hide' : 'Show'}
+                                                       </Button>
+                                                   </InputRightElement>
+                                                   <InputField placeholder={'New password'}
+                                                               name={'newPassword'}
+                                                               type={show ? 'text' : 'password'}
 
-                                                           value={password.newPassword}
-                                                           onChange={(e) => {
-                                                               handleInputPassword(e)
-                                                           }}
-                                                           variant={'unstyled'}
-                                                           border={'1px solid #e2e8f0'}
-                                                           bg={'#e2e8f0'}
-                                                           height={'var(--chakra-sizes-10)'}
-                                                           color={'black'}
-                                                           outline={'2px solid transparent'}
-                                                           fontSize={'xs'}
-                                                           textIndent={'20px'}
-                                                           borderRadius={'var(--chakra-radii-md)'}
-                                                           label={'inputfield-new-password'}/></InputGroup></>}
+                                                               value={password.newPassword}
+                                                               onChange={(e) => {
+                                                                   handleInputPassword(e)
+                                                               }}
+                                                               variant={'unstyled'}
+                                                               border={'1px solid #e2e8f0'}
+                                                               bg={'#e2e8f0'}
+                                                               height={'var(--chakra-sizes-10)'}
+                                                               color={'black'}
+                                                               outline={'2px solid transparent'}
+                                                               fontSize={'xs'}
+                                                               textIndent={'20px'}
+                                                               borderRadius={'var(--chakra-radii-md)'}
+                                                               label={'inputfield-new-password'}/></InputGroup></>}
                             />
                         </Box>
                     </SimpleGrid>
@@ -453,7 +524,7 @@ export const Profile = ({data, accessToken}: PageProps) => {
 }
 export const getServerSideProps: GetServerSideProps = async (ctx) => {
     const accessToken = JSON.stringify(ctx.req.cookies.access_token)
-    const response = await fetch('http://localhost:8000/tutor/details', {
+    const response = await fetch(`http://localhost:8000/tutor/details`, {
         method: "GET",
         credentials: "include",
         mode: 'cors',

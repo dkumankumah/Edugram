@@ -42,7 +42,7 @@ io.on('connection', (socket) => {
     console.log("Message sent by " + sender + " : " + message + " to chatId: " + chatId);
     await Chat.findOneAndUpdate(
       {_id: chatId},
-      {$push: {messages: new Message({message: message, sender: sender})}},
+      {$push: {messages: new Message({message: message, sender: sender, dateTime: Date.now()})}},
     );
     io.to(chatId).emit("update-chat", await Chat.findOne({_id: chatId}));
   });
@@ -58,6 +58,15 @@ io.on('connection', (socket) => {
       }).catch((error)=> {
         console.log(error)
       }));
+    }
+
+  })
+  socket.on("delete-chat", async (chosenChatId) => {
+    try {
+      await Chat.deleteOne({_id: chosenChatId});
+      socket.emit("chat-deleted", chosenChatId);
+    } catch (err) {
+      console.log(err);
     }
 
   })

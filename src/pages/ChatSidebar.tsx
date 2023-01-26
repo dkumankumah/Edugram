@@ -1,6 +1,5 @@
-import {Flex} from "@chakra-ui/layout";
-import {Avatar, Button, IconButton, Link, Text} from "@chakra-ui/react";
-import {ArrowLeftIcon} from "@chakra-ui/icons"
+import {Avatar, Button, Icon, Link, Flex, Text} from "@chakra-ui/react";
+import {ArrowLeftIcon, DeleteIcon} from "@chakra-ui/icons"
 // @ts-ignore
 import {router} from "next/router";
 import React, {useEffect, useRef, useState} from "react";
@@ -30,43 +29,17 @@ export function setId(id: string) {
 export function chosenChat(chatName: string, chatId: string) {
     setId(chatId)
     chosenUser = chatName;
-    router.push(`/chat/${chatName}`);
+    router.push(`/chats`);
 }
-
-function goBack() {
-    router.push('/dashboard');
-}
-
-const showChats = (data: ChatModel[], accessToken: string) =>
-    data?.map(chat => {
-        if (decodeJWT(accessToken).role === "student") {
-            return (
-                <Flex key={chat._id} p={3} align="center" _hover={{bg: "gray.100", cursor: "pointer"}}
-                      onClick={() => chosenChat(chat.tutor.firstName, chat._id)}>
-                    <Avatar src="" marginEnd={3}/>
-                    <Text>{chat.tutor.firstName}</Text>
-                </Flex>
-            )
-        } else if (decodeJWT(accessToken).role === "tutor") {
-            return (
-                <Flex key={chat._id} p={3} align="center" _hover={{bg: "gray.100", cursor: "pointer"}}
-                      onClick={() => chosenChat(chat.student.firstName, chat._id)}>
-                    <Avatar src="" marginEnd={3}/>
-                    <Text>{chat.student.firstName}</Text>
-                </Flex>
-            )
-        }
-    })
-
 
 const socket = io.connect("ws://localhost:3001", { transports: ['websocket', 'polling', 'flashsocket'] });
 
 export default function ChatSidebar({tutorData, accessToken}: PageProps) {
     const temp: ChatModel[] = [];
     const socketRef = useRef(socket);
-
     const [chatList, setChatlist] = useState<ChatModel[]>([]);
-   
+    const [selectedChatId, setSelectedChatId] = useState<any>(null);
+    const [index, setIndex] = useState(0);
 
     useEffect(() => {
         const user: ChatUserModel = {
@@ -89,38 +62,112 @@ export default function ChatSidebar({tutorData, accessToken}: PageProps) {
             
         });
     },[chosenChatId]);
-    
+
+    const deleteChat = () => {
+        console.log("WERKT HET?")
+        const temp = chatList
+        let idx = 0;
+        chatList.map(chat => {
+            if(chat._id == chosenChatId) {
+                chat.messages.splice(0)
+                setIndex(idx)
+            } else idx++
+        })
+        temp.splice(index, 1)
+        setChatlist(temp)
+        socket.emit("delete-chat", chosenChatId)
+        chosenChat("", "")
+        window.location.reload()
+    }
+
     return (
         <Flex
+            borderLeftRadius="10px"
             w="300px"
-            borderEnd="1px solid" borderColor="gray.200"
+            borderEnd="1px solid" borderColor="#4EA4B1"
             direction="column"
+            bg="#4EA4B1"
         >
             <Flex
                 h="81px" w="100%"
                 align="center"
                 justifyContent="space-between"
-                borderBottom="1px solid" borderColor="gray.200"
+                borderBottom="1px solid" borderColor="#4EA4B1"
                 p={3}
             >
                 <Flex align="center">
                     <Avatar src="" margin={3}/>
                     <Text>{fullname}</Text>
                 </Flex>
-                <IconButton onClick={() => goBack()} size="sm" isRound icon={<ArrowLeftIcon/>} aria-label="Close"/>
             </Flex>
-
             <Flex overflowX="hidden" overflowY="scroll" direction="column"
                   sx={{'::-webkit-scrollbar': {display: 'none'}}}>
+                {chatList?.map(chat => {
+                    if (decodeJWT(accessToken).role === "student") {
+                        return (
+                            <Flex key={chat._id} p={3} align="center"
+                                  _hover={{bg: "gray.100", cursor: "pointer"}}
+                                  justifyContent="space-between"
+                                  sx={{
+                                      bg: chat._id === selectedChatId ? 'white' : 'transparent',
+                                      borderTop: "1px solid #F5F5F5"
+                                  }}>
+                                <Flex
+                                    onClick={() => {
+                                        setSelectedChatId(chat._id);
+                                        chosenChat(chat.tutor.firstName, chat._id)}}>
+                                    <Avatar src="" marginEnd={3}/>
+                                    <Text alignSelf={'center'}>{chat.tutor.firstName}</Text>
+                                </Flex>
+                                {chat._id === selectedChatId &&(
+                                    <Flex alignSelf="center">
+                                        <Icon as={DeleteIcon}
+                                              variant="outline"
+                                              color="yellow"
+                                              onClick={deleteChat}
+                                        />
+                                    </Flex>
+                                )}
+                            </Flex>
+                        )
+                    } else if (decodeJWT(accessToken).role === "tutor") {
+                        return (
+                            <Flex key={chat._id} p={3} align="center"
+                                  _hover={{bg: "gray.100", cursor: "pointer"}}
+                                  justifyContent="space-between"
+                                  sx={{
+                                      bg: chat._id === selectedChatId ? 'white' : 'transparent',
+                                      borderTop: "1px solid #F5F5F5"
+                                    }}>
+                                <Flex
+                                    onClick={() => {
+                                        setSelectedChatId(chat._id);
+                                        chosenChat(chat.student.firstName, chat._id)}}>
+                                    <Avatar src="" marginEnd={3}/>
+                                    <Text alignSelf={'center'}>{chat.student.firstName}</Text>
+                                </Flex>
+                                {chat._id === selectedChatId &&(
+                                    <Flex alignSelf="center">
+                                        <Icon as={DeleteIcon}
+                                              variant="outline"
+                                              color="yellow"
+                                              onClick={deleteChat}
+                                        />
+                                    </Flex>
+                                )}
+                            </Flex>
+                        )
+                    }
+                })}
             </Flex>
-            {showChats(chatList, accessToken)}
+
         </Flex>
     )
 }
 
 const getServerSideProps: GetServerSideProps = async (ctx) => {
     const accessToken = JSON.stringify(ctx.req.cookies.access_token)
-    const response = await fetch('http://localhost:8000/tutor/details', {
+    const response = await fetch(`http://localhost:8000/tutor/details`, {
         method: "GET",
         credentials: "include",
         mode: 'cors',
@@ -137,4 +184,5 @@ const getServerSideProps: GetServerSideProps = async (ctx) => {
         props: {data, accessToken},
     };
 }
+
 export {chosenChatId, chosenUser};
