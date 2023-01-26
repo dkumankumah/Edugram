@@ -54,9 +54,10 @@ io.on('connection', (socket) => {
     if (chosenChatId.length < 3) {
 
     } else {
+      socket.join(chosenChatId);
       console.log("Chosen chat Id in socket: " + chosenChatId);
       io.to(chosenChatId).emit("update-chat", await Chat.findOne({_id: chosenChatId}));
-      socket.join(chosenChatId);
+
     }
 
   })
