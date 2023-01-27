@@ -17,6 +17,7 @@ import {
     SimpleGrid,
     Text,
     Textarea,
+    Tooltip,
     useDisclosure
 } from "@chakra-ui/react";
 import AdminContainer from "../components/admin/container/adminContainer";
@@ -24,7 +25,7 @@ import {getToken, isAdmin} from "./api/api.storage";
 import Chart from "chart.js/auto";
 import {Bar} from 'react-chartjs-2'
 import {CategoryScale} from 'chart.js';
-import {ArrowUpDownIcon, CheckCircleIcon, CheckIcon, CloseIcon, EditIcon} from "@chakra-ui/icons";
+import {ArrowUpDownIcon, CheckCircleIcon, CheckIcon, CloseIcon, EditIcon, InfoOutlineIcon} from "@chakra-ui/icons";
 import {TutorModel} from "../models/TutorModel";
 import {GetServerSideProps} from "next";
 import {SubmitButton} from "../components/shared/Buttons";
@@ -213,12 +214,15 @@ const Dashboard = ({tutorData, accessToken}: PageProps) => {
             let requestId: any;
             let tutorEmail: any;
             let tutorName: any;
+            let status: any;
+
             tutor.request?.map((request) => {
                 if (request._id === id) {
                     request.status = input
                     requestId = request._id
                     tutorName = request.firstName
                     tutorEmail = request.email
+                    status = request.status
                 }
             })
             fetch('http://localhost:8000/tutor/' + tutor._id, {
@@ -229,7 +233,7 @@ const Dashboard = ({tutorData, accessToken}: PageProps) => {
                 },
                 mode: "cors",
                 credentials: "include",
-                body: JSON.stringify({request: tutor.request, data: {requestId, tutorName, tutorEmail}}),
+                body: JSON.stringify({request: tutor.request, data: {requestId, tutorName, tutorEmail, status}}),
             }).then(response => response.json()).then(result =>
                 setTutor(result)
             )
@@ -569,6 +573,12 @@ const Dashboard = ({tutorData, accessToken}: PageProps) => {
                                                                         onClick={() => handleAccept("rejected", request._id)}>
                                                                         Reject
                                                                     </Button>
+                                                                </Flex>
+                                                                <Flex
+                                                                    display={tutor.role === 'tutor' ? 'none' : 'block'}>
+                                                                    <Tooltip label='PENDING'>
+                                                                        <Icon as={InfoOutlineIcon} boxSize={6} color='orange' />
+                                                                    </Tooltip>
                                                                 </Flex>
                                                             </Flex>
                                                         </Flex>
