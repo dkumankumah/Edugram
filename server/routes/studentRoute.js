@@ -77,11 +77,10 @@ router.post("/booking", checkCookie, async (req, res, next) => {
     lastName: req.lastName,
     location: req.body.request.location,
     subject: req.body.request.subject,
+    email: req.email,
     status: 'pending',
     created_at: new Date().toISOString(),
   }
-
-  console.log(Date.now())
 
   const studentRequest = {
     firstName: req.body.request.firstName,
@@ -143,7 +142,6 @@ router.post("/booking", checkCookie, async (req, res, next) => {
       } else {
         //Chat does exist
         //What do we do now?
-        console.log('yes')
         const sendNewMessage = await Chat.findOneAndUpdate(
           {
             tutor: {_id: req.body.request.tutorId, firstName: req.body.request.firstName},
@@ -158,11 +156,11 @@ router.post("/booking", checkCookie, async (req, res, next) => {
         res.json({chatId: addChat._id.valueOf()})
       }
     } catch (e) {
-      console.log(e)
+      console.log(e + "=======>")
       res.send(400).json({error: 'Could not add chat between student and teacher!'})
     }
   } catch (e) {
-    console.log(e)
+    console.log(e + "<=======")
     res.status(400).json({error: 'Could not book lesson!'})
   }
 });

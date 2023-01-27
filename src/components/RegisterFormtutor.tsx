@@ -125,6 +125,14 @@ export function RegisterFormTutor() {
         axios.post(`http://localhost:8000/student`, student).then((res) => {
           console.log(res)
           console.log("Student created");
+          toast({
+            title: 'Student created.',
+            description: "We've created your account for you.",
+            status: 'success',
+            duration: 9000,
+            isClosable: true,
+          })
+          router.push('/')
         }).catch((error) => {
           if (error.response) {
             console.log("er is een errrr: " + JSON.stringify(error.response))

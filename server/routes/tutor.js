@@ -234,7 +234,7 @@ router.patch('/:tutorId', checkCookie, async (req, res) => {
     delete updatedTutor.password
     delete updatedTutor.email
 
-    if (req.body.request && req.body.data){
+    if (req.body.request && req.body.data && req.body.data.status === "accepted"){
       sendAcceptMail(req.body.data.tutorEmail, req.params.subject, req.body.request.firstName, req.body.data.firstName)
     }
     res.send(updatedTutor);
